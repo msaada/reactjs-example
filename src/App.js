@@ -13,7 +13,6 @@ import Artist from './Artist';
 import {BrowserRouter} from 'react-router-dom';
 import {MenuExample} from './Menu';
 
-
 // import { artists } from './arts'
 
 import {GridList} from 'material-ui/GridList';
@@ -22,20 +21,30 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 import {createReferences, readUserData} from './firebaseUtils.js'
 
+function Greeting(props) {
+  const isLoggedIn = props.isLoggedIn;
+  if (isLoggedIn) {
+    this.state.artists
+  }
+  return null;
+}
+
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      artists: []
+      artists: [],
+      ready: false
     };
   };
 
   componentDidMount() {
     const dataArtists = readUserData();
-    const renderedArtists = this.listArtists(dataArtists);
-    // console.log(renderedArtists);
-    this.setState({
-      artists: renderedArtists
+    this.setState(
+      {artists: dataArtists},
+      function() {
+      console.log(this.state.artists);
+      this.setState({ready: true});
     });
   };
 
@@ -59,13 +68,10 @@ class App extends Component {
     }
   };
 
-  listArtists(artists) {
-    const rendered = artists.map((artist) => {
-      const art = <Artist artist={artist}/>;
-      console.log(art);
-      return art;
+  listArtists() {
+    return this.state.artists.map((artist) => {
+      return <Artist artist={artist}/>;
     });
-    // console.log(rendered);
   }
 
   render() {
@@ -76,13 +82,13 @@ class App extends Component {
         </div>
         <h2 style={this.styles().centered}>Welcome to Mega Dental Concept store Art Gallery</h2>
         <Divider/>
-        <MenuExample items={ ['Home', 'Services', 'About', 'Contact us'] } />
+        <MenuExample items={['Home', 'Services', 'About', 'Contact us']}/>
 
         <h1 style={this.styles().centered}>
           BEST ARTISTS
         </h1>
         <GridList cellHeight={250} style={this.styles().gridList} cols={4} padding={10}>
-          {this.state.artists}
+          {/* {this.state.ready && this.listArtists()} */}
         </GridList>
 
         <RaisedButton label="Push to Firebase" primary={true} style={this.styles().button}/>
