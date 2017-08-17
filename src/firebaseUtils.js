@@ -20,16 +20,14 @@ export function createReferences(artists) {
   });
 };
 
-export function readUserData() {
+export function readUserData(callback) {
   const rootRef = firebase.database().ref();
   const artistRef = rootRef.child("artists");
-  const artists = [];
+  const artists = [0];
   artistRef.on("value", snap => {
-    // const artists = snap.val();
-    // console.log(typeof(artists));
     snap.forEach((child) => {
       artists.push(child.val());
     });
+    callback(artists);
   });
-  return artists;
 };
