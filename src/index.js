@@ -1,9 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import './css/index.css';
+// import './css/index.css';
 import App from './App';
-import Home from './Home'
 import registerServiceWorker from './registerServiceWorker';
 import * as firebase from 'firebase';
 

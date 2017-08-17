@@ -40,11 +40,8 @@ class App extends Component {
 
   componentDidMount() {
     const dataArtists = readUserData();
-    this.setState(
-      {artists: dataArtists},
-      function() {
-      console.log(this.state.artists);
-      this.setState({ready: true});
+    this.setState({
+      artists: dataArtists
     });
   };
 
@@ -88,10 +85,10 @@ class App extends Component {
           BEST ARTISTS
         </h1>
         <GridList cellHeight={250} style={this.styles().gridList} cols={4} padding={10}>
-          {/* {this.state.ready && this.listArtists()} */}
+          {this.state.artist.length && this.listArtists()}
         </GridList>
 
-        <RaisedButton label="Push to Firebase" primary={true} style={this.styles().button}/>
+        <RaisedButton label="Push to Firebase" primary={true} style={this.styles().button} onClick={this.styles}/>
 
       </div>
     );
