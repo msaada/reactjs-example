@@ -1,48 +1,43 @@
 .App {
-  margin-right: 10em;
-  margin-left: 10em;
 }
 
-.App-logo {
-  height: 80px;
-  float: left;
+@font-face {
+  font-family: "CanvasFont";
+  src: local("CanvasFont"),
+    url("../assets/fonts/Canvas-Regular.otf") format("truetype");
 }
 
-.App-header {
-  height: 5em;
-  color: white;
-  margin-top: 5em;
+.canvasTitle {
+  font-family: CanvasFont;
+  font-size: 5em;
+  margin: 0;
 }
 
-.App-intro {
-  font-size: large;
+.body {
+  margin-left: 7em;
+  margin-right: 7em;
 }
 
-.artist-picture{
-  width: 100px;
-  height: 100px;
+/*ul {
+  list-style: none;
+  display: inline-block;
 }
 
-ul{
-    list-style:none;
-    display: inline-block;
+ul li {
+  display: inline-block;
+  padding: 10px 20px;
+  cursor: pointer;
+  background-color: #eee;
+  color: #ff7e17;
+
+  transition: 0.3s;
 }
 
-ul li{
-    display: inline-block;
-    padding: 10px 20px;
-    cursor:pointer;
-    background-color:#eee;
-    color:#7B8585;
-
-    transition:0.3s;
+ul li:hover {
+  background-color: #beecea;
 }
 
-ul li:hover{
-    background-color:#beecea;
-}
-
-ul li.focused{
-    color:#fff;
-    background-color:#41c7c2;
-}
+ul li.focused {
+  color: #fff;
+  background-color: #ff7e17;
+}*/
