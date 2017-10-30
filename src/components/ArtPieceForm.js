@@ -24,6 +24,7 @@ export default class ArtPieceForm extends Component {
     sellPriceTaxIncluded: number,
     catalogPage: number,
     dimensions: string,
+    year: number,
     weight: number,
     imagesLinks: Array<string>
   };
@@ -45,6 +46,7 @@ export default class ArtPieceForm extends Component {
       catalogPage: -1,
       dimensions: "",
       weight: -1,
+      year: -1,
       imagesLinks: ["dld"]
     };
   }
@@ -96,6 +98,7 @@ export default class ArtPieceForm extends Component {
       catalogPage: -1,
       dimensions: "",
       weight: -1,
+      year: -1,
       imagesLinks: []
     });
     // }
@@ -199,6 +202,15 @@ export default class ArtPieceForm extends Component {
           hintText="Poids"
           floatingLabelText="Poids"
           value={this.state.weight}
+          onChange={e => this.change(e)}
+          floatingLabelFixed
+        />
+        <br />
+        <TextField
+          name="year"
+          hintText="Année"
+          floatingLabelText="Année"
+          value={this.state.year}
           onChange={e => this.change(e)}
           floatingLabelFixed
         />

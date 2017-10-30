@@ -7,21 +7,19 @@ import "../css/App.css";
 
 import Header from "./Header";
 import Footer from "./Footer";
+import { GridTile, GridList } from "material-ui/GridList";
 
 import Paper from "material-ui/Paper";
 import CircularProgress from "material-ui/CircularProgress";
 import Divider from "material-ui/Divider";
 import FlatButton from "material-ui/FlatButton";
 
+import { ArtPieceGrid } from "./ArtPieceGrid";
 import { Image } from "react-bootstrap";
+import { browserHistory } from "react-router";
 
-import {
-  getArtPiece,
-  getArtPiece2,
-  getArtist,
-  getArtist2
-} from "../javascript/firebaseUtils";
-import Avatar from "material-ui/Avatar";
+import { getArtPiece2, getArtist2 } from "../javascript/firebaseUtils";
+
 import Lightbox from "react-images";
 
 class Product extends Component {
@@ -29,7 +27,6 @@ class Product extends Component {
     isLoading: boolean,
     lightboxIsOpen: boolean,
     productId: string,
-    // TODO REMOVE
     product: ArtPieceType,
     artist: ArtistType
   };
@@ -50,17 +47,18 @@ class Product extends Component {
   }
 
   async componentWillMount() {
-    this.setState({
+    await this.setStateAsync({
       ...this.state,
       productId: this.props.params.productId
     });
 
-    const dataProduct: ArtPieceType = await getArtPiece2(this.state.productId);
-    const dataArtist: ArtistType = dataProduct
-      ? await getArtist2(dataProduct[this.state.productId].artistId)
-      : null;
-
-    this.setState({
+    const dataProduct: ArtPieceType = await getArtPiece2(
+      this.props.params.productId
+    );
+    console.log(dataProduct);
+    const dataArtist: ArtistType = await getArtist2(dataProduct.artistId);
+    console.log(dataArtist);
+    await this.setStateAsync({
       artist: dataArtist,
       product: dataProduct
     });
@@ -73,28 +71,53 @@ class Product extends Component {
         justifyContent: "space-between"
       },
       image: {
-        width: "30em",
-        height: "30em",
-        flexGrow: "1",
-        margin: "1em"
+        display: "flex",
+        justifyContent: "center",
+        width: "40%",
+        height: "40%"
       },
       divider: {
         marginBottom: "1em"
       },
       buyArea: {
         display: "flex",
-        flexGrow: "2",
         flexDirection: "column",
-        justifyContent: "center",
-        alignContent: "stretch"
+        justifyContent: "space-around"
       },
       centered: {
         display: "flex",
         justifyContent: "center"
       },
       paper: {
-        width: "auto",
-        height: "auto"
+        display: "flex",
+        justifyContent: "center"
+      },
+      gridList: {
+        overflowY: "auto",
+        display: "flex",
+        justifyContent: "center"
+      },
+      artistArea: {
+        root: {
+          display: "inline-flex",
+          justifyContent: "space-between",
+          alignItems: "center"
+        },
+        logoLayout: {
+          order: "1",
+          flex: "1",
+          margin: "auto"
+        },
+        descriptionLayout: {
+          order: "2",
+          flex: "2",
+          margin: "1em",
+          textAlign: "justify"
+        },
+        logo: {
+          width: "50%",
+          height: "50%"
+        }
       }
     };
   }
@@ -110,17 +133,28 @@ class Product extends Component {
       lightboxIsOpen: true
     });
   };
+
+  listOtherPictures = (product: ArtPieceType) => {
+    if (product) {
+      const pictures: Array<string> = product.imagesLinks;
+      if (pictures.length) {
+        return pictures.map((picture, index) => {
+          return (
+            <GridTile key={index}>
+              <img src={picture} />
+            </GridTile>
+          );
+        });
+      }
+    }
+  };
+
   render = () => {
     return (
       <div>
         <Header />
         <div className="body">
-          <div className="canvasTitle" style={this.styles().centered}>
-            {this.state.product && this.state.product.name}
-          </div>
-          {this.state.artist && this.state.artist.firstName}
-          <Divider style={this.styles().divider} />
-          <div style={this.styles().root}>
+          <div style={this.styles().centered}>
             {this.state.product && (
               <Image
                 style={this.styles().image}
@@ -138,36 +172,66 @@ class Product extends Component {
                 backdropClosesModal={true}
               />
             )}
-            <div style={this.styles().buyArea}>
-              <Paper style={this.styles().paper}>
-                {this.state.product && (
-                  <h3 style={this.styles().centered}>
-                    {this.state.product.sellPriceTaxIncluded}€
-                  </h3>
-                )}
-                <FlatButton label="Ajouter au panier" />
-              </Paper>
-            </div>
           </div>
-          <h1>Un mot sur l'artiste...</h1>
-          <div>
-            <Divider style={this.styles().divider} />
-            {this.state.artist && (
-              <Avatar src={this.state.artist.picture} size={100} />
-            )}
-            {this.state.artist && (
-              <Image
-                src={this.state.artist.picture}
-                width={50}
-                height={30}
-                thumbnail
-              />
-            )}
+          <br />
+          <div className="canvasTitle" style={this.styles().centered}>
+            {this.state.product && this.state.product.name}
           </div>
-          <h1>Description</h1>
           <Divider style={this.styles().divider} />
-          <p>{this.state.product && this.state.product.description}</p>
-          <h1>Plus de photos</h1>
+          <div style={this.styles().centered}>
+            {this.state.artist &&
+              `${this.state.artist.name}, ${this.state.product.year}`}
+          </div>
+          <div style={this.styles().buyArea}>
+            {this.state.product && (
+              <h4 style={this.styles().centered}>
+                {this.state.product.sellPriceTaxIncluded}€
+              </h4>
+            )}
+            {this.state.product && (
+              <p style={this.styles().centered}>
+                {this.state.product && this.state.product.description}
+              </p>
+            )}
+            <FlatButton label="Ajouter au panier" />
+          </div>
+
+          <h1>Un mot sur l'artiste...</h1>
+          <Divider style={this.styles().divider} />
+          <div style={this.styles().artistArea.root}>
+            <div style={this.styles().artistArea.logoLayout}>
+              {this.state.artist && (
+                <Paper zDepth={2} style={this.styles().paper}>
+                  <Image
+                    src={this.state.artist.logo}
+                    style={this.styles().artistArea.logo}
+                    onClick={e =>
+                      browserHistory.push(`/artist/${this.state.artist.id}`)}
+                  />
+                </Paper>
+              )}
+            </div>
+            <p style={this.styles().artistArea.descriptionLayout}>
+              {this.state.artist && this.state.artist.description}
+            </p>
+          </div>
+          <br />
+          {this.state.product &&
+            this.state.product.imagesLinks.length > 1 && (
+              <div>
+                <div className="canvasTitle">Plus de photos</div>
+                <Divider style={this.styles().divider} />
+                <GridList
+                  cellHeight={300}
+                  style={this.styles().gridList}
+                  cols={4}
+                  padding={10}
+                >
+                  {this.state.product &&
+                    this.listOtherPictures(this.state.product)}
+                </GridList>
+              </div>
+            )}
         </div>
         <Footer />
       </div>

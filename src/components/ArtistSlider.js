@@ -6,19 +6,27 @@ import { Image } from "react-bootstrap";
 import logo from "../assets/home.jpg";
 
 class ArtistSlider extends Component {
+  styles = () => {
+    return {
+      slider: {
+        display: "flex"
+      }
+    };
+  };
   render = () => {
     const settings = {
       dots: false,
-      slidesToShow: 3,
+      slidesToShow: 1,
       slidesToScroll: 1,
-      adaptiveHeight: true,
       infinite: true
     };
 
     return (
-      <Slider {...settings}>
-        <Image src={logo} circle />
-      </Slider>
+      <div style={this.styles().slider}>
+        <Slider {...settings}>
+          <Image src={logo} circle />
+        </Slider>
+      </div>
     );
   };
 }

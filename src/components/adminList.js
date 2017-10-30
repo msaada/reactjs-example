@@ -63,9 +63,11 @@ export default (props: {
           <ListItem
             key={pos}
             value={pos}
-            primaryText={artist.firstName + " " + artist.lastName}
+            primaryText={artist.name}
             leftIcon={<ActionGrade color={pinkA200} />}
-            rightAvatar={<Avatar src={artist.picture} />}
+            rightAvatar={
+              <Avatar src={artist.logo ? artist.logo : artist.picture} />
+            }
           />
         ))}
       {props.artpieces &&
@@ -76,7 +78,7 @@ export default (props: {
             value={pos}
             primaryText={artpiece.name}
             leftIcon={<ActionGrade color={pinkA200} />}
-            rightAvatar={<Avatar src={artpiece.dimensions} />}
+            rightAvatar={<Avatar src={artpiece.imagesLinks[0]} />}
           />
         ))}
       {props.arttypes &&

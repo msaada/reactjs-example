@@ -2,48 +2,84 @@
 
 import React, { Component } from "react";
 
-import type { ArtistType, CategoryType } from "../types/types";
+import type {
+  ArtistType,
+  ArtPieceType,
+  CategoryType,
+  ArtTypeType
+} from "../types/types";
 
 import "../css/App.css";
 
-import { Artist } from "./Artist";
-import { Category } from "./Category";
+import { ArtistGrid } from "./ArtistGrid";
+import { ArtPieceGrid } from "./ArtPieceGrid";
+import { CategoryTyle } from "./CategoryTyle";
 import HomeSlider from "./HomeSlider";
-import ArtistSlider from "./ArtistSlider";
+
 import Header from "./Header";
 import Footer from "./Footer";
 
 import { categories } from "../datas/categories";
+import { Image } from "react-bootstrap";
 
 import { GridList } from "material-ui/GridList";
 import CircularProgress from "material-ui/CircularProgress";
 import Divider from "material-ui/Divider";
 import FlatButton from "material-ui/FlatButton";
 
-import { getArtists } from "../javascript/firebaseUtils";
+import { browserHistory } from "react-router";
+import {
+  getArtists,
+  getArtPieces,
+  getArtTypes
+} from "../javascript/firebaseUtils";
 
 class Home extends Component {
   state: {
-    artists: Array<ArtistType>,
+    artists?: Array<ArtistType>,
+    artpieces?: Array<ArtPieceType>,
+    arttypes?: Array<ArtTypeType>,
     isLoading: boolean
   };
   constructor(props: { artists: ArtistType }) {
     super(props);
     this.state = {
       artists: [],
+      artpieces: [],
+      arttypes: [],
       isLoading: true
     };
   }
+  setStateAsync(state: any) {
+    return new Promise(resolve => {
+      this.setState(state, resolve);
+    });
+  }
 
   componentWillMount() {
-    const callback = dataArtists => {
+    const callbackArtists = dataArtists => {
+      this.setState({
+        ...this.state,
+        artists: dataArtists.slice(0, 4)
+      });
+    };
+    getArtists(callbackArtists);
+
+    const callbackArtpieces = dataArtpieces => {
+      this.setState({
+        ...this.state,
+        artpieces: dataArtpieces.slice(0, 4)
+      });
+    };
+    getArtPieces(callbackArtpieces);
+    const callbackArttype = dataArttypes => {
       this.setState({
         ...this.state,
         isLoading: false,
-        artists: dataArtists
+        arttypes: dataArttypes.slice(0, 4)
       });
     };
-    getArtists(callback);
+    getArtTypes(callbackArttype);
   }
 
   styles() {
@@ -69,8 +105,8 @@ class Home extends Component {
         margin: 12
       },
       slides: {
-        height: "auto",
-        width: "100%",
+        height: "70%",
+        width: "auto",
         padding: "1em",
         textAlign: "center"
       },
@@ -82,8 +118,7 @@ class Home extends Component {
       },
       headers: {
         display: "flex",
-        justifyContent: "start",
-        alignItems: "flex-end"
+        justifyContent: "space-between"
       }
     };
   }
@@ -91,66 +126,117 @@ class Home extends Component {
   listArtists() {
     if (this.state.artists) {
       return this.state.artists.map((artist, index) => {
-        return Artist(artist, index);
+        return ArtistGrid(artist, index);
       });
     }
   }
 
   listCategories() {
-    return categories.map((category: CategoryType, index: number) => {
-      return Category(index, category);
-    });
+    if (this.state.arttypes) {
+      return this.state.arttypes.map((arttype, index) => {
+        return CategoryTyle(index, arttype);
+      });
+    }
   }
 
+  listArtPieces() {
+    if (this.state.artpieces) {
+      return this.state.artpieces.map((artpiece, index) => {
+        return ArtPieceGrid(artpiece, index, "");
+      });
+    }
+  }
   render() {
     return (
       <div className="Home">
         <Header />
         <br />
-        <HomeSlider />
-        <Divider />
-        <div style={this.styles().headers}>
-          <div className="canvasTitle">Les artistes du moment</div>
-
-          <FlatButton label="Voir tous les artistes" />
+        <div style={this.styles().centered}>
+          <Image
+            src={require("../assets/home.jpg")}
+            style={this.styles().slides}
+          />
         </div>
-        <div className="ProgressBar" style={this.styles().centered}>
-          {this.state.isLoading && <CircularProgress size={90} thickness={7} />}
+        <div className="body">
+          <br />
+          <br />
+          <div style={this.styles().headers}>
+            <div className="canvasTitle">nouveautés</div>
+            <FlatButton
+              label="Voir toutes les nouveautés"
+              onClick={e => browserHistory.push("/")}
+            />
+          </div>
+          <Divider />
+          <br />
+          <div className="ProgressBar" style={this.styles().centered}>
+            {this.state.isLoading && (
+              <CircularProgress size={90} thickness={7} />
+            )}
+          </div>
+          {!this.state.isLoading && (
+            <GridList
+              cellHeight={250}
+              style={this.styles().gridList}
+              cols={4}
+              padding={10}
+            >
+              {this.listArtPieces()}
+            </GridList>
+          )}
+          <br />
+          <br />
+          <div style={this.styles().headers}>
+            <div className="canvasTitle">artistes du moment</div>
+            <FlatButton
+              label="Voir tous les artistes"
+              onClick={e => browserHistory.push("/")}
+            />
+          </div>
+          <Divider />
+          <br />
+          <div className="ProgressBar" style={this.styles().centered}>
+            {this.state.isLoading && (
+              <CircularProgress size={90} thickness={7} />
+            )}
+          </div>
+          {!this.state.isLoading && (
+            <GridList
+              cellHeight={250}
+              style={this.styles().gridList}
+              cols={4}
+              padding={10}
+            >
+              {this.listArtists()}
+            </GridList>
+          )}
+          <br />
+          <br />
+          <div style={this.styles().headers}>
+            <div className="canvasTitle">Catégories</div>
+            <FlatButton
+              label="Voir toutes les catégories"
+              onClick={e => browserHistory.push("/")}
+            />
+          </div>
+          <Divider />
+          <br />
+          <div className="ProgressBar" style={this.styles().centered}>
+            {this.state.isLoading && (
+              <CircularProgress size={90} thickness={7} />
+            )}
+          </div>
+          {!this.state.isLoading && (
+            <GridList
+              cellHeight={250}
+              style={this.styles().gridList}
+              cols={4}
+              padding={10}
+            >
+              {this.listCategories()}
+            </GridList>
+          )}
         </div>
-        {!this.state.isLoading && (
-          <GridList
-            cellHeight={250}
-            style={this.styles().gridList}
-            cols={4}
-            padding={10}
-          >
-            {this.listArtists()}
-          </GridList>
-        )}
-        <ArtistSlider />
-        <Divider />
-        <div className="canvasTitle" style={this.styles().centered}>
-          Nos catégories
-        </div>
-        <GridList
-          cellHeight={250}
-          style={this.styles().gridList}
-          cols={3}
-          padding={10}
-        >
-          {this.listCategories()}
-        </GridList>
-        <Divider />
-        <h1 style={this.styles().centered}>Notre sélection</h1>
-        <GridList
-          cellHeight={250}
-          style={this.styles().gridList}
-          cols={3}
-          padding={10}
-        >
-          {this.listCategories()}
-        </GridList>
-
         <Footer />
       </div>
     );

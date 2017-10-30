@@ -3,19 +3,30 @@
 
 @font-face {
   font-family: "CanvasFont";
-  src: local("CanvasFont"),
-    url("../assets/fonts/Canvas-Regular.otf") format("truetype");
+  src: local("CanvasFont"), url("../assets/fonts/mistral.woff") format("woff");
+}
+@font-face {
+  font-family: "Avenir";
+  src: local("Avenir"),
+    url("../assets/fonts/AvenirNextLTPro-It.otf") format("truetype");
+}
+
+@font-face {
+  font-family: "Din";
+  src: local("Din"), url("../assets/fonts/DIN-Regular.otf") format("truetype");
 }
 
 .canvasTitle {
   font-family: CanvasFont;
-  font-size: 5em;
+  font-size: 3em;
   margin: 0;
+  text-transform: uppercase;
 }
 
 .body {
   margin-left: 7em;
   margin-right: 7em;
+  font-family: Din !important;
 }
 
 /*ul {

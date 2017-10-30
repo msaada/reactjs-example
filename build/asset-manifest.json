@@ -1,10 +1,12 @@
 {
-  "main.css": "static/css/main.acbd416f.css",
-  "main.css.map": "static/css/main.acbd416f.css.map",
-  "main.js": "static/js/main.d2a7750a.js",
-  "main.js.map": "static/js/main.d2a7750a.js.map",
+  "main.css": "static/css/main.36ae2ef9.css",
+  "main.css.map": "static/css/main.36ae2ef9.css.map",
+  "main.js": "static/js/main.a423cf7a.js",
+  "main.js.map": "static/js/main.a423cf7a.js.map",
   "static/media/Art-Gallery-Logo.jpg": "static/media/Art-Gallery-Logo.7a8040b0.jpg",
-  "static/media/home.jpg": "static/media/home.8759e154.jpg",
-  "static/media/paintings.jpg": "static/media/paintings.69b39f2c.jpg",
-  "static/media/sculptures.png": "static/media/sculptures.699edff7.png"
+  "static/media/AvenirNextLTPro-It.otf": "static/media/AvenirNextLTPro-It.06248f33.otf",
+  "static/media/DIN-Regular.otf": "static/media/DIN-Regular.799221d7.otf",
+  "static/media/home.jpg": "static/media/home.18503cc5.jpg",
+  "static/media/mistral.woff": "static/media/mistral.6ba5a51b.woff",
+  "static/media/vue-galerie.jpg": "static/media/vue-galerie.5ba80309.jpg"
 }

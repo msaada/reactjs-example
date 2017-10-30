@@ -1,8 +1,9 @@
 //@flow
 
 export type ArtistType = {
-  firstName: string,
-  lastName: string,
+  id: string,
+  name: string,
+  logo: string,
   picture: string,
   description: string,
   imagesLinks: Array<string>,
@@ -20,6 +21,7 @@ export type ArtTypeType = {
 };
 
 export type ArtPieceType = {
+  id: string,
   galeryId: string,
   artistId: string,
   reference: string,
@@ -34,5 +36,6 @@ export type ArtPieceType = {
   catalogPage: number,
   dimensions: string,
   weight: number,
+  year: string,
   imagesLinks: Array<string>
 };

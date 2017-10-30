@@ -38,7 +38,7 @@ export const addToFirebase = (
     model = key
       ? artPieceModel(key, element, firebase.database.ServerValue.TIMESTAMP)
       : null;
-  } else if (element.lastName) {
+  } else if (element.logo) {
     model = key
       ? artistModel(key, element, firebase.database.ServerValue.TIMESTAMP)
       : null;
@@ -58,6 +58,7 @@ export function getArtPieces(callback: (Array<ArtPieceType>) => void) {
       snap.forEach(child => {
         artPieces.push(child.val());
       });
+      console.log(artPieces);
       callback(artPieces);
     });
   }
@@ -80,7 +81,7 @@ export function getArtPiece(
 }
 export async function getArtPiece2(artpieceId: string) {
   const artPiecesRef = database
-    ? database.ref(`/artpieces/${artpieceId}`)
+    ? database.ref(`artpieces/${artpieceId}`)
     : null;
   if (artPiecesRef) {
     const artPieceSnapshot = await artPiecesRef.once("value");
@@ -89,11 +90,10 @@ export async function getArtPiece2(artpieceId: string) {
 }
 
 export async function getArtist2(artistId: string) {
-  console.log(artistId);
-  const artistRef = database ? database.ref(`/artists/${artistId}`) : null;
-  console.log(artistRef);
+  const artistRef = database ? database.ref(`artists/${artistId}`) : null;
   if (artistRef) {
     const artistSnapshot = await artistRef.once("value");
+    console.log(`artistVal: ${artistSnapshot.val()}`);
     return artistSnapshot.val();
   }
 }
@@ -108,6 +108,31 @@ export function getArtist(artistId: string, callback: ArtistType => void) {
     });
   }
 }
+
+export async function getArtPieceFromArtist(artistId: string) {
+  const artpieceRef = database ? database.ref("/artpieces") : null;
+  let res: Array<ArtPieceType> = [];
+  if (artpieceRef) {
+    const artistSnapshot = await artpieceRef.once("value");
+    artistSnapshot.forEach(function(child) {
+      child.val().artistId === artistId ? res.push(child.val()) : null;
+    });
+    return res;
+  }
+}
+
+export async function getArtPieceFromArtType(arttypeId: string) {
+  const artpieceRef = database ? database.ref("/artpieces") : null;
+  let res: Array<ArtPieceType> = [];
+  if (artpieceRef) {
+    const artistSnapshot = await artpieceRef.once("value");
+    artistSnapshot.forEach(function(child) {
+      child.val().typeOfArtPieces === arttypeId ? res.push(child.val()) : null;
+    });
+    return res;
+  }
+}
+
 export function getArtists(callback: (Array<ArtistType>) => void) {
   const artistRef = database ? database.ref("/artists") : null;
   const artists: Array<ArtistType> = [];
@@ -117,6 +142,19 @@ export function getArtists(callback: (Array<ArtistType>) => void) {
         artists.push(child.val());
       });
       callback(artists);
+    });
+  }
+}
+
+export function getArtTypes(callback: (Array<ArtTypeType>) => void) {
+  const arttypeRef = database ? database.ref("/arttypes") : null;
+  const arttypes: Array<ArtTypeType> = [];
+  if (arttypeRef) {
+    arttypeRef.on("value", snap => {
+      snap.forEach(child => {
+        arttypes.push(child.val());
+      });
+      callback(arttypes);
     });
   }
 }

@@ -12,26 +12,22 @@ import { storage, addToFirebase } from "../javascript/firebaseUtils";
 
 export default class ArtistForm extends Component {
   state: {
-    firstName: string,
-    lastName: string,
-    picture: string,
+    name: string,
     description: string,
-    imagesLinks: Array<string>,
+    picture: string,
+    logo: string,
     typeOfArtPieces: string,
-    artPiecesIds: Array<string>,
     image: any
   };
 
   constructor(props: any) {
     super(props);
     this.state = {
-      firstName: "",
-      lastName: "",
+      name: "",
       picture: "",
       description: "",
-      imagesLinks: [],
+      logo: "",
       typeOfArtPieces: "",
-      artPiecesIds: [],
       image: null
     };
   }
@@ -46,13 +42,11 @@ export default class ArtistForm extends Component {
 
   checkFields(artist: ArtistType) {
     return (
-      artist.firstName &&
-      artist.lastName &&
+      artist.name &&
       artist.picture &&
       artist.description &&
-      artist.imagesLinks &&
       artist.typeOfArtPieces &&
-      artist.artPiecesIds
+      artist.logo
     );
   }
 
@@ -71,21 +65,20 @@ export default class ArtistForm extends Component {
     e.preventDefault();
     if (this.checkFields(this.state)) {
       addToFirebase("/artists", this.state);
-      if (storage) {
-        storage
-          .ref("/artpieces")
-          .putString(this.state.image, "data_url")
-          .then(function(snapshot) {
-            console.log("Uploaded a data_url string!");
-          });
-      }
+      // if (storage) {
+      //   storage
+      //     .ref("/artpieces")
+      //     .putString(this.state.image, "data_url")
+      //     .then(function(snapshot) {
+      //       console.log("Uploaded a data_url string!");
+      //     });
+      // }
       this.setState({
-        firstName: "",
-        lastName: "",
+        name: "",
         picture: "",
         description: "",
-        imagesLinks: [],
         typeOfArtPieces: "",
+        logo: "",
         artPiecesIds: []
       });
     }
@@ -95,19 +88,10 @@ export default class ArtistForm extends Component {
     return (
       <form>
         <TextField
-          name="firstName"
-          hintText="First name"
-          floatingLabelText="First name"
-          value={this.state.firstName}
-          onChange={e => this.change(e)}
-          floatingLabelFixed
-        />
-        <br />
-        <TextField
-          name="lastName"
-          hintText="Last Name"
-          floatingLabelText="Last Name"
-          value={this.state.lastName}
+          name="name"
+          hintText="Name"
+          floatingLabelText="Name"
+          value={this.state.name}
           onChange={e => this.change(e)}
           floatingLabelFixed
         />
@@ -117,6 +101,15 @@ export default class ArtistForm extends Component {
           hintText="picture"
           floatingLabelText="picture"
           value={this.state.picture}
+          onChange={e => this.change(e)}
+          floatingLabelFixed
+        />
+        <br />
+        <TextField
+          name="logo"
+          hintText="logo"
+          floatingLabelText="logo"
+          value={this.state.logo}
           onChange={e => this.change(e)}
           floatingLabelFixed
         />
