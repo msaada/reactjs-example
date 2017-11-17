@@ -2,54 +2,32 @@
 
 import React, { Component } from "react";
 
-import type {
-  ArtistType,
-  ArtPieceType,
-  CategoryType,
-  ArtTypeType
-} from "../types/types";
+import { GridList, GridListTile, GridListTileBar } from "material-ui/GridList";
+import { CircularProgress } from "material-ui/Progress";
+import Divider from "material-ui/Divider";
+
+import { Image } from "react-bootstrap";
 
 import "../css/App.css";
 
-import { ArtistGrid } from "./ArtistGrid";
+import type { ArtistType, ArtPieceType } from "../types/types";
+import { ArtistHomeGrid } from "./ArtistHomeGrid";
 import { ArtPieceGrid } from "./ArtPieceGrid";
-import { CategoryTyle } from "./CategoryTyle";
-import HomeSlider from "./HomeSlider";
 
 import Header from "./Header";
 import Footer from "./Footer";
 
-import { categories } from "../datas/categories";
-import { Image } from "react-bootstrap";
-
-import { GridList } from "material-ui/GridList";
-import CircularProgress from "material-ui/CircularProgress";
-import Divider from "material-ui/Divider";
-import FlatButton from "material-ui/FlatButton";
-
-import { browserHistory } from "react-router";
-import {
-  getArtists,
-  getArtPieces,
-  getArtTypes
-} from "../javascript/firebaseUtils";
+import { getArtists, getArtPieces } from "../javascript/firebaseUtils";
 
 class Home extends Component {
   state: {
-    artists?: Array<ArtistType>,
-    artpieces?: Array<ArtPieceType>,
-    arttypes?: Array<ArtTypeType>,
-    isLoading: boolean
+    artists: ?Array<ArtistType>,
+    artpieces: ?Array<ArtPieceType>
+  } = {
+    artists: null,
+    artpieces: null
   };
-  constructor(props: { artists: ArtistType }) {
-    super(props);
-    this.state = {
-      artists: [],
-      artpieces: [],
-      arttypes: [],
-      isLoading: true
-    };
-  }
+
   setStateAsync(state: any) {
     return new Promise(resolve => {
       this.setState(state, resolve);
@@ -59,27 +37,17 @@ class Home extends Component {
   componentWillMount() {
     const callbackArtists = dataArtists => {
       this.setState({
-        ...this.state,
-        artists: dataArtists.slice(0, 4)
+        artists: dataArtists
       });
     };
     getArtists(callbackArtists);
 
     const callbackArtpieces = dataArtpieces => {
       this.setState({
-        ...this.state,
-        artpieces: dataArtpieces.slice(0, 4)
+        artpieces: dataArtpieces
       });
     };
     getArtPieces(callbackArtpieces);
-    const callbackArttype = dataArttypes => {
-      this.setState({
-        ...this.state,
-        isLoading: false,
-        arttypes: dataArttypes.slice(0, 4)
-      });
-    };
-    getArtTypes(callbackArttype);
   }
 
   styles() {
@@ -92,10 +60,13 @@ class Home extends Component {
       gridList: {
         overflowY: "auto",
         display: "flex",
-        justifyContent: "center"
+        flexWrap: "wrap",
+        justifyContent: "center",
+        overflow: "hidden"
       },
       fullwidth: {
-        width: "100%"
+        width: "100%",
+        height: "auto"
       },
       centered: {
         display: "flex",
@@ -104,138 +75,195 @@ class Home extends Component {
       button: {
         margin: 12
       },
-      slides: {
-        height: "70%",
-        width: "auto",
-        padding: "1em",
-        textAlign: "center"
-      },
-      paper: {
-        padding: 20
-      },
       divider: {
-        color: "#ff7e17"
+        color: "#ff7e17",
+        marginTop: "0.5em",
+        marginBottom: "3em"
       },
       headers: {
         display: "flex",
         justifyContent: "space-between"
+      },
+      category: {
+        marginBottom: "2em"
+      },
+      image: {
+        height: "100%",
+        marginLeft: "auto",
+        marginRight: "auto",
+        display: "flex",
+        justifyContent: "center"
+      },
+      relative: {
+        position: "relative",
+        width: "100%",
+        height: "35em"
+      },
+      slides: {
+        root: {
+          marginTop: "2em"
+        },
+        image: {
+          height: "30em",
+          width: "100%",
+          position: "absolute"
+        },
+        catchphrase: {
+          display: "flex",
+          position: "absolute",
+          justifyContent: "center",
+          width: "100%",
+          marginTop: "12em",
+          color: "#FFFFFF"
+        }
+      },
+      titleBar: {
+        background: "rgba(0,0,0,0.15)",
+        height: "2.5em"
       }
     };
   }
 
   listArtists() {
     if (this.state.artists) {
-      return this.state.artists.map((artist, index) => {
-        return ArtistGrid(artist, index);
+      const featuredArtists = this.state.artists.filter(
+        (e: ArtistType) => (e.featured ? e.featured : false)
+      );
+      return featuredArtists.map((artist, index) => {
+        return ArtistHomeGrid(artist, index);
       });
     }
   }
 
-  listCategories() {
-    if (this.state.arttypes) {
-      return this.state.arttypes.map((arttype, index) => {
-        return CategoryTyle(index, arttype);
-      });
-    }
-  }
-
-  listArtPieces() {
+  listArtPieces(startIndex: number, endIndex: number) {
     if (this.state.artpieces) {
-      return this.state.artpieces.map((artpiece, index) => {
+      return this.state.artpieces
+        .slice(startIndex, endIndex)
+        .map((artpiece, index) => {
+          return ArtPieceGrid(artpiece, index, "");
+        });
+    }
+  }
+  listFeaturedArtPieces() {
+    if (this.state.artpieces) {
+      const featuredArtPieces = this.state.artpieces.filter(
+        (e: ArtPieceType) => (e.featured ? e.featured : false)
+      );
+      return featuredArtPieces.map((artpiece, index) => {
         return ArtPieceGrid(artpiece, index, "");
       });
     }
   }
+
   render() {
     return (
       <div className="Home">
         <Header />
-        <br />
-        <div style={this.styles().centered}>
-          <Image
-            src={require("../assets/home.jpg")}
-            style={this.styles().slides}
-          />
+        <div className style={this.styles().slides.root}>
+          <div style={this.styles().relative}>
+            <Image
+              src={require("../assets/home.jpg")}
+              style={this.styles().slides.image}
+            />
+            <div style={this.styles().slides.catchphrase}>
+              <h1
+                style={{
+                  textAlign: "center",
+                  fontStyle: "italic",
+                  fontSize: "3rem"
+                }}
+              >
+                Bienvenue dans notre nouveau concept store, la Mega Dental Art
+                Gallery.
+              </h1>
+            </div>
+          </div>
         </div>
         <div className="body">
-          <br />
-          <br />
-          <div style={this.styles().headers}>
-            <div className="canvasTitle">nouveautés</div>
-            <FlatButton
-              label="Voir toutes les nouveautés"
-              onClick={e => browserHistory.push("/")}
-            />
+          <div style={this.styles().category}>
+            <div style={this.styles().centered}>
+              <h1>Nouveautés</h1>
+            </div>
+            <Divider style={this.styles().divider} />
+
+            <div className="ProgressBar" style={this.styles().centered}>
+              {!this.state.artpieces && <CircularProgress size={90} />}
+            </div>
+            {this.state.artpieces &&
+              this.state.artpieces.length && (
+                <GridList
+                  cellHeight={250}
+                  style={this.styles().gridList}
+                  cols={4}
+                >
+                  {this.listFeaturedArtPieces()}
+                  <GridListTile key={4}>
+                    <GridListTileBar
+                      title="Voir toutes les nouveautés..."
+                      style={this.styles().titleBar}
+                    />
+
+                    <Image
+                      src={require("../assets/more.jpg")}
+                      alt="Voir plus d'oeuvres"
+                      style={this.styles().image}
+                      onClick={e => (window.location.href = "/nouveautes")}
+                    />
+                  </GridListTile>
+                </GridList>
+              )}
           </div>
-          <Divider />
-          <br />
-          <div className="ProgressBar" style={this.styles().centered}>
-            {this.state.isLoading && (
-              <CircularProgress size={90} thickness={7} />
-            )}
+          <div style={this.styles().category}>
+            <div style={this.styles().centered}>
+              <h1>Artistes du moment</h1>
+            </div>
+            <Divider style={this.styles().divider} />
+            <div className="ProgressBar" style={this.styles().centered}>
+              {!this.state.artists && <CircularProgress size={90} />}
+            </div>
+            {this.state.artists &&
+              this.state.artists.length && (
+                <GridList
+                  cellHeight={300}
+                  style={this.styles().gridList}
+                  cols={4}
+                >
+                  {this.listArtists()}
+                  <GridListTile key={4}>
+                    <GridListTileBar
+                      title="Voir plus d'artistes..."
+                      style={this.styles().titleBar}
+                    />
+
+                    <Image
+                      src={require("../assets/more.jpg")}
+                      alt="Voir plus d'artistes"
+                      style={this.styles().image}
+                      onClick={e => (window.location.href = "/artistes")}
+                    />
+                  </GridListTile>
+                </GridList>
+              )}
           </div>
-          {!this.state.isLoading && (
-            <GridList
-              cellHeight={250}
-              style={this.styles().gridList}
-              cols={4}
-              padding={10}
-            >
-              {this.listArtPieces()}
-            </GridList>
-          )}
-          <br />
-          <br />
-          <div style={this.styles().headers}>
-            <div className="canvasTitle">artistes du moment</div>
-            <FlatButton
-              label="Voir tous les artistes"
-              onClick={e => browserHistory.push("/")}
-            />
+          <div style={this.styles().category}>
+            <div style={this.styles().centered}>
+              <h1>Notre Sélection</h1>
+            </div>
+            <Divider style={this.styles().divider} />
+            <div className="ProgressBar" style={this.styles().centered}>
+              {!this.state.artpieces && <CircularProgress size={90} />}
+            </div>
+            {this.state.artpieces &&
+              this.state.artpieces.length && (
+                <GridList
+                  cellHeight={250}
+                  style={this.styles().gridList}
+                  cols={4}
+                >
+                  {this.listArtPieces(3, 7)}
+                </GridList>
+              )}
           </div>
-          <Divider />
-          <br />
-          <div className="ProgressBar" style={this.styles().centered}>
-            {this.state.isLoading && (
-              <CircularProgress size={90} thickness={7} />
-            )}
-          </div>
-          {!this.state.isLoading && (
-            <GridList
-              cellHeight={250}
-              style={this.styles().gridList}
-              cols={4}
-              padding={10}
-            >
-              {this.listArtists()}
-            </GridList>
-          )}
-          <br />
-          <br />
-          <div style={this.styles().headers}>
-            <div className="canvasTitle">Catégories</div>
-            <FlatButton
-              label="Voir toutes les catégories"
-              onClick={e => browserHistory.push("/")}
-            />
-          </div>
-          <Divider />
-          <br />
-          <div className="ProgressBar" style={this.styles().centered}>
-            {this.state.isLoading && (
-              <CircularProgress size={90} thickness={7} />
-            )}
-          </div>
-          {!this.state.isLoading && (
-            <GridList
-              cellHeight={250}
-              style={this.styles().gridList}
-              cols={4}
-              padding={10}
-            >
-              {this.listCategories()}
-            </GridList>
-          )}
         </div>
         <Footer />
       </div>

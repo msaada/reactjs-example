@@ -1,21 +1,19 @@
 //@flow
 import React, { Component } from "react";
-import Dialog from "material-ui/Dialog";
-import FlatButton from "material-ui/FlatButton";
-import RaisedButton from "material-ui/RaisedButton";
+import Dialog, {
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions
+} from "material-ui/Dialog";
+import Button from "material-ui/Button";
+
 import ArtistForm from "./ArtistForm";
 
 export default class AddArtistDialog extends Component {
   state: {
     open: boolean
-  };
-
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      open: false
-    };
-  }
+  } = { open: false };
 
   handleOpen = () => {
     this.setState({ open: true });
@@ -26,28 +24,20 @@ export default class AddArtistDialog extends Component {
   };
 
   render() {
-    const actions = [
-      <FlatButton
-        label="Annuler"
-        primary={true}
-        keyboardFocused={true}
-        onClick={this.handleClose}
-      />
-    ];
-
     return (
       <div>
-        <RaisedButton label="Ajouter un artiste" onClick={this.handleOpen} />
-        <Dialog
-          title="Ajouter un artiste"
-          actions={actions}
-          modal={false}
-          open={this.state.open}
-          onRequestClose={this.handleClose}
-          autoScrollBodyContent={true}
-        >
-          Tous les champs sont requis.
-          <ArtistForm />
+        <Button raised onClick={this.handleOpen}>
+          Ajouter un artiste
+        </Button>
+        <Dialog open={this.state.open} onRequestClose={this.handleClose}>
+          <DialogTitle>Ajouter un artiste</DialogTitle>
+          <DialogContent>
+            <DialogContentText>Tous les champs sont requis.</DialogContentText>
+            <ArtistForm />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose}>Annuler</Button>
+          </DialogActions>
         </Dialog>
       </div>
     );

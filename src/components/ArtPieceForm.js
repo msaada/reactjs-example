@@ -3,58 +3,38 @@
 import React, { Component } from "react";
 
 import TextField from "material-ui/TextField";
-import RaisedButton from "material-ui/RaisedButton";
+import Button from "material-ui/Button";
 
 import type { ArtPieceType } from "../types/types";
 
-import { addToFirebase } from "../javascript/firebaseUtils";
+import { addArtPieceToFirebase } from "../javascript/firebaseUtils";
 
 export default class ArtPieceForm extends Component {
-  state: {
-    galeryId: string,
-    artistId: string,
-    reference: string,
-    name: string,
-    typeOfArtPieces: string,
-    relatedArtPiecesIds: Array<string>,
-    description: string,
-    buyPriceTaxFree: number,
-    buyPriceTaxIncluded: number,
-    sellPriceTaxFree: number,
-    sellPriceTaxIncluded: number,
-    catalogPage: number,
-    dimensions: string,
-    year: number,
-    weight: number,
-    imagesLinks: Array<string>
+  state: ArtPieceType = {
+    id: "",
+    galeryId: "",
+    artistId: "",
+    reference: "",
+    name: "",
+    typeOfArtPieces: "",
+    relatedArtPiecesIds: ["ssss"],
+    description: "",
+    buyPriceTaxFree: -1,
+    buyPriceTaxIncluded: -1,
+    sellPriceTaxFree: -1,
+    sellPriceTaxIncluded: -1,
+    catalogPage: -1,
+    dimensions: "",
+    weight: -1,
+    year: "",
+    quantity: -1,
+    imagesLinks: ["dld"]
   };
-
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      galeryId: "",
-      artistId: "",
-      reference: "",
-      name: "",
-      typeOfArtPieces: "",
-      relatedArtPiecesIds: ["ssss"],
-      description: "",
-      buyPriceTaxFree: -1,
-      buyPriceTaxIncluded: -1,
-      sellPriceTaxFree: -1,
-      sellPriceTaxIncluded: -1,
-      catalogPage: -1,
-      dimensions: "",
-      weight: -1,
-      year: -1,
-      imagesLinks: ["dld"]
-    };
-  }
 
   change(e: Event) {
     if (e.target instanceof HTMLInputElement) {
       this.setState({
-        [e.target.name]: e.target.value
+        [e.target.id]: e.target.value
       });
     }
   }
@@ -81,8 +61,8 @@ export default class ArtPieceForm extends Component {
 
   onSubmit(e: Event) {
     e.preventDefault();
-    // if (this.checkFields(this.state)){
-    addToFirebase("/artpieces", this.state);
+
+    addArtPieceToFirebase("/artpieces", this.state);
     this.setState({
       galeryId: "",
       artistId: "",
@@ -98,7 +78,8 @@ export default class ArtPieceForm extends Component {
       catalogPage: -1,
       dimensions: "",
       weight: -1,
-      year: -1,
+      year: "",
+      quantity: -1,
       imagesLinks: []
     });
     // }
@@ -108,118 +89,120 @@ export default class ArtPieceForm extends Component {
     return (
       <form>
         <TextField
-          name="reference"
-          hintText="Reference"
-          floatingLabelText="Reference"
+          id="reference"
+          label="Reference"
           value={this.state.reference}
-          onChange={e => this.change(e)}
+          onChange={(e: Event) => this.change(e)}
           floatingLabelFixed
         />
         <br />
         <TextField
-          name="name"
-          hintText="Nom"
-          floatingLabelText="Nom"
+          id="name"
+          label="Nom"
           value={this.state.name}
-          onChange={e => this.change(e)}
+          onChange={(e: Event) => this.change(e)}
           floatingLabelFixed
         />
         <br />
         <TextField
-          name="typeOfArtPieces"
-          hintText="Type de l'oeuvre"
-          floatingLabelText="Type de l'oeuvre"
+          id="artistId"
+          label="Artiste id"
+          value={this.state.artistId}
+          onChange={(e: Event) => this.change(e)}
+          floatingLabelFixed
+        />
+        <br />
+        <TextField
+          id="typeOfArtPieces"
+          label="Type de l'oeuvre"
           value={this.state.typeOfArtPieces}
-          onChange={e => this.change(e)}
+          onChange={(e: Event) => this.change(e)}
           floatingLabelFixed
         />
         <br />
         <TextField
-          name="description"
-          hintText="description"
-          floatingLabelText="description"
+          id="description"
+          label="description"
           value={this.state.description}
-          onChange={e => this.change(e)}
+          onChange={(e: Event) => this.change(e)}
           floatingLabelFixed
         />
         <br />
         <TextField
-          name="buyPriceTaxFree"
-          hintText="Prix d'achat (HT)"
-          floatingLabelText="Prix d'achat (HT)"
+          id="buyPriceTaxFree"
+          label="Prix d'achat (HT)"
           value={this.state.buyPriceTaxFree}
-          onChange={e => this.change(e)}
+          onChange={(e: Event) => this.change(e)}
           floatingLabelFixed
         />
         <br />
         <TextField
-          name="buyPriceTaxIncluded"
-          hintText="Prix d'achat (TTC)"
-          floatingLabelText="Prix d'achat (TTC)"
+          id="buyPriceTaxIncluded"
+          label="Prix d'achat (TTC)"
           value={this.state.buyPriceTaxIncluded}
-          onChange={e => this.change(e)}
+          onChange={(e: Event) => this.change(e)}
           floatingLabelFixed
         />
         <br />
         <TextField
-          name="sellPriceTaxFree"
-          hintText="Prix de vente (HT)"
-          floatingLabelText="Prix de vente (HT)"
+          id="sellPriceTaxFree"
+          label="Prix de vente (HT)"
           value={this.state.sellPriceTaxFree}
-          onChange={e => this.change(e)}
+          onChange={(e: Event) => this.change(e)}
           floatingLabelFixed
         />
         <br />
         <TextField
-          name="sellPriceTaxIncluded"
-          hintText="Prix de vente (TTC)"
-          floatingLabelText="Prix de vente (TTC)"
+          id="sellPriceTaxIncluded"
+          label="Prix de vente (TTC)"
           value={this.state.sellPriceTaxIncluded}
-          onChange={e => this.change(e)}
+          onChange={(e: Event) => this.change(e)}
           floatingLabelFixed
         />
         <br />
         <TextField
-          name="catalogPage"
-          hintText="Page du catalogue"
-          floatingLabelText="Page du catalogue"
+          id="catalogPage"
+          label="Page du catalogue"
           value={this.state.catalogPage}
-          onChange={e => this.change(e)}
+          onChange={(e: Event) => this.change(e)}
           floatingLabelFixed
         />
         <br />
         <TextField
-          name="dimensions"
-          hintText="Dimensions"
-          floatingLabelText="Dimensions"
+          id="dimensions"
+          label="Dimensions"
           value={this.state.dimensions}
-          onChange={e => this.change(e)}
+          onChange={(e: Event) => this.change(e)}
           floatingLabelFixed
         />
         <br />
         <TextField
-          name="weight"
-          hintText="Poids"
-          floatingLabelText="Poids"
+          id="weight"
+          label="Poids"
           value={this.state.weight}
-          onChange={e => this.change(e)}
+          onChange={(e: Event) => this.change(e)}
           floatingLabelFixed
         />
         <br />
         <TextField
-          name="year"
-          hintText="Année"
-          floatingLabelText="Année"
+          id="year"
+          label="Année"
           value={this.state.year}
-          onChange={e => this.change(e)}
+          onChange={(e: Event) => this.change(e)}
           floatingLabelFixed
         />
         <br />
-        <RaisedButton
-          label="Confirmer"
-          onClick={e => this.onSubmit(e)}
-          primary
+        <TextField
+          id="quantity"
+          label="Nombre d'exemplaire"
+          value={this.state.quantity}
+          onChange={(e: Event) => this.change(e)}
+          floatingLabelFixed
         />
+        <br />
+        <Button raised onClick={(e: Event) => this.onSubmit(e)}>
+          Confirmer
+        </Button>
       </form>
     );
   }

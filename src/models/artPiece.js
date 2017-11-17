@@ -19,5 +19,7 @@ export default (id: string, props: ArtPieceType, timestamp: string) => ({
   weight: props.weight,
   imagesLinks: props.imagesLinks,
   year: props.year,
+  quantity: props.quantity,
+  featured: false,
   timestamp: timestamp
 });

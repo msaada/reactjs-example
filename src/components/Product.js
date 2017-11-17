@@ -1,24 +1,39 @@
 // @flow
 import React, { Component } from "react";
 
-import type { ArtPieceType, ArtistType } from "../types/types";
+import { Image, ListGroup, ListGroupItem, Panel } from "react-bootstrap";
+
+import type {
+  ArtPieceType,
+  ArtistType,
+  CartType,
+  firebaseUser
+} from "../types/types";
 
 import "../css/App.css";
 
 import Header from "./Header";
 import Footer from "./Footer";
-import { GridTile, GridList } from "material-ui/GridList";
+import { GridListTile, GridList } from "material-ui/GridList";
 
-import Paper from "material-ui/Paper";
-import CircularProgress from "material-ui/CircularProgress";
+import { CircularProgress } from "material-ui/Progress";
 import Divider from "material-ui/Divider";
-import FlatButton from "material-ui/FlatButton";
+import Button from "material-ui/Button";
 
 import { ArtPieceGrid } from "./ArtPieceGrid";
-import { Image } from "react-bootstrap";
-import { browserHistory } from "react-router";
 
-import { getArtPiece2, getArtist2 } from "../javascript/firebaseUtils";
+import {
+  getArtPiece2,
+  getArtist2,
+  getArtPieceFromArtist,
+  addCartToFirebase,
+  auth,
+  getCart
+} from "../javascript/firebaseUtils";
+
+import AlertDialogNoUser from "./AlertDialogNoUser";
+
+import AlertDialogSlide from "./AlertDialogSlide";
 
 import Lightbox from "react-images";
 
@@ -27,8 +42,26 @@ class Product extends Component {
     isLoading: boolean,
     lightboxIsOpen: boolean,
     productId: string,
-    product: ArtPieceType,
-    artist: ArtistType
+    product: ?ArtPieceType,
+    artist: ?ArtistType,
+    images: Array<string>,
+    artpieces: Array<ArtPieceType>,
+    currentImage: number,
+    user: ?firebaseUser,
+    addedToCart: boolean,
+    noUserDialog: boolean
+  } = {
+    isLoading: true,
+    lightboxIsOpen: false,
+    productId: "",
+    product: null,
+    artist: null,
+    images: [],
+    artpieces: [],
+    currentImage: 0,
+    user: null,
+    addedToCart: false,
+    noUserDialog: false
   };
 
   setStateAsync(state: any) {
@@ -37,31 +70,75 @@ class Product extends Component {
     });
   }
 
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      isLoading: true,
-      lightboxIsOpen: false,
-      productId: ""
-    };
+  componentWillReceiveProps(nextProps: any) {
+    (async () => {
+      // TODO: force update when product change
+      if (nextProps.params.productId !== this.props.params.productId) {
+        console.log("update");
+        this.setState({
+          product: null
+        });
+        await this.getInfosFromFirebase();
+      }
+    })();
   }
 
-  async componentWillMount() {
+  getInfosFromFirebase = async () => {
+    if (auth) {
+      await auth.onAuthStateChanged(user => {
+        this.setState({ user: user });
+      });
+    }
+
     await this.setStateAsync({
       ...this.state,
       productId: this.props.params.productId
     });
 
-    const dataProduct: ArtPieceType = await getArtPiece2(
-      this.props.params.productId
-    );
-    console.log(dataProduct);
-    const dataArtist: ArtistType = await getArtist2(dataProduct.artistId);
-    console.log(dataArtist);
+    let dataProduct: ?ArtPieceType;
+    if (!this.state.product) {
+      if (this.props.params) {
+        dataProduct = await getArtPiece2(this.props.params.productId);
+        await this.setStateAsync({
+          product: dataProduct
+        });
+      }
+    }
+
+    let dataArtist: ?ArtistType;
+    if (!this.state.artist) {
+      if (dataProduct) {
+        dataArtist = await getArtist2(dataProduct.artistId);
+        await this.setStateAsync({
+          artist: dataArtist
+        });
+      }
+    }
+    let images: Array<string>;
+    if (dataProduct) {
+      images = this.lightboxImages(dataProduct.imagesLinks);
+      this.setState({
+        images: images
+      });
+    }
+
+    let dataArtpieces: Array<ArtPieceType> = [];
+    if (this.state.artist && !this.state.artpieces.length) {
+      dataArtpieces = await getArtPieceFromArtist(this.state.artist.id);
+      await this.setStateAsync({
+        artpieces: dataArtpieces,
+        isLoading: false
+      });
+    }
     await this.setStateAsync({
-      artist: dataArtist,
-      product: dataProduct
+      isLoading: false
     });
+  };
+
+  componentWillMount() {
+    (async () => {
+      await this.getInfosFromFirebase();
+    })();
   }
 
   styles() {
@@ -90,12 +167,18 @@ class Product extends Component {
       },
       paper: {
         display: "flex",
-        justifyContent: "center"
+        justifyContent: "center",
+        height: "20em",
+        textAlign: "center",
+        width: "100%"
       },
       gridList: {
         overflowY: "auto",
         display: "flex",
         justifyContent: "center"
+      },
+      button: {
+        fontFamily: "Din"
       },
       artistArea: {
         root: {
@@ -105,22 +188,71 @@ class Product extends Component {
         },
         logoLayout: {
           order: "1",
-          flex: "1",
+          maxWidth: "30rem",
           margin: "auto"
         },
         descriptionLayout: {
-          order: "2",
-          flex: "2",
-          margin: "1em",
-          textAlign: "justify"
+          root: {
+            order: "2",
+            flex: "2",
+            margin: "1em",
+            flexShrink: "0"
+          },
+          text: {
+            textAlign: "justify",
+            minWidth: "50em"
+          }
         },
         logo: {
-          width: "50%",
-          height: "50%"
+          width: "auto",
+          height: "100%",
+          marginLeft: "auto",
+          marginRight: "auto"
         }
       }
     };
   }
+  addToCart = async () => {
+    if (this.state.user && this.state.product) {
+      const currentCart: ?CartType = await getCart(this.state.user.uid);
+      let newCart: CartType;
+      if (currentCart && currentCart.active && currentCart.itemCount) {
+        newCart = {
+          ...currentCart,
+          uid: this.state.user.uid,
+          itemCount: currentCart.itemCount + 1,
+          items: [...currentCart.items, this.state.product]
+        };
+      } else {
+        newCart = {
+          uid: this.state.user.uid,
+          itemCount: 1,
+          items: [this.state.product],
+          active: true
+        };
+      }
+      addCartToFirebase("/cart/", newCart);
+      this.setState({
+        addedToCart: true
+      });
+    } else {
+      this.setState({
+        noUserDialog: true
+      });
+      console.log("You must login");
+    }
+  };
+
+  gotoPrevious = () => {
+    this.setState({
+      currentImage: this.state.currentImage - 1
+    });
+  };
+  gotoNext = () => {
+    this.setState({
+      currentImage: this.state.currentImage + 1
+    });
+  };
 
   closeLightbox = () => {
     this.setState({
@@ -133,6 +265,33 @@ class Product extends Component {
       lightboxIsOpen: true
     });
   };
+  openAddToCartDialog = () => {
+    this.setState({
+      addedToCart: true
+    });
+  };
+  closeAddToCartDialog = () => {
+    this.setState({
+      addedToCart: false
+    });
+  };
+
+  openNoUserDialog = () => {
+    this.setState({
+      noUserDialog: true
+    });
+  };
+  closeNoUserDialog = () => {
+    this.setState({
+      noUserDialog: false
+    });
+  };
+  triggerLightBox = (index: number) => {
+    this.setState({
+      lightboxIsOpen: true,
+      currentImage: index
+    });
+  };
 
   listOtherPictures = (product: ArtPieceType) => {
     if (product) {
@@ -140,14 +299,35 @@ class Product extends Component {
       if (pictures.length) {
         return pictures.map((picture, index) => {
           return (
-            <GridTile key={index}>
-              <img src={picture} />
-            </GridTile>
+            <GridListTile key={index}>
+              <img
+                src={picture}
+                onClick={e => this.triggerLightBox(index)}
+                alt={product.name}
+              />
+            </GridListTile>
           );
         });
       }
     }
   };
+
+  lightboxImages = (imageLinks: Array<string>) => {
+    return imageLinks.map(picture => {
+      return { src: picture };
+    });
+  };
+
+  listArtPieces() {
+    if (this.state.artpieces && this.state.artist) {
+      const filteredArtpieces = this.state.artpieces.filter(
+        artpiece => artpiece.id !== this.state.productId
+      );
+      return filteredArtpieces.map((artpiece, index) => {
+        return ArtPieceGrid(artpiece, index, this.state.artist.name);
+      });
+    }
+  }
 
   render = () => {
     return (
@@ -155,21 +335,28 @@ class Product extends Component {
         <Header />
         <div className="body">
           <div style={this.styles().centered}>
-            {this.state.product && (
-              <Image
-                style={this.styles().image}
-                src={this.state.product.imagesLinks[0]}
-                onClick={this.openLightbox}
-              />
-            )}
-            {this.state.product && (
+            {!this.state.product && <CircularProgress size={90} />}
+            {this.state.product &&
+              this.state.product.imagesLinks &&
+              this.state.product.imagesLinks.length && (
+                <Image
+                  style={this.styles().image}
+                  src={this.state.product.imagesLinks[0]}
+                  onClick={this.openLightbox}
+                />
+              )}
+            {this.state.images && (
               <Lightbox
-                images={[{ src: this.state.product.imagesLinks[0] }]}
+                images={this.state.images}
                 isOpen={this.state.lightboxIsOpen}
+                onClickNext={this.gotoNext}
+                onClickPrev={this.gotoPrevious}
                 onClose={this.closeLightbox}
-                showImageCount={false}
+                showImageCount={true}
+                imageCountSeparator={" sur "}
                 closeButtonTitle={"Fermer"}
                 backdropClosesModal={true}
+                currentImage={this.state.currentImage}
               />
             )}
           </div>
@@ -180,58 +367,132 @@ class Product extends Component {
           <Divider style={this.styles().divider} />
           <div style={this.styles().centered}>
             {this.state.artist &&
-              `${this.state.artist.name}, ${this.state.product.year}`}
+              this.state.product &&
+              (this.state.product.year !== -1 &&
+              this.state.product.year !== "" &&
+              this.state.product.year !== "-1"
+                ? `${this.state.artist.name}, ${this.state.product.year}`
+                : `${this.state.artist.name}`)}
           </div>
           <div style={this.styles().buyArea}>
             {this.state.product && (
-              <h4 style={this.styles().centered}>
+              <h2 style={this.styles().centered}>
                 {this.state.product.sellPriceTaxIncluded}€
-              </h4>
+              </h2>
             )}
-            {this.state.product && (
-              <p style={this.styles().centered}>
-                {this.state.product && this.state.product.description}
-              </p>
-            )}
-            <FlatButton label="Ajouter au panier" />
-          </div>
-
-          <h1>Un mot sur l'artiste...</h1>
-          <Divider style={this.styles().divider} />
-          <div style={this.styles().artistArea.root}>
-            <div style={this.styles().artistArea.logoLayout}>
-              {this.state.artist && (
-                <Paper zDepth={2} style={this.styles().paper}>
-                  <Image
-                    src={this.state.artist.logo}
-                    style={this.styles().artistArea.logo}
-                    onClick={e =>
-                      browserHistory.push(`/artist/${this.state.artist.id}`)}
-                  />
-                </Paper>
-              )}
-            </div>
-            <p style={this.styles().artistArea.descriptionLayout}>
-              {this.state.artist && this.state.artist.description}
-            </p>
+            <Button onClick={this.addToCart} style={this.styles().button}>
+              Ajouter au panier
+            </Button>
+            <AlertDialogSlide
+              open={this.state.addedToCart}
+              handleRequestOpen={this.openAddToCartDialog}
+              handleRequestClose={this.closeAddToCartDialog}
+            />
+            <AlertDialogNoUser
+              open={this.state.noUserDialog}
+              handleRequestOpen={this.openNoUserDialog}
+              handleRequestClose={this.closeNoUserDialog}
+            />
           </div>
           <br />
+          <div>
+            <h1>Détails</h1>
+            <Divider style={this.styles().divider} />
+            {!this.state.product && <CircularProgress size={90} />}
+            {this.state.product && (
+              <ListGroup>
+                <ListGroupItem header="Description">
+                  {this.state.product && this.state.product.description}
+                </ListGroupItem>
+                <ListGroupItem header="Dimensions">
+                  {this.state.product &&
+                    this.state.product.description !== "" &&
+                    this.state.product.description !== "-1" &&
+                    this.state.product.dimensions}
+                </ListGroupItem>
+                <ListGroupItem header="Nombre d'exemplaires">
+                  {this.state.product &&
+                    this.state.product.quantity !== "" &&
+                    this.state.product.quantity !== "-1" &&
+                    this.state.product.quantity !== -1 &&
+                    this.state.product.quantity}
+                </ListGroupItem>
+                <ListGroupItem header="Année">
+                  {this.state.product &&
+                    this.state.product.year !== "" &&
+                    this.state.product.year !== -1 &&
+                    this.state.product.year !== "-1" &&
+                    this.state.product.year}
+                </ListGroupItem>
+                <ListGroupItem header="Référence">
+                  {this.state.product && this.state.product.reference}
+                </ListGroupItem>
+              </ListGroup>
+            )}
+          </div>
           {this.state.product &&
             this.state.product.imagesLinks.length > 1 && (
               <div>
-                <div className="canvasTitle">Plus de photos</div>
+                <h1>L'oeuvre sous tous ses angles</h1>
                 <Divider style={this.styles().divider} />
                 <GridList
                   cellHeight={300}
                   style={this.styles().gridList}
                   cols={4}
-                  padding={10}
                 >
                   {this.state.product &&
                     this.listOtherPictures(this.state.product)}
                 </GridList>
               </div>
             )}
+          <br />
+          <h1>Un mot sur l'artiste...</h1>
+          <Divider style={this.styles().divider} />
+          {!this.state.artist && <CircularProgress size={90} />}
+          <div style={this.styles().artistArea.root}>
+            <div style={this.styles().artistArea.logoLayout}>
+              {this.state.artist && (
+                <Panel style={this.styles().paper}>
+                  <Image
+                    src={
+                      this.state.artist.logo.length
+                        ? this.state.artist.logo
+                        : this.state.artist.picture
+                    }
+                    style={this.styles().artistArea.logo}
+                  />
+                </Panel>
+              )}
+            </div>
+            <div style={this.styles().artistArea.descriptionLayout.root}>
+              <p style={this.styles().artistArea.descriptionLayout.text}>
+                {this.state.artist &&
+                  `${this.state.artist.description.slice(
+                    0,
+                    Math.min(this.state.artist.description.length, 1000)
+                  )}...`}
+              </p>
+              {this.state.artist && (
+                <Button
+                  href={`/artist/${this.state.artist.id}`}
+                  style={this.styles().button}
+                >
+                  En savoir plus
+                </Button>
+              )}
+            </div>
+          </div>
+          <br />
+          <h1>Oeuvres associées à l'artiste</h1>
+          <Divider style={this.styles().divider} />
+          {!this.state.artpieces && <CircularProgress size={90} />}
+
+          {this.state.artpieces && (
+            <GridList cellHeight={300} style={this.styles().gridList} cols={4}>
+              {this.listArtPieces()}
+            </GridList>
+          )}
+          <br />
         </div>
         <Footer />
       </div>

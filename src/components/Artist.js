@@ -20,9 +20,10 @@ class Artist extends Component {
   state: {
     isLoading: boolean,
     lightboxIsOpen: boolean,
-    productId: string,
-    artist: ArtistType,
-    artpieces: Array<ArtPieceType>
+    artistId: string,
+    artist?: ArtistType,
+    artpieces?: Array<ArtPieceType>,
+    partnerships: Array<string>
   };
 
   setStateAsync(state: any) {
@@ -36,7 +37,24 @@ class Artist extends Component {
     this.state = {
       isLoading: true,
       lightboxIsOpen: false,
-      artistId: ""
+      artistId: "",
+      partnerships: [
+        "-KxQN_PUOfW6imQjEiBl",
+        "-KxhHgzfrlX70IJcq9Qh",
+        "-Ky5SoZDuolo93hW4Fgw",
+        "-Ky5T5_vdSQwr5wFNRaC",
+        "-Ky60Vad9eF8HJgjG-28",
+        "-Ky86FbGksPkuATZTUKs",
+        "-Ky881l2VpZmCtu2JF-a",
+        "-Ky89SFc3QMElYX7nGTH",
+        "-Ky89k8bJvm3jFTbgMF2",
+        "-Ky8A_XCatQzONZNBNdE",
+        "-KyGQShpzdPduBntUuwO",
+        "-KyGQWIv_v_e8NL2JJ4V",
+        "-KyGQutip_YSdhdiGejc",
+        "-KyGQpIiepX7oBN6xWgm",
+        "-KyGQsOD8hlRbf5D09Cb"
+      ]
     };
   }
 
@@ -79,6 +97,12 @@ class Artist extends Component {
         display: "flex",
         justifyContent: "center"
       },
+      descriptionArea: {
+        display: "flex",
+        justifyContent: "center",
+        textAlign: "justify",
+        fontSize: "1.5em"
+      },
       divider: {
         marginBottom: "1em"
       },
@@ -95,6 +119,11 @@ class Artist extends Component {
         overflowY: "auto",
         display: "flex",
         justifyContent: "center"
+      },
+      partnership: {
+        display: "flex",
+        justifyContent: "center",
+        fontStyle: "italic"
       }
     };
   }
@@ -110,6 +139,30 @@ class Artist extends Component {
       lightboxIsOpen: true
     });
   };
+
+  checkPartnership = () => {
+    return this.state.partnerships.indexOf(this.state.artistId) !== -1;
+  };
+
+  conditionalPartnership = () => {
+    if (this.checkPartnership()) {
+      return <div>En partenariat avec la galerie Palmer – Paris 6ème</div>;
+    }
+  };
+  conditionalDescription = () => {
+    if (this.state.artist && this.state.artist.description.length) {
+      return (
+        <div>
+          <div className="canvasTitle">Biographie</div>
+          <Divider style={this.styles().divider} />
+          <p style={this.styles().descriptionArea}>
+            {this.state.artist && this.state.artist.description}
+          </p>
+        </div>
+      );
+    }
+  };
+
   render = () => {
     return (
       <div>
@@ -127,14 +180,17 @@ class Artist extends Component {
             <h1> {this.state.artist && this.state.artist.name}</h1>
           </div>
           <Divider style={this.styles().divider} />
-          <h1> Ses oeuvres </h1>
+          <div style={this.styles().partnership}>
+            {this.conditionalPartnership()}
+          </div>
+          <br />
+          {this.conditionalDescription()}
+          <br />
+          <div className="canvasTitle">Oeuvres</div>
+          <Divider style={this.styles().divider} />
+
           {!this.state.isLoading && (
-            <GridList
-              cellHeight={250}
-              style={this.styles().gridList}
-              cols={4}
-              padding={10}
-            >
+            <GridList cellHeight={250} style={this.styles().gridList} cols={4}>
               {this.listArtPieces()}
             </GridList>
           )}

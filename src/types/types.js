@@ -1,5 +1,15 @@
 //@flow
 
+export type UserType = {
+  id: string,
+  name: string,
+  address?: string,
+  postalCode?: string,
+  city?: string,
+  phoneNumber: string,
+  clientCode?: string
+};
+
 export type ArtistType = {
   id: string,
   name: string,
@@ -8,16 +18,27 @@ export type ArtistType = {
   description: string,
   imagesLinks: Array<string>,
   typeOfArtPieces: string,
-  artPiecesIds: Array<string>
+  artPiecesIds: Array<string>,
+  featured: boolean
 };
 
 export type CategoryType = {
   name: string,
-  picture: any
+  picture: string
 };
 
 export type ArtTypeType = {
-  name: string
+  id: string,
+  name: string,
+  picture: string,
+  url: string
+};
+
+export type CartType = {
+  id: ?string,
+  itemCount: number,
+  items: Array<ArtPieceType>,
+  active: boolean
 };
 
 export type ArtPieceType = {
@@ -29,13 +50,43 @@ export type ArtPieceType = {
   typeOfArtPieces: string,
   relatedArtPiecesIds: Array<string>,
   description: string,
-  buyPriceTaxFree: number,
-  buyPriceTaxIncluded: number,
-  sellPriceTaxFree: number,
-  sellPriceTaxIncluded: number,
+  buyPriceTaxFree: string,
+  buyPriceTaxIncluded: string,
+  sellPriceTaxFree: string,
+  sellPriceTaxIncluded: string,
   catalogPage: number,
   dimensions: string,
   weight: number,
   year: string,
-  imagesLinks: Array<string>
+  quantity: number,
+  imagesLinks: Array<string>,
+  featured: boolean
+};
+
+export type OrderType = {
+  artpieces: Array<ArtPieceType>,
+  userId: string,
+  userEmail: string,
+  total: number,
+  status: boolean
+};
+
+export type OrderRow = {
+  id: number,
+  email: string,
+  artpieces: Array<ArtPieceType>,
+  status: boolean,
+  total: number
+};
+
+export type FirebaseUser = {
+  uid: string,
+  email: string
+};
+
+export type CallbackType = {
+  id?: string,
+  name: string,
+  phoneNumber: string,
+  email: string
 };

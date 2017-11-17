@@ -18,15 +18,20 @@
 
 .canvasTitle {
   font-family: CanvasFont;
-  font-size: 3em;
+  font-size: 3.5em;
   margin: 0;
-  text-transform: uppercase;
+  text-transform: capitalize;
+}
+
+.h1 {
+  text-transform: capitalize;
 }
 
 .body {
   margin-left: 7em;
   margin-right: 7em;
   font-family: Din !important;
+  color: "#4d545c";
 }
 
 /*ul {

@@ -2,9 +2,8 @@
 import React, { Component } from "react";
 import logo from "../assets/Art-Gallery-Logo.jpg";
 import Divider from "material-ui/Divider";
-import FlatButton from "material-ui/FlatButton";
+import Button from "material-ui/Button";
 import { Image } from "react-bootstrap";
-import { browserHistory } from "react-router";
 
 class Footer extends Component {
   styles() {
@@ -12,8 +11,8 @@ class Footer extends Component {
       root: {
         display: "flex",
         justifyContent: "space-between",
-        marginTop: "2em",
-        marginBottom: "1em",
+        marginTop: "5em",
+        marginBottom: "2em",
         height: "5em"
       },
       nav_buttons: {
@@ -21,16 +20,17 @@ class Footer extends Component {
         justifyContent: "flex-end"
       },
       logo: {
-        height: "80%",
-        width: "auto",
-        marginBottom: "1em",
-        float: "left"
+        height: "50%",
+        width: "auto"
       },
       padding: {
-        height: "3em"
+        height: "2em"
       },
       nav_div: {
         flexGrow: "1"
+      },
+      button: {
+        fontFamily: "Din"
       }
     };
   }
@@ -40,7 +40,7 @@ class Footer extends Component {
       <div style={this.styles().root}>
         <Image
           src={logo}
-          onClick={e => browserHistory.push("/")}
+          onClick={e => (window.location.href = "/")}
           style={this.styles().logo}
           alt="Mega Dental concept store Art Gallery"
         />
@@ -48,16 +48,15 @@ class Footer extends Component {
           <div style={this.styles().padding} />
           <Divider />
           <div style={this.styles().nav_buttons}>
-            <FlatButton
-              label="À propos"
-              hoverColor="#ff7e17"
-              onClick={() => browserHistory.push("/azerty")}
-            />
-            <FlatButton
-              hoverColor="#ff7e17"
-              label="Conditions Générales de Ventes"
-              onClick={() => browserHistory.push("/azerty")}
-            />
+            <Button style={this.styles().button} href="/apropos">
+              À propos
+            </Button>
+            <Button
+              style={this.styles().button}
+              href="http://www.megadental.fr/pdf/cgv-10-11.pdf"
+            >
+              Conditions Générales de Ventes
+            </Button>
           </div>
         </div>
       </div>

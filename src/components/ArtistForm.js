@@ -3,12 +3,11 @@
 import React, { Component } from "react";
 
 import TextField from "material-ui/TextField";
-import RaisedButton from "material-ui/RaisedButton";
-import FlatButton from "material-ui/FlatButton";
+import Button from "material-ui/Button";
 
 import type { ArtistType } from "../types/types";
 
-import { storage, addToFirebase } from "../javascript/firebaseUtils";
+import { addArtistToFirebase } from "../javascript/firebaseUtils";
 
 export default class ArtistForm extends Component {
   state: {
@@ -18,24 +17,19 @@ export default class ArtistForm extends Component {
     logo: string,
     typeOfArtPieces: string,
     image: any
+  } = {
+    name: "",
+    picture: "",
+    description: "",
+    logo: "",
+    typeOfArtPieces: "",
+    image: null
   };
-
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      name: "",
-      picture: "",
-      description: "",
-      logo: "",
-      typeOfArtPieces: "",
-      image: null
-    };
-  }
 
   change(e: Event) {
     if (e.target instanceof HTMLInputElement) {
       this.setState({
-        [e.target.name]: e.target.value
+        [e.target.id]: e.target.value
       });
     }
   }
@@ -54,7 +48,6 @@ export default class ArtistForm extends Component {
     if (event.target.files && event.target.files[0]) {
       const reader = new FileReader();
       reader.onload = (e: Event) => {
-        console.log(e.target.result);
         this.setState({ image: e.target.result });
       };
       reader.readAsDataURL(event.target.files[0]);
@@ -64,7 +57,7 @@ export default class ArtistForm extends Component {
   onSubmit(e: Event) {
     e.preventDefault();
     if (this.checkFields(this.state)) {
-      addToFirebase("/artists", this.state);
+      addArtistToFirebase("/artists", this.state);
       // if (storage) {
       //   storage
       //     .ref("/artpieces")
@@ -79,74 +72,58 @@ export default class ArtistForm extends Component {
         description: "",
         typeOfArtPieces: "",
         logo: "",
-        artPiecesIds: []
+        image: null
       });
     }
   }
 
   render() {
     return (
-      <form>
+      <form noValidate>
         <TextField
-          name="name"
-          hintText="Name"
-          floatingLabelText="Name"
+          id="name"
+          label="Nom"
           value={this.state.name}
-          onChange={e => this.change(e)}
-          floatingLabelFixed
+          onChange={(e: Event) => this.change(e)}
+          fullwidth
+          autoFocus
         />
+
         <br />
         <TextField
-          name="picture"
-          hintText="picture"
-          floatingLabelText="picture"
+          id="picture"
+          label="Photo"
           value={this.state.picture}
-          onChange={e => this.change(e)}
-          floatingLabelFixed
+          onChange={(e: Event) => this.change(e)}
+          fullwidth
         />
         <br />
         <TextField
-          name="logo"
-          hintText="logo"
-          floatingLabelText="logo"
+          id="logo"
+          label="Logo"
           value={this.state.logo}
-          onChange={e => this.change(e)}
-          floatingLabelFixed
+          onChange={(e: Event) => this.change(e)}
+          fullwidth
         />
         <br />
         <TextField
-          name="description"
-          hintText="description"
-          floatingLabelText="description"
+          id="description"
+          label="Description"
           value={this.state.description}
-          onChange={e => this.change(e)}
-          floatingLabelFixed
+          onChange={(e: Event) => this.change(e)}
         />
         <br />
         <TextField
-          name="typeOfArtPieces"
-          hintText="typeOfArtPieces"
-          floatingLabelText="typeOfArtPieces"
+          id="typeOfArtPieces"
+          label="Type des oeuvres"
           value={this.state.typeOfArtPieces}
-          onChange={e => this.change(e)}
-          floatingLabelFixed
+          onChange={(e: Event) => this.change(e)}
+          fullwidth
         />
         <br />
-        <FlatButton label="Choose an Image" primary={true}>
-          {/* <input id="imageButton" type="file"></input> */}
-          <input
-            type="file"
-            onChange={this.onImageLoad.bind(this)}
-            className="filetype"
-            id="group_image"
-          />
-        </FlatButton>
-        <br />
-        <RaisedButton
-          label="Confirmer"
-          onClick={e => this.onSubmit(e)}
-          primary
-        />
+        <Button raised onClick={(e: Event) => this.onSubmit(e)}>
+          Confirmer
+        </Button>
       </form>
     );
   }

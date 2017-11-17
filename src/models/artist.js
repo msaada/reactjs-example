@@ -8,5 +8,6 @@ export default (id: string, props: ArtistType, timestamp: string) => ({
   logo: props.logo,
   picture: props.picture,
   typeOfArtPieces: props.typeOfArtPieces,
+  featured: false,
   timestamp: timestamp
 });

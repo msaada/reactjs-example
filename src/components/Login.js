@@ -7,93 +7,86 @@ import "../css/App.css";
 import Header from "./Header";
 import Footer from "./Footer";
 
-import RaisedButton from "material-ui/RaisedButton";
+import Button from "material-ui/Button";
+import Divider from "material-ui/Divider";
 import TextFieldControlled from "./TextFieldControlled";
+import MyAlert from "./MyAlert";
 
-import { browserHistory } from "react-router";
+import * as firebase from "firebase";
 
-import { auth, getUserExtraInfos } from "../javascript/firebaseUtils";
+import { auth, getCurrentUser } from "../javascript/firebaseUtils";
 
 class Login extends Component {
   state: {
     user: any,
     email: string,
     password: string,
-    showAdminPanel: boolean
+    alertVisible: boolean,
+    alertMessage: string
+  } = {
+    user: null,
+    email: "",
+    password: "",
+    alertVisible: false,
+    alertMessage: ""
   };
-
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      user: null,
-      email: "",
-      password: "",
-      showAdminPanel: false
-    };
-  }
 
   componentDidMount = () => {
-    this.getCurrentUser();
-  };
-
-  routeToNextScreen = (user: any) => {
+    const user = getCurrentUser();
     if (user) {
-      if (this.state.showAdminPanel) {
-        browserHistory.push("/admin");
-      } else {
-        browserHistory.push("/");
-      }
+      this.setState({
+        user: user
+      });
     }
   };
 
-  setAdmin = (userInfos: any) => {
-    this.setState({
-      ...this.state,
-      showAdminPanel: userInfos.isAdmin
-    });
-    console.log(this.state);
-    this.routeToNextScreen();
-  };
-
-  getCurrentUser = async () => {
-    if (auth) {
-      const user = await auth.currentUser;
-
-      if (user) {
-        // User is signed in.
-        console.log("Heyy");
-        this.setState({
-          ...this.state,
-          user: user
-        });
-        getUserExtraInfos(user.uid, this.setAdmin);
-      } else {
-        // No user is signed in.
-        console.log("Hayy");
-      }
-    }
-  };
-
-  login = async () => {
+  logIn = async () => {
     if (auth) {
       await auth
-        .signInWithEmailAndPassword(this.state.email, this.state.password)
-        .catch(function(error) {
-          // Handle Errors here.
-          var errorCode = error.code;
-          var errorMessage = error.message;
+        .setPersistence(firebase.auth.Auth.Persistence.SESSION)
+        .then(() => {
+          // Existing and future Auth states are now persisted in the current
+          // session only. Closing the window would clear any existing state even
+          // if a user forgets to sign out.
           // ...
-          console.log(errorCode);
-          console.log(errorMessage);
+          // New sign-in will be persisted with session persistence.
+          return auth.signInWithEmailAndPassword(
+            this.state.email,
+            this.state.password
+          );
+        })
+        .catch(error => {
+          // Handle Errors here.
+          const errorCode = error.code;
+
+          let frenchErrorMessage: string;
+          if (errorCode === "auth/invalid-email") {
+            frenchErrorMessage = "L'adresse mail est mal formatée.";
+          } else if (errorCode === "auth/wrong-password") {
+            frenchErrorMessage = "Mot de passe erroné";
+          } else if (errorCode === "auth/user-not-found") {
+            frenchErrorMessage =
+              "Cette addresse mail n'est réliée à aucun compte. Veuillez créer un compte avant de pouvoir vous authentifier.";
+          } else {
+            frenchErrorMessage = `Une erreur inconnue est survenue (${errorCode})`;
+          }
+          this.handleAlertShow(frenchErrorMessage);
         });
-      await this.getCurrentUser();
+
+      const user = await getCurrentUser();
+      if (user) {
+        this.setState({
+          user: user
+        });
+        console.log(user);
+        window.location.href = "/";
+      }
     }
   };
 
   handleEmailChange = (event: Event) => {
     if (event.target instanceof HTMLInputElement) {
       this.setState({
-        ...this.state,
         email: event.target.value
       });
     }
@@ -102,33 +95,78 @@ class Login extends Component {
   handlePasswordChange = (event: Event) => {
     if (event.target instanceof HTMLInputElement) {
       this.setState({
-        ...this.state,
         password: event.target.value
       });
     }
   };
 
-  logout = async () => {
+  signIn = async () => {
     if (auth) {
-      await auth.signOut();
-      this.setState({
-        ...this.state,
-        user: null
-      });
+      await auth
+        .createUserWithEmailAndPassword(this.state.email, this.state.password)
+        .catch(error => {
+          // Handle Errors here.
+          const errorCode = error.code;
+
+          let frenchErrorMessage: string;
+
+          if (errorCode === "auth/email-already-in-use") {
+            frenchErrorMessage =
+              "Cette adresse mail est déjà liée à un compte.";
+          } else {
+            frenchErrorMessage = `Une erreur inconnue est survenue (${errorCode})`;
+          }
+
+          this.handleAlertShow(frenchErrorMessage);
+        });
     }
   };
 
-  render() {
-    const { user } = this.state;
+  handleAlertDismiss = () => {
+    this.setState({ alertVisible: false });
+  };
 
+  handleAlertShow = (errorMessage: string) => {
+    this.setState({ alertVisible: true, alertMessage: errorMessage });
+  };
+
+  styles = () => {
+    return {
+      root: {
+        display: "flex",
+        justifyContent: "space-around",
+        flexDirection: "column"
+      },
+      divider: {
+        marginBottom: "2em"
+      },
+      centered: {
+        display: "flex",
+        justifyContent: "center"
+      },
+      buttons: {
+        display: "flex",
+        justifyContent: "flex-start"
+      }
+    };
+  };
+  render() {
     return (
-      <div className="Login">
+      <div>
         <Header />
-        <div className="app">
-          <p>{user ? `Hi, ${user.email}!` : "Hi!"}</p>
+        <div className="body" style={this.styles().root}>
+          <div style={this.styles().centered}>
+            <h1>Connexion</h1>
+          </div>
+          <Divider style={this.styles().divider} />
+          {this.state.alertVisible && (
+            <MyAlert
+              message={this.state.alertMessage}
+              alertDissmiss={this.handleAlertDismiss}
+            />
+          )}
           <TextFieldControlled
             id="email-field"
-            hintText="Email field"
             floatingLabelText="Email"
             type="text"
             value={this.state.email}
@@ -137,16 +175,18 @@ class Login extends Component {
 
           <TextFieldControlled
             id="password-field"
-            hintText="Password Field"
-            floatingLabelText="Password"
+            floatingLabelText="Mot de passe"
             type="password"
             value={this.state.password}
             handleChange={this.handlePasswordChange}
           />
           <br />
-          <RaisedButton onClick={this.login.bind(this)}>Login</RaisedButton>
-
-          <RaisedButton onClick={this.logout.bind(this)}>Logout</RaisedButton>
+          <div style={this.styles().buttons}>
+            <Button raised keyboardFocused onClick={e => this.logIn()}>
+              Connexion
+            </Button>
+            <Button href="/creercompte">Je n'ai pas de compte</Button>
+          </div>
         </div>
         <Footer />
       </div>

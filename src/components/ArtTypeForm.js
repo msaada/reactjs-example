@@ -3,28 +3,21 @@
 import React, { Component } from "react";
 
 import TextField from "material-ui/TextField";
-import RaisedButton from "material-ui/RaisedButton";
+import Button from "material-ui/Button";
 
 import type { ArtTypeType } from "../types/types";
 
-import { addToFirebase } from "../javascript/firebaseUtils";
+import { addArtTypeToFirebase } from "../javascript/firebaseUtils";
 
 export default class ArtTypeForm extends Component {
   state: {
     name: string
-  };
-
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      name: ""
-    };
-  }
+  } = { name: "" };
 
   change(e: Event) {
     if (e.target instanceof HTMLInputElement) {
       this.setState({
-        [e.target.name]: e.target.value
+        [e.target.id]: e.target.value
       });
     }
   }
@@ -36,7 +29,7 @@ export default class ArtTypeForm extends Component {
   onSubmit(e: Event) {
     e.preventDefault();
     if (this.checkFields(this.state)) {
-      addToFirebase("/arttypes", this.state);
+      addArtTypeToFirebase("/arttypes", this.state);
       this.setState({
         name: ""
       });
@@ -47,18 +40,12 @@ export default class ArtTypeForm extends Component {
     return (
       <form>
         <TextField
-          name="name"
-          hintText="First name"
-          floatingLabelText="First name"
+          id="name"
+          label="First name"
           value={this.state.name}
           onChange={e => this.change(e)}
-          floatingLabelFixed
         />
-        <RaisedButton
-          label="Confirmer"
-          onClick={e => this.onSubmit(e)}
-          primary
-        />
+        <Button onClick={e => this.onSubmit(e)}>Confirmer</Button>
       </form>
     );
   }

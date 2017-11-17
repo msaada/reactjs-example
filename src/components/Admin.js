@@ -5,9 +5,11 @@ import React, { Component } from "react";
 import "../css/App.css";
 
 import Paper from "material-ui/Paper";
-import CircularProgress from "material-ui/CircularProgress";
+import { CircularProgress } from "material-ui/Progress";
 import AppBar from "material-ui/AppBar";
-import IconButton from "material-ui/IconButton";
+
+import Toolbar from "material-ui/Toolbar";
+import Typography from "material-ui/Typography";
 
 import AddArtistDialog from "./AddArtistDialog";
 import AddArtPieceDialog from "./AddArtPieceDialog";
@@ -25,53 +27,42 @@ class Admin extends Component {
   state: {
     artists: Array<ArtistType>,
     artPieces: Array<ArtPieceType>,
-    artTypes: Array<ArtTypeType>,
-    isLoadingArtists: boolean,
-    isLoadingArtPieces: boolean,
-    isLoadingArtTypes: boolean
+    artTypes: Array<ArtTypeType>
+  } = {
+    artists: [],
+    artPieces: [],
+    artTypes: []
   };
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      artists: [],
-      artPieces: [],
-      artTypes: [],
-      isLoadingArtists: true,
-      isLoadingArtPieces: true,
-      isLoadingArtTypes: true
-    };
-  }
 
   updateArtPiece = (artpiece: ArtPieceType) => {
     this.setState({
-      ...this.state,
-      isLoadingArtPieces: false,
       artPieces: [...this.state.artPieces, artpiece]
     });
   };
 
   updateArtist = (artist: ArtistType) => {
     this.setState({
-      ...this.state,
-      isLoadingArtists: false,
       artists: [...this.state.artists, artist]
     });
   };
   updateArtType = (artType: ArtTypeType) => {
     this.setState({
-      ...this.state,
-      isLoadingArtTypes: false,
       artTypes: [...this.state.artTypes, artType]
     });
   };
   componentDidMount() {
     // TODO: if user is not authenticated go to Login
+
     getLastArtist(this.updateArtist);
     getLastArtPiece(this.updateArtPiece);
     getLastArtType(this.updateArtType);
   }
   styles() {
     return {
+      root: {
+        display: "flex",
+        flexDirection: "column"
+      },
       centered: {
         display: "flex",
         justifyContent: "center"
@@ -83,47 +74,59 @@ class Admin extends Component {
   }
   render() {
     return (
-      <div>
-        <AppBar
-          title="Panneau d'administration"
-          iconElementLeft={<IconButton />}
-        />
-        <Paper style={this.styles().paper}>
-          <AppBar title="Artistes" iconElementLeft={<IconButton />} />
+      <div style={this.styles().root}>
+        <AppBar>
+          <Toolbar>
+            <Typography type="display2" color="inherit">
+              Panneau d'administration
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        <br />
+        <br />
+        <br />
+        <br />
+        <Paper elevation={3} style={this.styles().paper}>
+          <Toolbar>
+            <Typography type="display3">Artistes</Typography>
+          </Toolbar>
+
           <div style={this.styles().centered}>
-            {this.state.isLoadingArtists && (
-              <CircularProgress size={90} thickness={7} />
-            )}
+            {!this.state.artists.length && <CircularProgress size={90} />}
           </div>
-          {!this.state.isLoadingArtists && (
+          {this.state.artists.length && (
             <AdminList artists={this.state.artists} />
           )}
 
           <AddArtistDialog />
         </Paper>
         <br />
+        <br />
 
-        <Paper style={this.styles().paper}>
-          <AppBar title="Oeuvres" iconElementLeft={<IconButton />} />
+        <Paper elevation={3} style={this.styles().paper}>
+          <Toolbar>
+            <Typography type="display3">Oeuvres</Typography>
+          </Toolbar>
+
           <div style={this.styles().centered}>
-            {this.state.isLoadingArtPieces && (
-              <CircularProgress size={90} thickness={7} />
-            )}
+            {!this.state.artPieces.length && <CircularProgress size={90} />}
           </div>
-          {!this.state.isLoadingArtPieces && (
+          {this.state.artPieces.length && (
             <AdminList artpieces={this.state.artPieces} />
           )}
           <AddArtPieceDialog />
         </Paper>
 
-        <Paper style={this.styles().paper}>
-          <AppBar title="Types d'oeuvres" iconElementLeft={<IconButton />} />
+        <br />
+        <br />
+        <Paper elevation={3} style={this.styles().paper}>
+          <Toolbar>
+            <Typography type="display3">Types d'oeuvres</Typography>
+          </Toolbar>
           <div style={this.styles().centered}>
-            {this.state.isLoadingArtTypes && (
-              <CircularProgress size={90} thickness={7} />
-            )}
+            {!this.state.artTypes.length && <CircularProgress size={90} />}
           </div>
-          {!this.state.isLoadingArtTypes && (
+          {this.state.artTypes.length && (
             <AdminList arttypes={this.state.artTypes} />
           )}
           <AddArtTypeDialog />

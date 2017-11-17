@@ -1,28 +1,33 @@
 // @flow
 import React, { Component } from "react";
 
-import type { ArtistType, ArtPieceType } from "../types/types";
-
 import "../css/App.css";
+
+import { Image } from "react-bootstrap";
+
+import { GridList } from "material-ui/GridList";
+import Divider from "material-ui/Divider";
+import { CircularProgress } from "material-ui/Progress";
 
 import Header from "./Header";
 import Footer from "./Footer";
-
-import { Image } from "react-bootstrap";
-import { GridList } from "material-ui/GridList";
-import Divider from "material-ui/Divider";
 import { ArtPieceGrid } from "./ArtPieceGrid";
-import CircularProgress from "material-ui/CircularProgress";
+import {
+  getArtPieceFromArtType,
+  getArtTypes
+} from "../javascript/firebaseUtils";
 
-import { getArtPieceFromArtType } from "../javascript/firebaseUtils";
+import banner from "../assets/vue-galerie.jpg";
+
+import type { ArtPieceType, ArtTypeType } from "../types/types";
 
 class Category extends Component {
   state: {
-    isLoading: boolean,
-    lightboxIsOpen: boolean,
-    productId?: string,
-    artist?: ArtistType,
-    artpieces?: Array<ArtPieceType>
+    artpieces: Array<ArtPieceType>,
+    arttypes: Array<ArtTypeType>
+  } = {
+    artpieces: [],
+    arttypes: []
   };
 
   setStateAsync(state: any) {
@@ -31,25 +36,24 @@ class Category extends Component {
     });
   }
 
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      isLoading: true,
-      lightboxIsOpen: false,
-      artistId: ""
-    };
-  }
-
   async componentWillMount() {
-    const artPieces: Array<ArtPieceType> = await getArtPieceFromArtType(
-      this.props.category.id
-    );
-    console.log(artPieces);
+    let artPieces: Array<ArtPieceType>;
+    const callbackTypes = (arttypes: Array<ArtTypeType>) => {
+      this.setState({
+        arttypes: arttypes.filter(
+          (arttype: ArtTypeType) => arttype.id === this.props.category.id
+        )
+      });
+    };
+    if (this.props.category) {
+      artPieces = await getArtPieceFromArtType(this.props.category.id);
+      getArtTypes(callbackTypes);
+    }
     await this.setStateAsync({
-      artpieces: artPieces,
-      isLoading: false
+      artpieces: artPieces
     });
   }
+
   listArtPieces() {
     if (this.state.artpieces) {
       return this.state.artpieces.map((artpiece, index) => {
@@ -70,7 +74,7 @@ class Category extends Component {
         position: "absolute",
         justifyContent: "center",
         width: "100%",
-        height: "auto"
+        marginTop: "12em"
       },
       centered: {
         display: "flex",
@@ -81,11 +85,8 @@ class Category extends Component {
         width: "100%",
         height: "35em"
       },
-      absolute: {
-        position: "absolute"
-      },
       image: {
-        height: "auto",
+        height: "30em",
         width: "100%",
         position: "absolute"
       },
@@ -96,6 +97,10 @@ class Category extends Component {
       },
       margin: {
         marginBottom: "1em"
+      },
+      name: {
+        fontSize: "5em",
+        textTransform: "uppercase"
       }
     };
   }
@@ -106,29 +111,26 @@ class Category extends Component {
         <Header />
         <div className style={this.styles().root}>
           <div style={this.styles().relative}>
-            <Image
-              src={this.props.category.image}
-              style={this.styles().image}
-            />
+            <Image src={banner} style={this.styles().image} />
             <div style={this.styles().categoryName}>
-              <div className="canvasTitle"> {this.props.category.url} </div>
+              <div className="canvasTitle" style={this.styles().name}>
+                {this.state.arttypes.length && this.state.arttypes[0].name}
+              </div>
             </div>
           </div>
           <div className="body">
-            {this.state.artpieces &&
-              this.state.artpieces.length &&
-              !this.state.isLoading && <h1> Les oeuvres correspondantes </h1>}
-            {this.state.artpieces &&
-              !this.state.artpieces.length &&
-              !this.state.isLoading && <h1> Aucune oeuvre pour le moment </h1>}
+            {this.state.artpieces.length && (
+              <h1> Les oeuvres correspondantes </h1>
+            )}
+            {!this.state.artpieces.length && (
+              <h1> Aucune oeuvre pour le moment </h1>
+            )}
 
             <Divider style={this.styles().margin} />
             <div className="ProgressBar" style={this.styles().centered}>
-              {this.state.isLoading && (
-                <CircularProgress size={90} thickness={7} />
-              )}
+              {!this.state.artpieces.length && <CircularProgress size={90} />}
             </div>
-            {!this.state.isLoading && (
+            {this.state.artpieces.length && (
               <GridList
                 cellHeight={300}
                 style={this.styles().gridList}

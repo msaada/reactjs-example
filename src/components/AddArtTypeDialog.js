@@ -1,21 +1,18 @@
 //@flow
 import React, { Component } from "react";
-import Dialog from "material-ui/Dialog";
-import FlatButton from "material-ui/FlatButton";
-import RaisedButton from "material-ui/RaisedButton";
+import Dialog, {
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions
+} from "material-ui/Dialog";
+import Button from "material-ui/Button";
 import ArtTypeForm from "./ArtTypeForm";
 
 export default class AddArtTypeDialog extends Component {
   state: {
     open: boolean
-  };
-
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      open: false
-    };
-  }
+  } = { open: false };
 
   handleOpen = () => {
     this.setState({ open: true });
@@ -26,21 +23,9 @@ export default class AddArtTypeDialog extends Component {
   };
 
   render() {
-    const actions = [
-      <FlatButton
-        label="Annuler"
-        primary={true}
-        keyboardFocused={true}
-        onClick={this.handleClose}
-      />
-    ];
-
     return (
       <div>
-        <RaisedButton
-          label="Ajouter un type d'oeuvre"
-          onClick={this.handleOpen}
-        />
+        {/* <Button onClick={this.handleOpen}>Ajouter un type d'oeuvre</Button>
         <Dialog
           title="Ajouter un type d'oeuvre"
           actions={actions}
@@ -50,6 +35,19 @@ export default class AddArtTypeDialog extends Component {
         >
           Tous les champs sont requis.
           <ArtTypeForm />
+        </Dialog> */}
+        <Button raised onClick={this.handleOpen}>
+          Ajouter un type d'oeuvre
+        </Button>
+        <Dialog open={this.state.open} onRequestClose={this.handleClose}>
+          <DialogTitle>Ajouter un type d'oeuvre</DialogTitle>
+          <DialogContent>
+            <DialogContentText>Tous les champs sont requis.</DialogContentText>
+            <ArtTypeForm />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose}>Annuler</Button>
+          </DialogActions>
         </Dialog>
       </div>
     );
