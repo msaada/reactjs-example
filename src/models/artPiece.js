@@ -21,5 +21,6 @@ export default (id: string, props: ArtPieceType, timestamp: string) => ({
   year: props.year,
   quantity: props.quantity,
   featured: false,
+  reserved: false,
   timestamp: timestamp
 });
