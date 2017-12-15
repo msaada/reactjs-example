@@ -1,23 +1,9 @@
 //@flow
 import React, { Component } from "react";
-import {
-  FormGroup,
-  ControlLabel,
-  FormControl,
-  HelpBlock
-} from "react-bootstrap";
 
 import Button from "material-ui/Button";
 
-const FieldGroup = ({ id, label, help, ...props }) => {
-  return (
-    <FormGroup controlId={id}>
-      <ControlLabel>{label}</ControlLabel>
-      <FormControl {...props} />
-      {help && <HelpBlock>{help}</HelpBlock>}
-    </FormGroup>
-  );
-};
+import { FieldGroup } from "./FieldGroup";
 
 export class CallbackForm extends Component {
   render() {
