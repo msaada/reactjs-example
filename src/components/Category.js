@@ -36,22 +36,24 @@ class Category extends Component {
     });
   }
 
-  async componentWillMount() {
-    let artPieces: Array<ArtPieceType>;
-    const callbackTypes = (arttypes: Array<ArtTypeType>) => {
-      this.setState({
-        arttypes: arttypes.filter(
-          (arttype: ArtTypeType) => arttype.id === this.props.category.id
-        )
+  componentWillMount() {
+    (async () => {
+      let artPieces: Array<ArtPieceType>;
+      const callbackTypes = (arttypes: Array<ArtTypeType>) => {
+        this.setState({
+          arttypes: arttypes.filter(
+            (arttype: ArtTypeType) => arttype.id === this.props.category.id
+          )
+        });
+      };
+      if (this.props.category) {
+        artPieces = await getArtPieceFromArtType(this.props.category.id);
+        getArtTypes(callbackTypes);
+      }
+      await this.setStateAsync({
+        artpieces: artPieces
       });
-    };
-    if (this.props.category) {
-      artPieces = await getArtPieceFromArtType(this.props.category.id);
-      getArtTypes(callbackTypes);
-    }
-    await this.setStateAsync({
-      artpieces: artPieces
-    });
+    })();
   }
 
   listArtPieces() {
