@@ -9,11 +9,6 @@ import type { OrderType, ArtPieceType, UserType } from "../types/types";
 
 import { PanelGroup, Panel, ListGroup, ListGroupItem } from "react-bootstrap";
 
-type PropsType = {
-  orders: Array<OrderType>,
-  usersExtras: Array<UserType>
-};
-
 export class OrdersList extends Component {
   state: {
     activeKey: string,
