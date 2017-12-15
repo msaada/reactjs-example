@@ -7,9 +7,10 @@ import "../css/App.css";
 import Paper from "material-ui/Paper";
 import { CircularProgress } from "material-ui/Progress";
 import AppBar from "material-ui/AppBar";
-
 import Toolbar from "material-ui/Toolbar";
 import Typography from "material-ui/Typography";
+
+import { Pagination } from "react-bootstrap";
 
 import AddArtistDialog from "./AddArtistDialog";
 import AddArtPieceDialog from "./AddArtPieceDialog";
@@ -27,11 +28,17 @@ class Admin extends Component {
   state: {
     artists: Array<ArtistType>,
     artPieces: Array<ArtPieceType>,
-    artTypes: Array<ArtTypeType>
+    artTypes: Array<ArtTypeType>,
+    artistsActivePage: number,
+    artpiecesActivePage: number,
+    arttypesActivePage: number
   } = {
     artists: [],
     artPieces: [],
-    artTypes: []
+    artTypes: [],
+    artistsActivePage: 1,
+    artpiecesActivePage: 1,
+    arttypesActivePage: 1
   };
 
   updateArtPiece = (artpiece: ArtPieceType) => {
@@ -57,6 +64,23 @@ class Admin extends Component {
     getLastArtPiece(this.updateArtPiece);
     getLastArtType(this.updateArtType);
   }
+  handleSelectArtist = (eventKey: number) => {
+    this.setState({
+      artistsActivePage: eventKey
+    });
+  };
+
+  handleSelectArtPieces = (eventKey: number) => {
+    this.setState({
+      artpiecesActivePage: eventKey
+    });
+  };
+
+  handleSelectArtist = (eventKey: number) => {
+    this.setState({
+      arttypesActivePage: eventKey
+    });
+  };
   styles() {
     return {
       root: {
@@ -95,10 +119,30 @@ class Admin extends Component {
             {!this.state.artists.length && <CircularProgress size={90} />}
           </div>
           {this.state.artists.length && (
-            <AdminList artists={this.state.artists} />
+            <AdminList
+              artists={this.state.artists.slice(
+                5 * (this.state.artistsActivePage - 1),
+                5 * this.state.artistsActivePage
+              )}
+            />
           )}
 
           <AddArtistDialog />
+
+          <Pagination
+            style={this.styles().centered}
+            prev
+            next
+            first
+            last
+            ellipsis
+            maxButtons={5}
+            bsSize="medium"
+            boundaryLinks
+            items={Math.ceil(this.state.artists.length / 5)}
+            activePage={this.state.artistsActivePage}
+            onSelect={this.handleSelectArtist}
+          />
         </Paper>
         <br />
         <br />
@@ -112,9 +156,31 @@ class Admin extends Component {
             {!this.state.artPieces.length && <CircularProgress size={90} />}
           </div>
           {this.state.artPieces.length && (
-            <AdminList artpieces={this.state.artPieces} />
+            <AdminList
+              artpieces={this.state.artPieces.slice(
+                5 * (this.state.artpiecesActivePage - 1),
+                5 * this.state.artpiecesActivePage
+              )}
+            />
           )}
-          <AddArtPieceDialog />
+          <AddArtPieceDialog
+            artists={this.state.artists}
+            arttypes={this.state.artTypes}
+          />
+          <Pagination
+            style={this.styles().centered}
+            prev
+            next
+            first
+            last
+            ellipsis
+            maxButtons={5}
+            bsSize="medium"
+            boundaryLinks
+            items={Math.ceil(this.state.artPieces.length / 5)}
+            activePage={this.state.artpiecesActivePage}
+            onSelect={this.handleSelectArtPieces}
+          />
         </Paper>
 
         <br />
@@ -127,7 +193,12 @@ class Admin extends Component {
             {!this.state.artTypes.length && <CircularProgress size={90} />}
           </div>
           {this.state.artTypes.length && (
-            <AdminList arttypes={this.state.artTypes} />
+            <AdminList
+              arttypes={this.state.artTypes.slice(
+                5 * (this.state.arttypesActivePage - 1),
+                5 * this.state.arttypesActivePage
+              )}
+            />
           )}
           <AddArtTypeDialog />
         </Paper>
