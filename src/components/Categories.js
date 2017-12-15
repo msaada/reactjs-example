@@ -28,14 +28,14 @@ class Categories extends Component {
     });
   }
 
-  componentWillMount = async () => {
+  componentWillMount() {
     const callbackArttype = dataArttypes => {
       this.setState({
         arttypes: dataArttypes
       });
     };
     getArtTypes(callbackArttype);
-  };
+  }
 
   listCategories() {
     if (this.state.arttypes) {
