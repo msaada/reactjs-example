@@ -16,13 +16,12 @@ export type ArtistType = {
   logo: string,
   picture: string,
   description: string,
-  imagesLinks: Array<string>,
   typeOfArtPieces: string,
-  artPiecesIds: Array<string>,
   featured: boolean
 };
 
 export type CategoryType = {
+  id: string,
   name: string,
   picture: string
 };
@@ -30,12 +29,11 @@ export type CategoryType = {
 export type ArtTypeType = {
   id: string,
   name: string,
-  picture: string,
-  url: string
+  picture: string
 };
 
 export type CartType = {
-  id: ?string,
+  id: string,
   itemCount: number,
   items: Array<ArtPieceType>,
   active: boolean
@@ -60,7 +58,8 @@ export type ArtPieceType = {
   year: string,
   quantity: number,
   imagesLinks: Array<string>,
-  featured: boolean
+  featured: boolean,
+  reserved: boolean
 };
 
 export type OrderType = {
