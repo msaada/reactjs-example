@@ -15,15 +15,6 @@ import orangeA700 from "material-ui/colors/orange";
 // http://stackoverflow.com/a/34015469/988941
 injectTapEventPlugin();
 
-// const theme = createMuiTheme({
-//   palette: createPalette({
-//     primary: "#ff7e17",
-//     secondary: green
-//   })
-// });
-
-// const theme = createMuiTheme();
-
 const theme = createMuiTheme({
   palette: {
     primary: orangeA700,
