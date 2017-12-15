@@ -17,6 +17,7 @@ import { auth, addUserExtraInfosToFirebase } from "../javascript/firebaseUtils";
 
 class SignIn extends Component {
   state: {
+    id: string,
     user: any,
     name: string,
     email: string,
@@ -29,6 +30,7 @@ class SignIn extends Component {
     alertVisible: boolean,
     alertMessage: string
   } = {
+    id: "",
     user: null,
     name: "",
     email: "",
@@ -68,7 +70,9 @@ class SignIn extends Component {
           } else if (errorCode === "auth/invalid-email") {
             frenchErrorMessage = "Cette adresse mail est mal formatée.";
           } else {
-            frenchErrorMessage = `Une erreur inconnue est survenue (${errorCode})`;
+            frenchErrorMessage = `Une erreur inconnue est survenue (${
+              errorCode
+            })`;
           }
           this.handleAlertShow(frenchErrorMessage);
         });
