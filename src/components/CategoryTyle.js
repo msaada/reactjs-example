@@ -91,7 +91,8 @@ export const CategoryTyle = (key: number, category: CategoryType) => {
       imageTitle: {
         position: "relative",
         padding: "1em",
-        fontSize: "2em"
+        fontSize: "2em",
+        textAlign: "center"
       },
       imageMarked: {
         height: 3,
