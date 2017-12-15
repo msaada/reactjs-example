@@ -2,10 +2,17 @@
 
 import React, { Component } from "react";
 
-import TextField from "material-ui/TextField";
 import Button from "material-ui/Button";
+import {
+  FormControl,
+  FormGroup,
+  ControlLabel,
+  Checkbox
+} from "react-bootstrap";
 
-import type { ArtPieceType } from "../types/types";
+import { FieldGroup } from "./FieldGroup";
+
+import type { ArtPieceType, ArtistType, ArtTypeType } from "../types/types";
 
 import { addArtPieceToFirebase } from "../javascript/firebaseUtils";
 
@@ -19,19 +26,23 @@ export default class ArtPieceForm extends Component {
     typeOfArtPieces: "",
     relatedArtPiecesIds: ["ssss"],
     description: "",
-    buyPriceTaxFree: -1,
-    buyPriceTaxIncluded: -1,
-    sellPriceTaxFree: -1,
-    sellPriceTaxIncluded: -1,
+    buyPriceTaxFree: "",
+    buyPriceTaxIncluded: "",
+    sellPriceTaxFree: "",
+    sellPriceTaxIncluded: "",
     catalogPage: -1,
     dimensions: "",
     weight: -1,
     year: "",
     quantity: -1,
+    featured: true,
+    reserved: false,
+    picture: null,
     imagesLinks: ["dld"]
   };
 
   change(e: Event) {
+    console.log(e);
     if (e.target instanceof HTMLInputElement) {
       this.setState({
         [e.target.id]: e.target.value
@@ -59,150 +70,221 @@ export default class ArtPieceForm extends Component {
     );
   }
 
+  styles() {
+    return {
+      select: {
+        maxHeight: "10em"
+      }
+    };
+  }
+
   onSubmit(e: Event) {
     e.preventDefault();
 
     addArtPieceToFirebase("/artpieces", this.state);
     this.setState({
       galeryId: "",
-      artistId: "",
       reference: "",
       name: "",
-      typeOfArtPieces: "",
       relatedArtPiecesIds: [],
       description: "",
-      buyPriceTaxFree: -1,
-      buyPriceTaxIncluded: -1,
-      sellPriceTaxFree: -1,
-      sellPriceTaxIncluded: -1,
+      buyPriceTaxFree: "",
+      buyPriceTaxIncluded: "",
+      sellPriceTaxFree: "",
+      sellPriceTaxIncluded: "",
       catalogPage: -1,
       dimensions: "",
       weight: -1,
       year: "",
       quantity: -1,
+      featured: false,
+      reserved: false,
       imagesLinks: []
     });
-    // }
   }
+
+  handleChangeArtistId = (event: any) => {
+    this.setState({ artistId: event.target.value });
+  };
+
+  handleChangeArtTypeId = (event: any) => {
+    this.setState({ typeOfArtPieces: event.target.value });
+  };
+
+  renderArtistsChoices(artists: Array<ArtistType>) {
+    if (artists) {
+      return artists.map(artist => (
+        <option value={artist.id}>{artist.name}</option>
+      ));
+    }
+  }
+
+  renderArtTypesChoices(arttypes: Array<ArtTypeType>) {
+    if (arttypes) {
+      return arttypes.map(arttype => (
+        <option value={arttype.id}>{arttype.name}</option>
+      ));
+    }
+  }
+
+  onImageChange = (event: any) => {
+    if (event.target.files && event.target.files[0]) {
+      let reader = new FileReader();
+      reader.onload = e => {
+        this.setState({ picture: e.target.result });
+      };
+      reader.readAsDataURL(event.target.files[0]);
+    }
+  };
 
   render() {
     return (
       <form>
-        <TextField
+        <FieldGroup
           id="reference"
-          label="Reference"
+          type="text"
+          label="Référence"
+          placeholder="Ex: 1010"
           value={this.state.reference}
           onChange={(e: Event) => this.change(e)}
-          floatingLabelFixed
         />
-        <br />
-        <TextField
+        <FieldGroup
           id="name"
-          label="Nom"
+          type="text"
+          label="Nom de l'oeuvre"
+          placeholder="Kong résine rouge"
           value={this.state.name}
           onChange={(e: Event) => this.change(e)}
-          floatingLabelFixed
         />
-        <br />
-        <TextField
-          id="artistId"
-          label="Artiste id"
-          value={this.state.artistId}
-          onChange={(e: Event) => this.change(e)}
-          floatingLabelFixed
-        />
-        <br />
-        <TextField
-          id="typeOfArtPieces"
-          label="Type de l'oeuvre"
-          value={this.state.typeOfArtPieces}
-          onChange={(e: Event) => this.change(e)}
-          floatingLabelFixed
-        />
-        <br />
-        <TextField
+
+        <FormGroup controlId="artistId">
+          <ControlLabel>Artiste</ControlLabel>
+          <FormControl
+            componentClass="select"
+            placeholder="Selectionner l'artiste"
+            onChange={e => this.handleChangeArtistId(e)}
+          >
+            <option value="">Selectionner l'artiste</option>
+            {this.renderArtistsChoices(this.props.artists)}
+          </FormControl>
+        </FormGroup>
+
+        <FormGroup controlId="typeOfArtPieces">
+          <ControlLabel>Type de l'oeuvre</ControlLabel>
+          <FormControl
+            componentClass="select"
+            placeholder="Selectionner le type de l'oeuvre"
+            onChange={e => this.handleChangeArtTypeId(e)}
+          >
+            <option value="">Selectionner le type de l'oeuvre</option>
+            {this.renderArtTypesChoices(this.props.arttypes)}
+          </FormControl>
+        </FormGroup>
+
+        <FieldGroup
           id="description"
-          label="description"
+          label="Description"
+          type="text"
           value={this.state.description}
           onChange={(e: Event) => this.change(e)}
-          floatingLabelFixed
         />
-        <br />
-        <TextField
+
+        {/* <FormGroup
+          controlId="description"
+          onChange={(e: Event) => this.change(e)}
+        >
+          <ControlLabel>Description</ControlLabel>
+          <FormControl componentClass="textarea" placeholder="" />
+        </FormGroup> */}
+
+        <FieldGroup
           id="buyPriceTaxFree"
           label="Prix d'achat (HT)"
+          type="text"
           value={this.state.buyPriceTaxFree}
           onChange={(e: Event) => this.change(e)}
-          floatingLabelFixed
         />
-        <br />
-        <TextField
+        <FieldGroup
           id="buyPriceTaxIncluded"
           label="Prix d'achat (TTC)"
+          type="text"
           value={this.state.buyPriceTaxIncluded}
           onChange={(e: Event) => this.change(e)}
-          floatingLabelFixed
         />
-        <br />
-        <TextField
+
+        <FieldGroup
           id="sellPriceTaxFree"
           label="Prix de vente (HT)"
+          type="text"
           value={this.state.sellPriceTaxFree}
           onChange={(e: Event) => this.change(e)}
-          floatingLabelFixed
         />
-        <br />
-        <TextField
+        <FieldGroup
           id="sellPriceTaxIncluded"
           label="Prix de vente (TTC)"
+          type="text"
           value={this.state.sellPriceTaxIncluded}
           onChange={(e: Event) => this.change(e)}
-          floatingLabelFixed
         />
-        <br />
-        <TextField
+        <FieldGroup
           id="catalogPage"
           label="Page du catalogue"
+          type="text"
           value={this.state.catalogPage}
           onChange={(e: Event) => this.change(e)}
-          floatingLabelFixed
         />
-        <br />
-        <TextField
+        <FieldGroup
           id="dimensions"
           label="Dimensions"
+          type="text"
           value={this.state.dimensions}
           onChange={(e: Event) => this.change(e)}
-          floatingLabelFixed
         />
-        <br />
-        <TextField
+        <FieldGroup
           id="weight"
           label="Poids"
+          type="text"
           value={this.state.weight}
           onChange={(e: Event) => this.change(e)}
-          floatingLabelFixed
         />
-        <br />
-        <TextField
+        <FieldGroup
           id="year"
           label="Année"
+          type="text"
           value={this.state.year}
           onChange={(e: Event) => this.change(e)}
-          floatingLabelFixed
         />
-        <br />
-        <TextField
+
+        <FieldGroup
           id="quantity"
-          label="Nombre d'exemplaire"
+          label="Nombre d'exemplaires"
+          type="text"
           value={this.state.quantity}
           onChange={(e: Event) => this.change(e)}
-          floatingLabelFixed
         />
-        <br />
-        <Button raised onClick={(e: Event) => this.onSubmit(e)}>
-          Confirmer
-        </Button>
+
+        <FieldGroup
+          id="picture"
+          type="file"
+          label="File"
+          onChange={(e: Event) => this.onImageChange(e)}
+        />
+
+        <Checkbox
+          checked={this.state.featured}
+          onChange={e => this.setState({ featured: !this.state.featured })}
+        >
+          Oeuvre dans la rubrique "Sélection"
+        </Checkbox>
+
+        <Checkbox
+          checked={this.state.reserved}
+          onChange={e => this.setState({ reserved: !this.state.reserved })}
+        >
+          Oeuvre marquée comme "Réservée"
+        </Checkbox>
+
+        <Button onClick={(e: Event) => this.onSubmit(e)}>Confirmer</Button>
       </form>
     );
   }
