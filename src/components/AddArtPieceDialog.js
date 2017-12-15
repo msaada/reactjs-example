@@ -25,9 +25,17 @@ export default class AddArtPieceDialog extends Component {
     this.setState({ open: false });
   };
 
+  styles() {
+    return {
+      root: {
+        width: "30em"
+      }
+    };
+  }
+
   render() {
     return (
-      <div>
+      <div style={this.styles().root}>
         <Button raised onClick={this.handleOpen}>
           Ajouter une oeuvre
         </Button>
@@ -35,7 +43,10 @@ export default class AddArtPieceDialog extends Component {
           <DialogTitle>Ajouter une oeuvre</DialogTitle>
           <DialogContent>
             <DialogContentText>Tous les champs sont requis.</DialogContentText>
-            <ArtPieceForm />
+            <ArtPieceForm
+              artists={this.props.artists}
+              arttypes={this.props.arttypes}
+            />
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose}>Annuler</Button>
