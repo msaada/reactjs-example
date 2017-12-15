@@ -3,15 +3,9 @@ import React, { Component } from "react";
 
 import { Image, ListGroup, ListGroupItem, Panel } from "react-bootstrap";
 
-import type {
-  ArtPieceType,
-  ArtistType,
-  CartType,
-  firebaseUser
-} from "../types/types";
+import type { ArtPieceType, ArtistType, CartType } from "../types/types";
 
 import "../css/App.css";
-
 import Header from "./Header";
 import Footer from "./Footer";
 import { GridListTile, GridList } from "material-ui/GridList";
@@ -32,6 +26,7 @@ import {
 } from "../javascript/firebaseUtils";
 
 import AlertDialogNoUser from "./AlertDialogNoUser";
+import AlertDialogReserved from "./AlertDialogReserved";
 
 import AlertDialogSlide from "./AlertDialogSlide";
 
@@ -47,9 +42,10 @@ class Product extends Component {
     images: Array<string>,
     artpieces: Array<ArtPieceType>,
     currentImage: number,
-    user: ?firebaseUser,
+    user: ?any,
     addedToCart: boolean,
-    noUserDialog: boolean
+    noUserDialog: boolean,
+    reservedDialog: boolean
   } = {
     isLoading: true,
     lightboxIsOpen: false,
@@ -61,7 +57,8 @@ class Product extends Component {
     currentImage: 0,
     user: null,
     addedToCart: false,
-    noUserDialog: false
+    noUserDialog: false,
+    reservedDialog: false
   };
 
   setStateAsync(state: any) {
@@ -213,33 +210,39 @@ class Product extends Component {
     };
   }
   addToCart = async () => {
-    if (this.state.user && this.state.product) {
-      const currentCart: ?CartType = await getCart(this.state.user.uid);
-      let newCart: CartType;
-      if (currentCart && currentCart.active && currentCart.itemCount) {
-        newCart = {
-          ...currentCart,
-          uid: this.state.user.uid,
-          itemCount: currentCart.itemCount + 1,
-          items: [...currentCart.items, this.state.product]
-        };
-      } else {
-        newCart = {
-          uid: this.state.user.uid,
-          itemCount: 1,
-          items: [this.state.product],
-          active: true
-        };
-      }
-      addCartToFirebase("/cart/", newCart);
+    if (this.state.product && this.state.product.reserved) {
       this.setState({
-        addedToCart: true
+        reservedDialog: true
       });
     } else {
-      this.setState({
-        noUserDialog: true
-      });
-      console.log("You must login");
+      if (this.state.user && this.state.product) {
+        const currentCart: ?CartType = await getCart(this.state.user.uid);
+        let newCart: CartType;
+        if (currentCart && currentCart.active && currentCart.itemCount) {
+          newCart = {
+            ...currentCart,
+            id: this.state.user.uid,
+            itemCount: currentCart.itemCount + 1,
+            items: [...currentCart.items, this.state.product]
+          };
+        } else {
+          newCart = {
+            id: this.state.user.uid,
+            itemCount: 1,
+            items: [this.state.product],
+            active: true
+          };
+        }
+        addCartToFirebase("/cart/", newCart);
+        this.setState({
+          addedToCart: true
+        });
+      } else {
+        this.setState({
+          noUserDialog: true
+        });
+        console.log("You must login");
+      }
     }
   };
 
@@ -284,6 +287,17 @@ class Product extends Component {
   closeNoUserDialog = () => {
     this.setState({
       noUserDialog: false
+    });
+  };
+
+  openReservedDialog = () => {
+    this.setState({
+      reservedDialog: true
+    });
+  };
+  closeReservedDialog = () => {
+    this.setState({
+      reservedDialog: false
     });
   };
   triggerLightBox = (index: number) => {
@@ -393,6 +407,11 @@ class Product extends Component {
               handleRequestOpen={this.openNoUserDialog}
               handleRequestClose={this.closeNoUserDialog}
             />
+            <AlertDialogReserved
+              open={this.state.reservedDialog}
+              handleRequestOpen={this.openReservedDialog}
+              handleRequestClose={this.closeReservedDialog}
+            />
           </div>
           <br />
           <div>
@@ -483,16 +502,24 @@ class Product extends Component {
             </div>
           </div>
           <br />
-          <h1>Oeuvres associées à l'artiste</h1>
-          <Divider style={this.styles().divider} />
-          {!this.state.artpieces && <CircularProgress size={90} />}
+          {this.state.artpieces.length > 1 && (
+            <div>
+              <h1>Oeuvres associées à l'artiste</h1>
+              <Divider style={this.styles().divider} />
+              {!this.state.artpieces && <CircularProgress size={90} />}
 
-          {this.state.artpieces && (
-            <GridList cellHeight={300} style={this.styles().gridList} cols={4}>
-              {this.listArtPieces()}
-            </GridList>
+              {this.state.artpieces && (
+                <GridList
+                  cellHeight={300}
+                  style={this.styles().gridList}
+                  cols={4}
+                >
+                  {this.listArtPieces()}
+                </GridList>
+              )}
+              <br />
+            </div>
           )}
-          <br />
         </div>
         <Footer />
       </div>
