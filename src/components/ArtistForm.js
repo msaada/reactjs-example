@@ -11,18 +11,22 @@ import { addArtistToFirebase } from "../javascript/firebaseUtils";
 
 export default class ArtistForm extends Component {
   state: {
+    id: string,
     name: string,
     description: string,
     picture: string,
     logo: string,
+    featured: boolean,
     typeOfArtPieces: string,
     image: any
   } = {
+    id: "",
     name: "",
     picture: "",
     description: "",
     logo: "",
     typeOfArtPieces: "",
+    featured: false,
     image: null
   };
 
