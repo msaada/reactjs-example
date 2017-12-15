@@ -43,7 +43,8 @@ import {
   Canvas,
   AngleArtPiece,
   CanvasArtPiece,
-  FurnituresAccessories
+  FurnituresAccessories,
+  DestroyedWallArtpiece
 } from "./PagesWrapper";
 
 import { init as firebaseInit } from "../javascript/firebaseUtils";
@@ -57,142 +58,84 @@ class App extends Component {
     firebaseInit();
   }
 
-  addBaseUrl = (root: string, url: string) => {
-    return root + url;
-  };
-
   render() {
-    const root: string = "";
     return (
       <div className="App">
         <Router onUpdate={() => window.scrollTo(0, 0)} history={browserHistory}>
-          <Route path={this.addBaseUrl(root, "/")} component={Home} />
-          <Route path={this.addBaseUrl(root, "/admin")} component={Admin} />
+          <Route path={"/"} component={Home} />
+          <Route path={"/admin"} component={Admin} />
+          <Route path={"/commandes"} component={Orders} />
+          <Route path={"/connexion"} component={Login} />
+          <Route path={"/nouveautes"} component={News} />
+          <Route path={"/panier"} component={Cart} />
+          <Route path={"/apropos"} component={About} />
+          <Route path={"/bailart"} component={BailArt} />
+          <Route path={"/success"} component={Success} />
+          <Route path={"/demander-rappel"} component={CallbackUser} />
+          <Route path={"/rappels"} component={CallbackAdmin} />
+          <Route path={"/creercompte"} component={SignIn} />
+          <Route path={"/product/:productId"} component={Product} />
+          <Route path={"/artistes"} component={Artists} />
+          <Route path={"/artist/:artistId"} component={Artist} />
+          <Route path={"/categories"} component={Categories} />
+          <Route path={categories.gravure.url} component={Engraving} />
+          <Route path={categories.sculpture.url} component={Sculpture} />
+          <Route path={categories.peinture.url} component={Paintings} />
+          <Route path={categories.meuble.url} component={Furniture} />
+          <Route path={categories.photographie.url} component={Photography} />
+          <Route path={categories.digigraphie.url} component={Digigraphy} />
+          <Route path={categories.acrylique.url} component={AcrylicAerosol} />
           <Route
-            path={this.addBaseUrl(root, "/commandes")}
-            component={Orders}
-          />
-          <Route path={this.addBaseUrl(root, "/connexion")} component={Login} />
-          <Route path={this.addBaseUrl(root, "/nouveautes")} component={News} />
-          <Route path={this.addBaseUrl(root, "/panier")} component={Cart} />
-          <Route path={this.addBaseUrl(root, "/apropos")} component={About} />
-          <Route path={this.addBaseUrl(root, "/bailart")} component={BailArt} />
-          <Route path={this.addBaseUrl(root, "/success")} component={Success} />
-          <Route
-            path={this.addBaseUrl(root, "/demander-rappel")}
-            component={CallbackUser}
-          />
-          <Route
-            path={this.addBaseUrl(root, "/rappels")}
-            component={CallbackAdmin}
-          />
-          <Route
-            path={this.addBaseUrl(root, "/creercompte")}
-            component={SignIn}
-          />
-          <Route
-            path={this.addBaseUrl(root, "/product/:productId")}
-            component={Product}
-          />
-          <Route
-            path={this.addBaseUrl(root, "/artistes")}
-            component={Artists}
-          />
-          <Route
-            path={this.addBaseUrl(root, "/artist/:artistId")}
-            component={Artist}
-          />
-          <Route
-            path={this.addBaseUrl(root, "/categories")}
-            component={Categories}
-          />
-          <Route
-            path={this.addBaseUrl(root, categories.gravure.url)}
-            component={Engraving}
-          />
-          <Route
-            path={this.addBaseUrl(root, categories.sculpture.url)}
-            component={Sculpture}
-          />
-          <Route
-            path={this.addBaseUrl(root, categories.peinture.url)}
-            component={Paintings}
-          />
-          <Route
-            path={this.addBaseUrl(root, categories.meuble.url)}
-            component={Furniture}
-          />
-          <Route
-            path={this.addBaseUrl(root, categories.photographie.url)}
-            component={Photography}
-          />
-          <Route
-            path={this.addBaseUrl(root, categories.digigraphie.url)}
-            component={Digigraphy}
-          />
-          <Route
-            path={this.addBaseUrl(root, categories.acrylique.url)}
-            component={AcrylicAerosol}
-          />
-          <Route
-            path={this.addBaseUrl(root, categories.huile_sur_toile.url)}
+            path={categories.huile_sur_toile.url}
             component={OilOnCanvas}
           />
+          <Route path={categories.linogravure.url} component={LinoEngraving} />
           <Route
-            path={this.addBaseUrl(root, categories.linogravure.url)}
-            component={LinoEngraving}
-          />
-          <Route
-            path={this.addBaseUrl(root, categories.montage_photographique.url)}
+            path={categories.montage_photographique.url}
             component={MontagePhoto}
           />
           <Route
-            path={this.addBaseUrl(root, categories.peinture_carton.url)}
+            path={categories.peinture_carton.url}
             component={CardboardPainting}
           />
           <Route
-            path={this.addBaseUrl(root, categories.peinture_a_l_huile.url)}
+            path={categories.peinture_a_l_huile.url}
             component={OilPainting}
           />
+          <Route path={categories.photomontage.url} component={Photomontage} />
           <Route
-            path={this.addBaseUrl(root, categories.photomontage.url)}
-            component={Photomontage}
-          />
-          <Route
-            path={this.addBaseUrl(root, categories.sculpture_peinture.url)}
+            path={categories.sculpture_peinture.url}
             component={SculpturePainting}
           />
           <Route
-            path={this.addBaseUrl(root, categories.sculpture_resine.url)}
+            path={categories.sculpture_resine.url}
             component={SculptureResin}
           />
+          <Route path={categories.serigraphie.url} component={Serigraphy} />
           <Route
-            path={this.addBaseUrl(root, categories.serigraphie.url)}
-            component={Serigraphy}
-          />
-          <Route
-            path={this.addBaseUrl(root, categories.tableau_acrylique.url)}
+            path={categories.tableau_acrylique.url}
             component={AcrylicCanvas}
           />
           <Route
-            path={this.addBaseUrl(root, categories.technique_numerique.url)}
+            path={categories.technique_numerique.url}
             component={DigitalTechnique}
           />
+          <Route path={categories.toile.url} component={Canvas} />
           <Route
-            path={this.addBaseUrl(root, categories.toile.url)}
-            component={Canvas}
-          />
-          <Route
-            path={this.addBaseUrl(root, categories.oeuvre_dangle.url)}
+            path={categories.oeuvre_dangle.url}
             component={AngleArtPiece}
           />
           <Route
-            path={this.addBaseUrl(root, categories.oeuvre_sur_toile.url)}
+            path={categories.oeuvre_sur_toile.url}
             component={CanvasArtPiece}
           />
           <Route
-            path={this.addBaseUrl(root, categories.mobilier_accessoire.url)}
+            path={categories.mobilier_accessoire.url}
             component={FurnituresAccessories}
+          />
+          <Route
+            path={categories.oeuvre_murale_destructuree.url}
+            component={DestroyedWallArtpiece}
           />
           <Route path="*" component={NotFound} />
         </Router>
