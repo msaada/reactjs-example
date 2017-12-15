@@ -89,3 +89,7 @@ export const CanvasArtPiece = () => {
 export const FurnituresAccessories = () => {
   return <Category category={categories.mobilier_accessoire} />;
 };
+
+export const DestroyedWallArtpiece = () => {
+  return <Category category={categories.oeuvre_murale_destructuree} />;
+};
