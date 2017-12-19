@@ -40,38 +40,60 @@ export const init = () => {
 };
 
 // add new section
-export const addArtTypeToFirebase = (root: string, element: ArtTypeType) => {
-  let key = database ? database.ref(root).push().key : null;
-  const model = key
-    ? artTypeModel(key, element, firebase.database.ServerValue.TIMESTAMP)
-    : null;
-  return database && key ? database.ref(root + "/" + key).set(model) : null;
+export const addArtTypeToFirebase = async (
+  root: string,
+  element: ArtTypeType
+) => {
+  if (database) {
+    let key = database.ref(root).push().key;
+    if (key) {
+      const model = artTypeModel(
+        key,
+        element,
+        String(firebase.database.ServerValue.TIMESTAMP)
+      );
+      try {
+        await database.ref(`${root}/${key}`).set(model);
+      } catch (e) {
+        console.log(e + " ");
+      }
+    } else {
+      return null;
+    }
+  }
+  return null;
 };
 
 export const addArtPieceToFirebase = (root: string, element: ArtPieceType) => {
   let key = database ? database.ref(root).push().key : null;
   const model = key
-    ? artPieceModel(key, element, firebase.database.ServerValue.TIMESTAMP)
+    ? artPieceModel(
+        key,
+        element,
+        String(firebase.database.ServerValue.TIMESTAMP)
+      )
     : null;
-  return database && key ? database.ref(root + "/" + key).set(model) : null;
+  return database && key ? database.ref(`${root}/${key}`).set(model) : null;
 };
 
 export const addCartToFirebase = (root: string, element: CartType) => {
-  console.log(element);
-  console.log(root);
   let key = database ? database.ref(root).push().key : null;
   const model = key
-    ? cartModel(element.uid, element, firebase.database.ServerValue.TIMESTAMP)
+    ? cartModel(
+        element.id,
+        element,
+        String(firebase.database.ServerValue.TIMESTAMP)
+      )
     : null;
   return database && key
-    ? database.ref(root + "/" + element.uid + "/" + key).set(model)
+    ? database.ref(root + "/" + element.id + "/" + key).set(model)
     : null;
 };
 
 export const addArtistToFirebase = (root: string, element: ArtistType) => {
   let key = database ? database.ref(root).push().key : null;
   let model = key
-    ? artistModel(key, element, firebase.database.ServerValue.TIMESTAMP)
+    ? artistModel(key, element, String(firebase.database.ServerValue.TIMESTAMP))
     : null;
 
   return database && key ? database.ref(root + "/" + key).set(model) : null;
@@ -80,7 +102,7 @@ export const addArtistToFirebase = (root: string, element: ArtistType) => {
 export const addOrderToFirebase = async (root: string, element: OrderType) => {
   let key = database ? database.ref(root).push().key : null;
   let model = key
-    ? orderModel(key, element, firebase.database.ServerValue.TIMESTAMP)
+    ? orderModel(key, element, String(firebase.database.ServerValue.TIMESTAMP))
     : null;
 
   return database && key
@@ -88,12 +110,31 @@ export const addOrderToFirebase = async (root: string, element: OrderType) => {
     : null;
 };
 
+export const addImageToFirebase = async (
+  root: string,
+  image: File,
+  callback
+) => {
+  if (storage) {
+    const imagesRef = storage.child("images/mountains.jpg");
+    imagesRef.put(image).then(function(snapshot) {
+      console.log("Uploaded a blob or file!");
+      console.log(snapshot);
+      callback(snapshot);
+    });
+  }
+};
+
 export const addUserExtraInfosToFirebase = async (
   root: string,
   key: string,
   element: UserType
 ) => {
-  let model = userModel(key, element, firebase.database.ServerValue.TIMESTAMP);
+  let model = userModel(
+    key,
+    element,
+    String(firebase.database.ServerValue.TIMESTAMP)
+  );
   return database && key
     ? await database.ref(root + "/" + key).set(model)
     : null;
@@ -105,7 +146,11 @@ export const addCallbackToFirebase = async (
 ) => {
   let key = database ? database.ref(root).push().key : null;
   let model = key
-    ? callbackModel(key, element, firebase.database.ServerValue.TIMESTAMP)
+    ? callbackModel(
+        key,
+        element,
+        String(firebase.database.ServerValue.TIMESTAMP)
+      )
     : null;
   return database && key
     ? await database.ref(root + "/" + key).set(model)
@@ -163,11 +208,11 @@ export async function getArtPiece2(artpieceId: string) {
   return null;
 }
 
-export async function getArtist2(artistId: string) {
+export async function getArtist2(artistId: string): ArtistType {
   const artistRef = database ? database.ref(`artists/${artistId}`) : null;
   if (artistRef) {
     const artistSnapshot = await artistRef.once("value");
-    return artistSnapshot.val();
+    return await artistSnapshot.val();
   }
 }
 
@@ -201,7 +246,10 @@ export async function getArtPieceFromArtType(arttypeId: string) {
   if (artpieceRef) {
     const artistSnapshot = await artpieceRef.once("value");
     artistSnapshot.forEach(function(child) {
-      if (child.val().typeOfArtPieces === arttypeId) res.push(child.val());
+      if (child.val().typeOfArtPieces === arttypeId) {
+        const artPiece: ArtPieceType = child.val();
+        res.push(artPiece);
+      }
     });
     return res;
   }
@@ -217,7 +265,6 @@ export function listenToCartChange(
     if (cartRef) {
       cartRef.on("value", snap =>
         snap.forEach(function(child) {
-          console.log(child.val());
           if (child.val().active) callback(child.val());
           else {
             callback(null);
@@ -237,9 +284,7 @@ export async function getCart(userId: string) {
     const cartSnapshot = await cartRef.once("value");
     const res: Array<string> = [];
     cartSnapshot.forEach(function(child) {
-      console.log(child.val());
       Object.keys(child.val()).forEach(key => {
-        console.log(child.val()[key]);
         if (child.val()[key].id === userId) res.push(child.val()[key]);
       });
     });
@@ -278,7 +323,6 @@ export function getLastArtist(callback: ArtistType => void) {
   const artistRef = database ? database.ref("/artists") : null;
   if (artistRef) {
     artistRef.on("child_added", snap => {
-      console.log(snap.val());
       callback(snap.val());
     });
   } else {
@@ -289,9 +333,7 @@ export function getLastArtist(callback: ArtistType => void) {
 export function getLastOrder(callback: OrderType => void) {
   const ordersRef = database ? database.ref("/orders") : null;
   if (ordersRef) {
-    console.log(ordersRef);
     ordersRef.on("child_added", snap => {
-      console.log(snap.val());
       callback(snap.val());
     });
   } else {
@@ -302,9 +344,7 @@ export function getLastOrder(callback: OrderType => void) {
 export function getLastCallback(callback: CallbackType => void) {
   const callbackRef = database ? database.ref("/callbacks") : null;
   if (callbackRef) {
-    console.log(callbackRef);
     callbackRef.on("child_added", snap => {
-      console.log(snap.val());
       callback(snap.val());
     });
   } else {
@@ -312,23 +352,10 @@ export function getLastCallback(callback: CallbackType => void) {
   }
 }
 
-// export function getUsersExtraInfos(callback: UserType => void) {
-//   const userDatasRef = database ? database.ref("/userDatas") : null;
-//   if (userDatasRef) {
-//     userDatasRef.on("child_added", snap => {
-//       console.log(snap.val());
-//       callback(snap.val());
-//     });
-//   } else {
-//     console.log("database not initiated");
-//   }
-// }
-
 export function getLastCartItem(userId: string, callback: CartType => void) {
   const artistRef = database ? database.ref(`/cart/${userId}`) : null;
   if (artistRef) {
     artistRef.on("child_added", snap => {
-      console.log(snap.val());
       callback(snap.val());
     });
   } else {
@@ -351,7 +378,6 @@ export function getLastArtType(callback: ArtTypeType => void) {
   const artTypeRef = database ? database.ref("/arttypes") : null;
   if (artTypeRef) {
     artTypeRef.on("child_added", snap => {
-      console.log(snap.val());
       callback(snap.val());
     });
   } else {
@@ -369,20 +395,9 @@ export async function getUserExtraInfos(key: string, callback: any) {
   }
 }
 
-// export function listenToCartChange(userId: string) {
-//   if (database) {
-//     const cartRef = database.ref(`cart/${userId}`);
-//
-//     cartRef.on("value", function(data) {
-//       console.log("update");
-//       console.log(data.val());
-//     });
-//   }
-// }
-
 export async function getCurrentUser() {
   if (auth) {
-    const user: firebaseUser = await auth.currentUser;
+    const user: FirebaseUser = await auth.currentUser;
     return user;
   }
   return null;
