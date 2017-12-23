@@ -40,12 +40,10 @@ export const init = () => {
 };
 
 // add new section
-export const addArtTypeToFirebase = async (
-  root: string,
-  element: ArtTypeType
-) => {
+export const addArtTypeToFirebase = async (element: ArtTypeType) => {
+  const root = "/arttypes";
   if (database) {
-    let key = database.ref(root).push().key;
+    const key = database.ref(root).push().key;
     if (key) {
       const model = artTypeModel(
         key,
@@ -55,7 +53,7 @@ export const addArtTypeToFirebase = async (
       try {
         await database.ref(`${root}/${key}`).set(model);
       } catch (e) {
-        console.log(e + " ");
+        return e;
       }
     } else {
       return null;
@@ -64,19 +62,31 @@ export const addArtTypeToFirebase = async (
   return null;
 };
 
-export const addArtPieceToFirebase = (root: string, element: ArtPieceType) => {
-  let key = database ? database.ref(root).push().key : null;
-  const model = key
-    ? artPieceModel(
+export const addArtPieceToFirebase = async (element: ArtPieceType) => {
+  const root = "/artpieces";
+  if (database) {
+    const key = database.ref(root).push().key;
+    if (key) {
+      const model = artPieceModel(
         key,
         element,
         String(firebase.database.ServerValue.TIMESTAMP)
-      )
-    : null;
-  return database && key ? database.ref(`${root}/${key}`).set(model) : null;
+      );
+      try {
+        await database.ref(`${root}/${key}`).set(model);
+      } catch (e) {
+        return e;
+      }
+    } else {
+      return null;
+    }
+  } else {
+    return null;
+  }
 };
 
-export const addCartToFirebase = (root: string, element: CartType) => {
+export const addCartToFirebase = (element: CartType) => {
+  const root = "/cart";
   let key = database ? database.ref(root).push().key : null;
   const model = key
     ? cartModel(
@@ -86,27 +96,42 @@ export const addCartToFirebase = (root: string, element: CartType) => {
       )
     : null;
   return database && key
-    ? database.ref(root + "/" + element.id + "/" + key).set(model)
+    ? database.ref(`${root}/${element.id}/${key}`).set(model)
     : null;
 };
 
-export const addArtistToFirebase = (root: string, element: ArtistType) => {
-  let key = database ? database.ref(root).push().key : null;
-  let model = key
-    ? artistModel(key, element, String(firebase.database.ServerValue.TIMESTAMP))
-    : null;
-
-  return database && key ? database.ref(root + "/" + key).set(model) : null;
+export const addArtistToFirebase = async (element: ArtistType) => {
+  const root = "/artists";
+  if (database) {
+    const key = database.ref(root).push().key;
+    if (key) {
+      const model = artistModel(
+        key,
+        element,
+        String(firebase.database.ServerValue.TIMESTAMP)
+      );
+      try {
+        await database.ref(`${root}/${key}`).set(model);
+      } catch (e) {
+        return e;
+      }
+    } else {
+      return null;
+    }
+  } else {
+    return null;
+  }
 };
 
-export const addOrderToFirebase = async (root: string, element: OrderType) => {
+export const addOrderToFirebase = async (element: OrderType) => {
+  const root = "/orders";
   let key = database ? database.ref(root).push().key : null;
   let model = key
     ? orderModel(key, element, String(firebase.database.ServerValue.TIMESTAMP))
     : null;
 
   return database && key
-    ? await database.ref(root + "/" + key).set(model)
+    ? await database.ref(`${root}/${key}`).set(model)
     : null;
 };
 
@@ -397,7 +422,7 @@ export async function getUserExtraInfos(key: string, callback: any) {
 
 export async function getCurrentUser() {
   if (auth) {
-    const user: FirebaseUser = await auth.currentUser;
+    const user = auth.currentUser;
     return user;
   }
   return null;
