@@ -70,14 +70,12 @@ class SignIn extends Component {
           } else if (errorCode === "auth/invalid-email") {
             frenchErrorMessage = "Cette adresse mail est mal formatée.";
           } else {
-            frenchErrorMessage = `Une erreur inconnue est survenue (${
-              errorCode
-            })`;
+            frenchErrorMessage = `Une erreur inconnue est survenue (${errorCode})`;
           }
           this.handleAlertShow(frenchErrorMessage);
         });
       await auth.onAuthStateChanged(async user => {
-        addUserExtraInfosToFirebase("/userDatas", user.uid, this.state);
+        addUserExtraInfosToFirebase(user.uid, this.state);
       });
     }
   };

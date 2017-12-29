@@ -15,6 +15,8 @@ import { ArtistGrid } from "./ArtistGrid";
 import { CircularProgress } from "material-ui/Progress";
 import { getArtists } from "../javascript/firebaseUtils";
 
+import ReactGA from "react-ga";
+
 class Artists extends Component {
   state: {
     artists?: Array<ArtistType>
@@ -39,6 +41,8 @@ class Artists extends Component {
   }
 
   componentWillMount() {
+    ReactGA.pageview(window.location.pathname + window.location.search);
+
     const callbackArtists = dataArtists => {
       this.setState({
         ...this.state,

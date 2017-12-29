@@ -28,32 +28,11 @@
 }
 
 .body {
-  margin-left: 7em;
-  margin-right: 7em;
+  margin-left: 2rem;
+  margin-right: 2rem;
   font-family: Din !important;
   color: "#4d545c";
 }
-
-/*ul {
-  list-style: none;
-  display: inline-block;
+.p {
+  text-align: justify;
 }
-
-ul li {
-  display: inline-block;
-  padding: 10px 20px;
-  cursor: pointer;
-  background-color: #eee;
-  color: #ff7e17;
-
-  transition: 0.3s;
-}
-
-ul li:hover {
-  background-color: #beecea;
-}
-
-ul li.focused {
-  color: #fff;
-  background-color: #ff7e17;
-}*/

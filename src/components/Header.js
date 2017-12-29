@@ -141,7 +141,8 @@ class Header extends Component {
                 alt={"Megadental logo"}
                 style={this.styles().mega}
                 onClick={e =>
-                  (window.location.href = "http://www.megadental.fr")}
+                  (window.location.href = "http://www.megadental.fr")
+                }
               />
             </Button>
           </div>

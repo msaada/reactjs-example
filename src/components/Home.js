@@ -170,7 +170,7 @@ class Home extends Component {
                 style={{
                   textAlign: "center",
                   fontStyle: "italic",
-                  fontSize: "3rem"
+                  fontSize: "2.5rem"
                 }}
               >
                 Bienvenue dans notre nouveau concept store, la Mega Dental Art

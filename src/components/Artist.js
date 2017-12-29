@@ -15,6 +15,7 @@ import { getArtist2, getArtPieceFromArtist } from "../javascript/firebaseUtils";
 import { Image } from "react-bootstrap";
 import { GridList } from "material-ui/GridList";
 import Divider from "material-ui/Divider";
+import ReactGA from "react-ga";
 
 class Artist extends Component {
   state: {
@@ -58,31 +59,41 @@ class Artist extends Component {
     };
   }
 
-  async componentWillMount() {
-    await this.setStateAsync({
-      ...this.state,
-      artistId: this.props.params.artistId
-    });
+  componentWillMount() {
+    (async () => {
+      await this.setStateAsync({
+        ...this.state,
+        artistId: this.props.params.artistId
+      });
 
-    const dataArtist: ArtistType = await getArtist2(this.props.params.artistId);
-    console.log(dataArtist);
-    await this.setStateAsync({
-      artist: dataArtist
-    });
-    const dataArtpieces: Array<ArtPieceType> = await getArtPieceFromArtist(
-      this.props.params.artistId
-    );
-    console.log(dataArtpieces);
-    await this.setStateAsync({
-      artpieces: dataArtpieces,
-      isLoading: false
-    });
+      const dataArtist: ArtistType = await getArtist2(
+        this.props.params.artistId
+      );
+
+      ReactGA.pageview(dataArtist.name);
+
+      await this.setStateAsync({
+        artist: dataArtist
+      });
+      const dataArtpieces: Array<ArtPieceType> = await getArtPieceFromArtist(
+        this.props.params.artistId
+      );
+      console.log(dataArtpieces);
+      await this.setStateAsync({
+        artpieces: dataArtpieces,
+        isLoading: false
+      });
+    })();
   }
 
   listArtPieces() {
-    if (this.state.artpieces && this.state.artist) {
+    if (this.state.artpieces) {
       return this.state.artpieces.map((artpiece, index) => {
-        return ArtPieceGrid(artpiece, index, this.state.artist.name);
+        return ArtPieceGrid(
+          artpiece,
+          index,
+          this.state.artist ? this.state.artist.name : ""
+        );
       });
     }
   }

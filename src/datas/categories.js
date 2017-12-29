@@ -72,7 +72,7 @@ export const categories = {
   },
   tableau_acrylique: {
     id: "-Ky84RV88gXxRHw318ry",
-    url: "tableau_acrylique"
+    url: "acrylique_sur_toile"
   },
   technique_numerique: {
     id: "-Ky84ThkB9Jmi48X-rM5",
@@ -89,5 +89,9 @@ export const categories = {
   oeuvre_sur_toile: {
     id: "-Ky84_9XiqhMHr-8RzIQ",
     url: "oeuvre_sur_toile"
+  },
+  oeuvre_murale_destructuree: {
+    id: "-KzXNjkLZaqceQ8gkgtR",
+    url: "oeuvre_murale_destructuree"
   }
 };

@@ -9,6 +9,8 @@ import type { ArtistType } from "../types/types";
 
 import { addArtistToFirebase } from "../javascript/firebaseUtils";
 
+import MyAlert from "./MyAlert";
+
 export default class ArtistForm extends Component {
   state: {
     id: string,
@@ -18,7 +20,9 @@ export default class ArtistForm extends Component {
     logo: string,
     featured: boolean,
     typeOfArtPieces: string,
-    image: any
+    image: any,
+    alertVisible: boolean,
+    alertMessage: string
   } = {
     id: "",
     name: "",
@@ -27,7 +31,9 @@ export default class ArtistForm extends Component {
     logo: "",
     typeOfArtPieces: "",
     featured: false,
-    image: null
+    image: null,
+    alertVisible: false,
+    alertMessage: ""
   };
 
   change(e: Event) {
@@ -58,10 +64,10 @@ export default class ArtistForm extends Component {
     }
   }
 
-  onSubmit(e: Event) {
+  onSubmit = async (e: Event) => {
     e.preventDefault();
     if (this.checkFields(this.state)) {
-      addArtistToFirebase("/artists", this.state);
+      const firebaseResponse = await addArtistToFirebase(this.state);
       // if (storage) {
       //   storage
       //     .ref("/artpieces")
@@ -70,65 +76,87 @@ export default class ArtistForm extends Component {
       //       console.log("Uploaded a data_url string!");
       //     });
       // }
-      this.setState({
-        name: "",
-        picture: "",
-        description: "",
-        typeOfArtPieces: "",
-        logo: "",
-        image: null
-      });
+      if (firebaseResponse) {
+        this.handleAlertShow(firebaseResponse.message);
+      } else {
+        this.setState({
+          name: "",
+          picture: "",
+          description: "",
+          typeOfArtPieces: "",
+          logo: "",
+          image: null
+        });
+      }
     }
-  }
+  };
 
+  handleAlertDismiss = () => {
+    this.setState({
+      alertVisible: false,
+      alertMessage: ""
+    });
+  };
+
+  handleAlertShow = (errorMessage: string) => {
+    this.setState({ alertVisible: true, alertMessage: errorMessage });
+  };
   render() {
     return (
-      <form noValidate>
-        <TextField
-          id="name"
-          label="Nom"
-          value={this.state.name}
-          onChange={(e: Event) => this.change(e)}
-          fullwidth
-          autoFocus
-        />
+      <div>
+        {this.state.alertVisible && (
+          <MyAlert
+            message={this.state.alertMessage}
+            alertDissmiss={this.handleAlertDismiss}
+          />
+        )}
+        <form noValidate>
+          <TextField
+            id="name"
+            label="Nom"
+            value={this.state.name}
+            onChange={(e: Event) => this.change(e)}
+            fullwidth
+            autoFocus
+          />
 
-        <br />
-        <TextField
-          id="picture"
-          label="Photo"
-          value={this.state.picture}
-          onChange={(e: Event) => this.change(e)}
-          fullwidth
-        />
-        <br />
-        <TextField
-          id="logo"
-          label="Logo"
-          value={this.state.logo}
-          onChange={(e: Event) => this.change(e)}
-          fullwidth
-        />
-        <br />
-        <TextField
-          id="description"
-          label="Description"
-          value={this.state.description}
-          onChange={(e: Event) => this.change(e)}
-        />
-        <br />
-        <TextField
-          id="typeOfArtPieces"
-          label="Type des oeuvres"
-          value={this.state.typeOfArtPieces}
-          onChange={(e: Event) => this.change(e)}
-          fullwidth
-        />
-        <br />
-        <Button raised onClick={(e: Event) => this.onSubmit(e)}>
-          Confirmer
-        </Button>
-      </form>
+          <br />
+          <TextField
+            id="picture"
+            label="Photo"
+            value={this.state.picture}
+            onChange={(e: Event) => this.change(e)}
+            fullwidth
+          />
+          <br />
+          <TextField
+            id="logo"
+            label="Logo"
+            value={this.state.logo}
+            onChange={(e: Event) => this.change(e)}
+            fullwidth
+          />
+          <br />
+          <TextField
+            id="description"
+            label="Description"
+            value={this.state.description}
+            onChange={(e: Event) => this.change(e)}
+          />
+          <br />
+          <TextField
+            id="typeOfArtPieces"
+            label="Type des oeuvres"
+            value={this.state.typeOfArtPieces}
+            onChange={(e: Event) => this.change(e)}
+            fullwidth
+          />
+          <br />
+          <Button raised onClick={(e: Event) => this.onSubmit(e)}>
+            Confirmer
+          </Button>
+        </form>
+      </div>
     );
   }
 }

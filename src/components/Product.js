@@ -233,7 +233,7 @@ class Product extends Component {
             active: true
           };
         }
-        addCartToFirebase("/cart/", newCart);
+        addCartToFirebase(newCart);
         this.setState({
           addedToCart: true
         });

@@ -67,9 +67,9 @@ export const ArtistGrid = (artist: ArtistType, key: number) => {
         bottom: 0,
         backgroundSize: "cover",
         backgroundPosition: "center 40%",
-        backgroundImage: `url(${artist.logo.length
-          ? artist.logo
-          : artist.picture})`
+        backgroundImage: `url(${
+          artist.logo.length ? artist.logo : artist.picture
+        })`
       },
       imageBackdrop: {
         position: "absolute",
@@ -84,7 +84,8 @@ export const ArtistGrid = (artist: ArtistType, key: number) => {
       imageTitle: {
         position: "relative",
         padding: "1em",
-        fontSize: "2em"
+        fontSize: "2em",
+        textAlign: "center"
       },
       imageMarked: {
         height: 3,

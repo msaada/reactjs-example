@@ -114,11 +114,11 @@ class Cart extends Component {
       const currentCart: ?CartType = await getCart(this.state.user.uid);
       const newCart: CartType = {
         ...currentCart,
-        uid: this.state.user.uid,
+        id: this.state.user.uid,
         itemCount: this.state.artpieces.length,
         items: this.state.artpieces
       };
-      addCartToFirebase("/cart/", newCart);
+      addCartToFirebase(newCart);
     } else {
       console.log("You must login");
     }
@@ -130,9 +130,9 @@ class Cart extends Component {
       const newCart: CartType = {
         ...currentCart,
         active: false,
-        uid: this.state.user.uid
+        id: this.state.user.uid
       };
-      addCartToFirebase(`/cart/`, newCart);
+      addCartToFirebase(newCart);
     } else {
       console.log("You must login");
     }
@@ -168,7 +168,7 @@ class Cart extends Component {
         total: this.computeTotal(),
         status: false
       };
-      await addOrderToFirebase("/orders", order);
+      await addOrderToFirebase(order);
       await this.closeCart();
       this.setState({
         ordering: false,

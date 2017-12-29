@@ -8,11 +8,22 @@ import Button from "material-ui/Button";
 import type { ArtTypeType } from "../types/types";
 
 import { addArtTypeToFirebase } from "../javascript/firebaseUtils";
+import MyAlert from "./MyAlert";
 
 export default class ArtTypeForm extends Component {
   state: {
-    name: string
-  } = { name: "" };
+    id: string,
+    picture: string,
+    name: string,
+    alertVisible: boolean,
+    alertMessage: string
+  } = {
+    id: "",
+    picture: "",
+    name: "",
+    alertVisible: false,
+    alertMessage: ""
+  };
 
   change(e: Event) {
     if (e.target instanceof HTMLInputElement) {
@@ -26,27 +37,51 @@ export default class ArtTypeForm extends Component {
     return arttype.name;
   }
 
-  onSubmit(e: Event) {
+  async onSubmit(e: Event) {
     e.preventDefault();
     if (this.checkFields(this.state)) {
-      addArtTypeToFirebase("/arttypes", this.state);
-      this.setState({
-        name: ""
-      });
+      const firebaseResponse = await addArtTypeToFirebase(this.state);
+      if (firebaseResponse) {
+        this.handleAlertShow(firebaseResponse.message);
+      } else {
+        this.setState({
+          name: "",
+          id: "",
+          picture: ""
+        });
+      }
     }
   }
 
+  handleAlertDismiss = () => {
+    this.setState({
+      alertVisible: false,
+      alertMessage: ""
+    });
+  };
+
+  handleAlertShow = (errorMessage: string) => {
+    this.setState({ alertVisible: true, alertMessage: errorMessage });
+  };
   render() {
     return (
-      <form>
-        <TextField
-          id="name"
-          label="First name"
-          value={this.state.name}
-          onChange={e => this.change(e)}
-        />
-        <Button onClick={e => this.onSubmit(e)}>Confirmer</Button>
-      </form>
+      <div>
+        {this.state.alertVisible && (
+          <MyAlert
+            message={this.state.alertMessage}
+            alertDissmiss={this.handleAlertDismiss}
+          />
+        )}
+        <form>
+          <TextField
+            id="name"
+            label="Nom"
+            value={this.state.name}
+            onChange={(e: Event) => this.change(e)}
+          />
+          <Button onClick={e => this.onSubmit(e)}>Confirmer</Button>
+        </form>
+      </div>
     );
   }
 }

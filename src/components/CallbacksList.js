@@ -7,10 +7,6 @@ import type { CallbackType } from "../types/types";
 
 import { PanelGroup, Panel, ListGroup, ListGroupItem } from "react-bootstrap";
 
-type PropsType = {
-  callbacks: Array<CallbackType>
-};
-
 export class CallbacksList extends Component {
   state: {
     activeKey: string,

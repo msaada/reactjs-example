@@ -151,10 +151,10 @@ export const addImageToFirebase = async (
 };
 
 export const addUserExtraInfosToFirebase = async (
-  root: string,
   key: string,
   element: UserType
 ) => {
+  const root = "/userDatas";
   let model = userModel(
     key,
     element,
