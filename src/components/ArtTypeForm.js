@@ -9,7 +9,7 @@ import type { ArtTypeType } from "../types/types";
 
 import { addArtTypeToFirebase } from "../javascript/firebaseUtils";
 import MyAlert from "./MyAlert";
-
+import { FieldGroup } from "./FieldGroup";
 export default class ArtTypeForm extends Component {
   state: {
     id: string,
@@ -63,23 +63,29 @@ export default class ArtTypeForm extends Component {
   handleAlertShow = (errorMessage: string) => {
     this.setState({ alertVisible: true, alertMessage: errorMessage });
   };
+
+  validateFormField(predicate: boolean) {
+    return predicate ? "success" : "error";
+  }
   render() {
     return (
       <div>
-        {this.state.alertVisible && (
-          <MyAlert
-            message={this.state.alertMessage}
-            alertDissmiss={this.handleAlertDismiss}
-          />
-        )}
         <form>
-          <TextField
+          <FieldGroup
             id="name"
             label="Nom"
+            type="text"
             value={this.state.name}
             onChange={(e: Event) => this.change(e)}
+            validationState={this.validateFormField(this.state.name !== "")}
           />
           <Button onClick={e => this.onSubmit(e)}>Confirmer</Button>
+          {this.state.alertVisible && (
+            <MyAlert
+              message={this.state.alertMessage}
+              alertDissmiss={this.handleAlertDismiss}
+            />
+          )}
         </form>
       </div>
     );
