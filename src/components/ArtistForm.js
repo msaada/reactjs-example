@@ -7,7 +7,10 @@ import Button from "material-ui/Button";
 
 import type { ArtistType } from "../types/types";
 
-import { addArtistToFirebase, storage } from "../javascript/firebaseUtils";
+import {
+  addArtistToFirebase,
+  uploadPictureToFirebase
+} from "../javascript/firebaseUtils";
 
 import MyAlert from "./MyAlert";
 import { FieldGroup } from "./FieldGroup";
@@ -65,36 +68,6 @@ export default class ArtistForm extends Component {
     return wrongFields;
   };
 
-  uploadPictureToFirebase = async (file: File) => {
-    const metadata = {
-      contentType: "image/jpeg"
-    };
-    console.log(file);
-    console.log(file.name);
-    console.log(metadata);
-
-    // Upload file and metadata to the object 'images/mountains.jpg'
-    if (storage) {
-      const uploadTask = await storage
-        .ref()
-        .child("images/" + file.name)
-        .put(file, metadata);
-
-      // Listen for state changes, errors, and completion of the upload.
-      const snapshot = await storage
-        .ref()
-        .child("images/" + file.name)
-        .put(file, metadata);
-      console.log(snapshot);
-      if (snapshot.state === "success") {
-        return snapshot.downloadURL;
-      } else {
-        console.log("Error on upload");
-        return null;
-      }
-    }
-  };
-
   onSubmit = async (e: Event) => {
     e.preventDefault();
     this.setState({
@@ -102,7 +75,7 @@ export default class ArtistForm extends Component {
     });
 
     if (this.state.logoFile) {
-      const logoUrl = await this.uploadPictureToFirebase(this.state.logoFile);
+      const logoUrl = await uploadPictureToFirebase(this.state.logoFile);
       console.log(logoUrl);
       if (logoUrl) {
         this.setState({
@@ -112,9 +85,7 @@ export default class ArtistForm extends Component {
     }
 
     if (this.state.pictureFile) {
-      const pictureUrl = await this.uploadPictureToFirebase(
-        this.state.pictureFile
-      );
+      const pictureUrl = await uploadPictureToFirebase(this.state.pictureFile);
       console.log(pictureUrl);
 
       if (pictureUrl) {

@@ -21,9 +21,9 @@ import type {
 } from "../types/types";
 
 import {
-  storage,
   addArtPieceToFirebase,
-  addArtistToFirebase
+  addArtistToFirebase,
+  uploadPictureToFirebase
 } from "../javascript/firebaseUtils";
 import MyAlert from "./MyAlert";
 
@@ -104,44 +104,18 @@ export default class ArtPieceForm extends Component {
     };
   }
 
-  uploadPictureToFirebase = async (file: File) => {
-    const metadata = {
-      contentType: "image/jpeg"
-    };
-    console.log(file);
-    console.log(file.name);
-    console.log(metadata);
-
-    // Upload file and metadata to the object 'images/mountains.jpg'
-    if (storage) {
-      const uploadTask = await storage
-        .ref()
-        .child("images/" + file.name)
-        .put(file, metadata);
-
-      // Listen for state changes, errors, and completion of the upload.
-      const snapshot = await storage
-        .ref()
-        .child("images/" + file.name)
-        .put(file, metadata);
-      console.log(snapshot);
-      if (snapshot.state === "success") {
-        this.setState({
-          imagesLinks: [snapshot.downloadURL]
-        });
-      } else {
-        console.log("Error on upload");
-      }
-    }
-  };
-
   onSubmit = async (e: Event) => {
     e.preventDefault();
     this.setState({
       saving: true
     });
     if (this.state.picture) {
-      await this.uploadPictureToFirebase(this.state.picture);
+      const imageLink = await uploadPictureToFirebase(this.state.picture);
+      if (imageLink) {
+        this.setState({
+          imagesLinks: [imageLink]
+        });
+      }
     }
 
     const addArtpieceResponse = await addArtPieceToFirebase(this.state);

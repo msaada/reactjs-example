@@ -123,6 +123,36 @@ export const addArtistToFirebase = async (element: ArtistType) => {
   }
 };
 
+export const uploadPictureToFirebase = async (file: File) => {
+  const metadata = {
+    contentType: "image/jpeg"
+  };
+  console.log(file);
+  console.log(file.name);
+  console.log(metadata);
+
+  // Upload file and metadata to the object 'images/mountains.jpg'
+  if (storage) {
+    const uploadTask = await storage
+      .ref()
+      .child("images/" + file.name)
+      .put(file, metadata);
+
+    // Listen for state changes, errors, and completion of the upload.
+    const snapshot = await storage
+      .ref()
+      .child("images/" + file.name)
+      .put(file, metadata);
+    console.log(snapshot);
+    if (snapshot.state === "success") {
+      return snapshot.downloadURL;
+    } else {
+      console.log("Error on upload");
+      return null;
+    }
+  }
+};
+
 export const addOrderToFirebase = async (element: OrderType) => {
   const root = "/orders";
   let key = database ? database.ref(root).push().key : null;
