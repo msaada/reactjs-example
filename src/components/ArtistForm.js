@@ -5,7 +5,7 @@ import React, { Component } from "react";
 import TextField from "material-ui/TextField";
 import Button from "material-ui/Button";
 
-import type { ArtistType } from "../types/types";
+import type { ArtistType, File } from "../types/types";
 
 import {
   addArtistToFirebase,
@@ -17,13 +17,7 @@ import { FieldGroup } from "./FieldGroup";
 
 export default class ArtistForm extends Component {
   state: {
-    id: string,
-    name: string,
-    description: string,
-    picture: string,
-    logo: string,
-    featured: boolean,
-    typeOfArtPieces: string,
+    artist: ArtistType,
     logoFile: any,
     pictureFile: any,
     alertVisible: boolean,
@@ -31,16 +25,17 @@ export default class ArtistForm extends Component {
     saving: boolean,
     fieldsStatus: any
   } = {
-    id: "",
-    name: "",
-    picture: "",
-    description: "",
-    logo: "",
-    typeOfArtPieces: "",
-    featured: false,
+    artist: {
+      id: "",
+      name: "",
+      picture: "",
+      description: "",
+      logo: "",
+      typeOfArtPieces: "",
+      featured: false
+    },
     pictureFile: null,
     logoFile: null,
-    pictureFile: null,
     alertVisible: false,
     alertMessage: "",
     saving: false,
@@ -50,7 +45,7 @@ export default class ArtistForm extends Component {
   change(e: Event) {
     if (e.target instanceof HTMLInputElement) {
       this.setState({
-        [e.target.id]: e.target.value
+        artist: { ...this.state.artist, [e.target.id]: e.target.value }
       });
     }
   }
@@ -76,17 +71,22 @@ export default class ArtistForm extends Component {
 
     const wrongFields = this.getWrongFields();
     if (!wrongFields.length) {
-      if (this.state.logo === "" && this.state.logoFile) {
+      if (this.state.artist.logo === "" && this.state.logoFile) {
         const logoUrl = await uploadPictureToFirebase(this.state.logoFile);
         console.log(logoUrl);
         if (logoUrl) {
           this.setState({
-            logo: logoUrl
+            artist: { ...this.state.artist, logo: logoUrl }
           });
+        } else {
+          this.handleAlertShow(
+            "La sauvegarde du logo de l'artiste a échoué. Veuillez rééssayer."
+          );
+          return;
         }
       }
 
-      if (this.state.picture === "" && this.state.pictureFile) {
+      if (this.state.artist.picture === "" && this.state.pictureFile) {
         const pictureUrl = await uploadPictureToFirebase(
           this.state.pictureFile
         );
@@ -94,22 +94,31 @@ export default class ArtistForm extends Component {
 
         if (pictureUrl) {
           this.setState({
-            picture: pictureUrl
+            artist: { ...this.state.artist, picture: pictureUrl }
           });
+        } else {
+          this.handleAlertShow(
+            "La sauvegarde de la photo de l'artiste a échoué. Veuillez rééssayer."
+          );
+          return;
         }
       }
 
-      const firebaseResponse = await addArtistToFirebase(this.state);
+      const firebaseResponse = await addArtistToFirebase(this.state.artist);
 
       if (firebaseResponse) {
         this.handleAlertShow(firebaseResponse.message);
       } else {
         this.setState({
-          name: "",
-          picture: "",
-          description: "",
-          typeOfArtPieces: "",
-          logo: "",
+          artist: {
+            id: "",
+            name: "",
+            picture: "",
+            description: "",
+            logo: "",
+            typeOfArtPieces: "",
+            featured: false
+          },
           pictureFile: null,
           logoFile: null
         });
@@ -162,9 +171,9 @@ export default class ArtistForm extends Component {
             id="name"
             type="text"
             label="Nom de l'artiste"
-            value={this.state.name}
+            value={this.state.artist.name}
             validationState={this.validateFormField(
-              this.state.name !== "",
+              this.state.artist.name !== "",
               "Nom de l'artiste"
             )}
             onChange={(e: Event) => this.change(e)}
@@ -196,9 +205,9 @@ export default class ArtistForm extends Component {
             id="description"
             type="text"
             label="Biographie de l'artiste"
-            value={this.state.description}
+            value={this.state.artist.description}
             validationState={this.validateFormField(
-              this.state.description !== "",
+              this.state.artist.description !== "",
               "Biographie de l'artiste"
             )}
             onChange={(e: Event) => this.change(e)}
