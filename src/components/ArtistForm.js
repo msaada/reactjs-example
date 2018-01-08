@@ -74,28 +74,31 @@ export default class ArtistForm extends Component {
       saving: true
     });
 
-    if (this.state.logoFile) {
-      const logoUrl = await uploadPictureToFirebase(this.state.logoFile);
-      console.log(logoUrl);
-      if (logoUrl) {
-        this.setState({
-          logo: logoUrl
-        });
-      }
-    }
-
-    if (this.state.pictureFile) {
-      const pictureUrl = await uploadPictureToFirebase(this.state.pictureFile);
-      console.log(pictureUrl);
-
-      if (pictureUrl) {
-        this.setState({
-          picture: pictureUrl
-        });
-      }
-    }
     const wrongFields = this.getWrongFields();
     if (!wrongFields.length) {
+      if (this.state.logo === "" && this.state.logoFile) {
+        const logoUrl = await uploadPictureToFirebase(this.state.logoFile);
+        console.log(logoUrl);
+        if (logoUrl) {
+          this.setState({
+            logo: logoUrl
+          });
+        }
+      }
+
+      if (this.state.picture === "" && this.state.pictureFile) {
+        const pictureUrl = await uploadPictureToFirebase(
+          this.state.pictureFile
+        );
+        console.log(pictureUrl);
+
+        if (pictureUrl) {
+          this.setState({
+            picture: pictureUrl
+          });
+        }
+      }
+
       const firebaseResponse = await addArtistToFirebase(this.state);
 
       if (firebaseResponse) {
@@ -133,10 +136,6 @@ export default class ArtistForm extends Component {
       return "success";
     } else {
       this.state.fieldsStatus[fieldId] = false;
-
-      // this.setState({
-      //   wrongFields: this.state.wrongFields.add(fieldLabel)
-      // });
       return "error";
     }
   };
@@ -158,12 +157,6 @@ export default class ArtistForm extends Component {
   render() {
     return (
       <div>
-        {this.state.alertVisible && (
-          <MyAlert
-            message={this.state.alertMessage}
-            alertDissmiss={this.handleAlertDismiss}
-          />
-        )}
         <form noValidate>
           <FieldGroup
             id="name"
@@ -181,6 +174,10 @@ export default class ArtistForm extends Component {
             id="photo"
             type="file"
             label="Photo"
+            validationState={this.validateFormField(
+              this.state.pictureFile !== null,
+              "Photo"
+            )}
             onChange={(e: Event) => this.onImageChange(e, false)}
           />
 
@@ -188,24 +185,12 @@ export default class ArtistForm extends Component {
             id="logo"
             type="file"
             label="Logo"
+            validationState={this.validateFormField(
+              this.state.logoFile !== null,
+              "Logo"
+            )}
             onChange={(e: Event) => this.onImageChange(e, true)}
           />
-
-          {/* <TextField
-            id="picture"
-            label="Photo"
-            value={this.state.picture}
-            onChange={(e: Event) => this.change(e)}
-            fullwidth
-          />
-
-          <TextField
-            id="logo"
-            label="Logo"
-            value={this.state.logo}
-            onChange={(e: Event) => this.change(e)}
-            fullwidth
-          /> */}
 
           <FieldGroup
             id="description"
@@ -219,6 +204,12 @@ export default class ArtistForm extends Component {
             onChange={(e: Event) => this.change(e)}
           />
 
+          {this.state.alertVisible && (
+            <MyAlert
+              message={this.state.alertMessage}
+              alertDissmiss={this.handleAlertDismiss}
+            />
+          )}
           <Button raised onClick={(e: Event) => this.onSubmit(e)}>
             Confirmer
           </Button>
