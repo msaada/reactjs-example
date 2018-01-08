@@ -7,9 +7,10 @@ import Button from "material-ui/Button";
 
 import type { ArtistType } from "../types/types";
 
-import { addArtistToFirebase } from "../javascript/firebaseUtils";
+import { addArtistToFirebase, storage } from "../javascript/firebaseUtils";
 
 import MyAlert from "./MyAlert";
+import { FieldGroup } from "./FieldGroup";
 
 export default class ArtistForm extends Component {
   state: {
@@ -20,9 +21,12 @@ export default class ArtistForm extends Component {
     logo: string,
     featured: boolean,
     typeOfArtPieces: string,
-    image: any,
+    logoFile: any,
+    pictureFile: any,
     alertVisible: boolean,
-    alertMessage: string
+    alertMessage: string,
+    saving: boolean,
+    fieldsStatus: any
   } = {
     id: "",
     name: "",
@@ -31,9 +35,13 @@ export default class ArtistForm extends Component {
     logo: "",
     typeOfArtPieces: "",
     featured: false,
-    image: null,
+    pictureFile: null,
+    logoFile: null,
+    pictureFile: null,
     alertVisible: false,
-    alertMessage: ""
+    alertMessage: "",
+    saving: false,
+    fieldsStatus: {}
   };
 
   change(e: Event) {
@@ -44,38 +52,81 @@ export default class ArtistForm extends Component {
     }
   }
 
-  checkFields(artist: ArtistType) {
-    return (
-      artist.name &&
-      artist.picture &&
-      artist.description &&
-      artist.typeOfArtPieces &&
-      artist.logo
-    );
-  }
-
-  onImageLoad(event: Event) {
-    if (event.target.files && event.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = (e: Event) => {
-        this.setState({ image: e.target.result });
-      };
-      reader.readAsDataURL(event.target.files[0]);
+  getWrongFields = () => {
+    const fieldsStatus = this.state.fieldsStatus;
+    let wrongFields: string[] = [];
+    for (var property in fieldsStatus) {
+      if (fieldsStatus.hasOwnProperty(property)) {
+        if (!fieldsStatus[property]) {
+          wrongFields = [...wrongFields, property];
+        }
+      }
     }
-  }
+    return wrongFields;
+  };
+
+  uploadPictureToFirebase = async (file: File) => {
+    const metadata = {
+      contentType: "image/jpeg"
+    };
+    console.log(file);
+    console.log(file.name);
+    console.log(metadata);
+
+    // Upload file and metadata to the object 'images/mountains.jpg'
+    if (storage) {
+      const uploadTask = await storage
+        .ref()
+        .child("images/" + file.name)
+        .put(file, metadata);
+
+      // Listen for state changes, errors, and completion of the upload.
+      const snapshot = await storage
+        .ref()
+        .child("images/" + file.name)
+        .put(file, metadata);
+      console.log(snapshot);
+      if (snapshot.state === "success") {
+        return snapshot.downloadURL;
+      } else {
+        console.log("Error on upload");
+        return null;
+      }
+    }
+  };
 
   onSubmit = async (e: Event) => {
     e.preventDefault();
-    if (this.checkFields(this.state)) {
+    this.setState({
+      saving: true
+    });
+
+    if (this.state.logoFile) {
+      const logoUrl = await this.uploadPictureToFirebase(this.state.logoFile);
+      console.log(logoUrl);
+      if (logoUrl) {
+        this.setState({
+          logo: logoUrl
+        });
+      }
+    }
+
+    if (this.state.pictureFile) {
+      const pictureUrl = await this.uploadPictureToFirebase(
+        this.state.pictureFile
+      );
+      console.log(pictureUrl);
+
+      if (pictureUrl) {
+        this.setState({
+          picture: pictureUrl
+        });
+      }
+    }
+    const wrongFields = this.getWrongFields();
+    if (!wrongFields.length) {
       const firebaseResponse = await addArtistToFirebase(this.state);
-      // if (storage) {
-      //   storage
-      //     .ref("/artpieces")
-      //     .putString(this.state.image, "data_url")
-      //     .then(function(snapshot) {
-      //       console.log("Uploaded a data_url string!");
-      //     });
-      // }
+
       if (firebaseResponse) {
         this.handleAlertShow(firebaseResponse.message);
       } else {
@@ -85,9 +136,12 @@ export default class ArtistForm extends Component {
           description: "",
           typeOfArtPieces: "",
           logo: "",
-          image: null
+          pictureFile: null,
+          logoFile: null
         });
       }
+    } else {
+      this.handleAlertShow(`Champs manquants: ${wrongFields.join(", ")}`);
     }
   };
 
@@ -101,6 +155,35 @@ export default class ArtistForm extends Component {
   handleAlertShow = (errorMessage: string) => {
     this.setState({ alertVisible: true, alertMessage: errorMessage });
   };
+
+  validateFormField = (predicate: boolean, fieldId: string) => {
+    if (predicate) {
+      this.state.fieldsStatus[fieldId] = true;
+      return "success";
+    } else {
+      this.state.fieldsStatus[fieldId] = false;
+
+      // this.setState({
+      //   wrongFields: this.state.wrongFields.add(fieldLabel)
+      // });
+      return "error";
+    }
+  };
+
+  onImageChange = (event, logo: boolean) => {
+    if (event.target.files && event.target.files[0]) {
+      if (logo) {
+        this.setState({
+          logoFile: event.target.files[0]
+        });
+      } else {
+        this.setState({
+          pictureFile: event.target.files[0]
+        });
+      }
+    }
+  };
+
   render() {
     return (
       <div>
@@ -111,47 +194,60 @@ export default class ArtistForm extends Component {
           />
         )}
         <form noValidate>
-          <TextField
+          <FieldGroup
             id="name"
-            label="Nom"
+            type="text"
+            label="Nom de l'artiste"
             value={this.state.name}
+            validationState={this.validateFormField(
+              this.state.name !== "",
+              "Nom de l'artiste"
+            )}
             onChange={(e: Event) => this.change(e)}
-            fullwidth
-            autoFocus
           />
 
-          <br />
-          <TextField
+          <FieldGroup
+            id="photo"
+            type="file"
+            label="Photo"
+            onChange={(e: Event) => this.onImageChange(e, false)}
+          />
+
+          <FieldGroup
+            id="logo"
+            type="file"
+            label="Logo"
+            onChange={(e: Event) => this.onImageChange(e, true)}
+          />
+
+          {/* <TextField
             id="picture"
             label="Photo"
             value={this.state.picture}
             onChange={(e: Event) => this.change(e)}
             fullwidth
           />
-          <br />
+
           <TextField
             id="logo"
             label="Logo"
             value={this.state.logo}
             onChange={(e: Event) => this.change(e)}
             fullwidth
-          />
-          <br />
-          <TextField
+          /> */}
+
+          <FieldGroup
             id="description"
-            label="Description"
+            type="text"
+            label="Biographie de l'artiste"
             value={this.state.description}
+            validationState={this.validateFormField(
+              this.state.description !== "",
+              "Biographie de l'artiste"
+            )}
             onChange={(e: Event) => this.change(e)}
           />
-          <br />
-          <TextField
-            id="typeOfArtPieces"
-            label="Type des oeuvres"
-            value={this.state.typeOfArtPieces}
-            onChange={(e: Event) => this.change(e)}
-            fullwidth
-          />
-          <br />
+
           <Button raised onClick={(e: Event) => this.onSubmit(e)}>
             Confirmer
           </Button>
