@@ -8,7 +8,6 @@ export default (id: string, props: ArtPieceType, timestamp: string) => ({
   reference: props.reference,
   name: props.name,
   typeOfArtPieces: props.typeOfArtPieces,
-  relatedArtPiecesIds: props.relatedArtPiecesIds,
   description: props.description,
   buyPriceTaxFree: props.buyPriceTaxFree,
   buyPriceTaxIncluded: props.buyPriceTaxIncluded,
@@ -20,7 +19,7 @@ export default (id: string, props: ArtPieceType, timestamp: string) => ({
   imagesLinks: props.imagesLinks,
   year: props.year,
   quantity: props.quantity,
-  featured: false,
-  reserved: false,
+  featured: props.featured,
+  reserved: props.reserved,
   timestamp: timestamp
 });
