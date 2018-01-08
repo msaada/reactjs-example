@@ -46,12 +46,11 @@ export type ArtPieceType = {
   reference: string,
   name: string,
   typeOfArtPieces: string,
-  relatedArtPiecesIds: Array<string>,
   description: string,
-  buyPriceTaxFree: string,
-  buyPriceTaxIncluded: string,
-  sellPriceTaxFree: string,
-  sellPriceTaxIncluded: string,
+  buyPriceTaxFree: number,
+  buyPriceTaxIncluded: number,
+  sellPriceTaxFree: number,
+  sellPriceTaxIncluded: number,
   catalogPage: number,
   dimensions: string,
   weight: number,
@@ -88,4 +87,8 @@ export type CallbackType = {
   name: string,
   phoneNumber: string,
   email: string
+};
+
+export type File = {
+  name: string
 };
