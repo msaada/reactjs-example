@@ -25,17 +25,6 @@ export default class AddArtTypeDialog extends Component {
   render() {
     return (
       <div>
-        {/* <Button onClick={this.handleOpen}>Ajouter un type d'oeuvre</Button>
-        <Dialog
-          title="Ajouter un type d'oeuvre"
-          actions={actions}
-          modal={false}
-          open={this.state.open}
-          onRequestClose={this.handleClose}
-        >
-          Tous les champs sont requis.
-          <ArtTypeForm />
-        </Dialog> */}
         <Button raised onClick={this.handleOpen}>
           Ajouter un type d'oeuvre
         </Button>
@@ -46,7 +35,7 @@ export default class AddArtTypeDialog extends Component {
             <ArtTypeForm />
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose}>Annuler</Button>
+            <Button onClick={this.handleClose}>Terminer</Button>
           </DialogActions>
         </Dialog>
       </div>

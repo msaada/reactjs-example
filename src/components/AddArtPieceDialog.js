@@ -49,7 +49,7 @@ export default class AddArtPieceDialog extends Component {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose}>Annuler</Button>
+            <Button onClick={this.handleClose}>Terminer</Button>
           </DialogActions>
         </Dialog>
       </div>

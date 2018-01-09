@@ -36,7 +36,7 @@ export default class AddArtistDialog extends Component {
             <ArtistForm />
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose}>Annuler</Button>
+            <Button onClick={this.handleClose}>Terminer</Button>
           </DialogActions>
         </Dialog>
       </div>
