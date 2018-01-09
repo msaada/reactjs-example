@@ -6,7 +6,7 @@ import TextField from "material-ui/TextField";
 import Button from "material-ui/Button";
 
 import type { ArtistType, File } from "../types/types";
-
+import { Checkbox } from "react-bootstrap";
 import {
   addArtistToFirebase,
   uploadPictureToFirebase
@@ -14,6 +14,7 @@ import {
 
 import MyAlert from "./MyAlert";
 import { FieldGroup } from "./FieldGroup";
+import { CircularProgress } from "material-ui/Progress";
 
 export default class ArtistForm extends Component {
   state: {
@@ -82,6 +83,9 @@ export default class ArtistForm extends Component {
           this.handleAlertShow(
             "La sauvegarde du logo de l'artiste a échoué. Veuillez rééssayer."
           );
+          this.setState({
+            saving: false
+          });
           return;
         }
       }
@@ -100,6 +104,9 @@ export default class ArtistForm extends Component {
           this.handleAlertShow(
             "La sauvegarde de la photo de l'artiste a échoué. Veuillez rééssayer."
           );
+          this.setState({
+            saving: false
+          });
           return;
         }
       }
@@ -126,6 +133,9 @@ export default class ArtistForm extends Component {
     } else {
       this.handleAlertShow(`Champs manquants: ${wrongFields.join(", ")}`);
     }
+    this.setState({
+      saving: false
+    });
   };
 
   handleAlertDismiss = () => {
@@ -139,12 +149,12 @@ export default class ArtistForm extends Component {
     this.setState({ alertVisible: true, alertMessage: errorMessage });
   };
 
-  validateFormField = (predicate: boolean, fieldId: string) => {
+  validateFormField = (predicate: boolean, fieldLabel: string) => {
     if (predicate) {
-      this.state.fieldsStatus[fieldId] = true;
+      this.state.fieldsStatus[fieldLabel] = true;
       return "success";
     } else {
-      this.state.fieldsStatus[fieldId] = false;
+      this.state.fieldsStatus[fieldLabel] = false;
       return "error";
     }
   };
@@ -213,6 +223,21 @@ export default class ArtistForm extends Component {
             onChange={(e: Event) => this.change(e)}
           />
 
+          <Checkbox
+            id="featured"
+            checked={this.state.artist.featured}
+            onChange={e =>
+              this.setState({
+                artist: {
+                  ...this.state.artist,
+                  featured: !this.state.artist.featured
+                }
+              })
+            }
+          >
+            Artiste dans la rubrique "Artiste du moment"
+          </Checkbox>
+
           {this.state.alertVisible && (
             <MyAlert
               message={this.state.alertMessage}
@@ -222,6 +247,7 @@ export default class ArtistForm extends Component {
           <Button raised onClick={(e: Event) => this.onSubmit(e)}>
             Confirmer
           </Button>
+          {this.state.saving && <CircularProgress size={90} />}
         </form>
       </div>
     );
