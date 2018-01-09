@@ -10,25 +10,31 @@ import type { ArtTypeType } from "../types/types";
 import { addArtTypeToFirebase } from "../javascript/firebaseUtils";
 import MyAlert from "./MyAlert";
 import { FieldGroup } from "./FieldGroup";
+import { CircularProgress } from "material-ui/Progress";
+
 export default class ArtTypeForm extends Component {
   state: {
-    id: string,
-    picture: string,
-    name: string,
+    artType: ArtTypeType,
     alertVisible: boolean,
-    alertMessage: string
+    alertMessage: string,
+    saving: boolean,
+    fieldsStatus: any
   } = {
-    id: "",
-    picture: "",
-    name: "",
+    artType: {
+      id: "",
+      name: "",
+      picture: ""
+    },
+    saving: false,
     alertVisible: false,
-    alertMessage: ""
+    alertMessage: "",
+    fieldsStatus: {}
   };
 
   change(e: Event) {
     if (e.target instanceof HTMLInputElement) {
       this.setState({
-        [e.target.id]: e.target.value
+        artType: { ...this.state.artType, [e.target.id]: e.target.value }
       });
     }
   }
@@ -39,18 +45,30 @@ export default class ArtTypeForm extends Component {
 
   async onSubmit(e: Event) {
     e.preventDefault();
-    if (this.checkFields(this.state)) {
-      const firebaseResponse = await addArtTypeToFirebase(this.state);
+    this.setState({
+      saving: true
+    });
+    const wrongFields = this.getWrongFields();
+
+    if (!wrongFields.length) {
+      const firebaseResponse = await addArtTypeToFirebase(this.state.artType);
       if (firebaseResponse) {
         this.handleAlertShow(firebaseResponse.message);
       } else {
         this.setState({
-          name: "",
-          id: "",
-          picture: ""
+          artType: {
+            name: "",
+            id: "",
+            picture: ""
+          }
         });
       }
+    } else {
+      this.handleAlertShow(`Champs manquants: ${wrongFields.join(", ")}`);
     }
+    this.setState({
+      saving: false
+    });
   }
 
   handleAlertDismiss = () => {
@@ -60,13 +78,33 @@ export default class ArtTypeForm extends Component {
     });
   };
 
+  getWrongFields = () => {
+    const fieldsStatus = this.state.fieldsStatus;
+    let wrongFields: string[] = [];
+    for (var property in fieldsStatus) {
+      if (fieldsStatus.hasOwnProperty(property)) {
+        if (!fieldsStatus[property]) {
+          wrongFields = [...wrongFields, property];
+        }
+      }
+    }
+    return wrongFields;
+  };
+
   handleAlertShow = (errorMessage: string) => {
     this.setState({ alertVisible: true, alertMessage: errorMessage });
   };
 
-  validateFormField(predicate: boolean) {
-    return predicate ? "success" : "error";
-  }
+  validateFormField = (predicate: boolean, fieldLabel: string) => {
+    if (predicate) {
+      this.state.fieldsStatus[fieldLabel] = true;
+      return "success";
+    } else {
+      this.state.fieldsStatus[fieldLabel] = false;
+      return "error";
+    }
+  };
+
   render() {
     return (
       <div>
@@ -75,17 +113,21 @@ export default class ArtTypeForm extends Component {
             id="name"
             label="Nom"
             type="text"
-            value={this.state.name}
+            value={this.state.artType.name}
             onChange={(e: Event) => this.change(e)}
-            validationState={this.validateFormField(this.state.name !== "")}
+            validationState={this.validateFormField(
+              this.state.artType.name !== "",
+              "Nom"
+            )}
           />
-          <Button onClick={e => this.onSubmit(e)}>Confirmer</Button>
           {this.state.alertVisible && (
             <MyAlert
               message={this.state.alertMessage}
               alertDissmiss={this.handleAlertDismiss}
             />
           )}
+          <Button onClick={e => this.onSubmit(e)}>Confirmer</Button>
+          {this.state.saving && <CircularProgress size={90} />}
         </form>
       </div>
     );
