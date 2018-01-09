@@ -1,7 +1,7 @@
 //@flow
 import type { CartType } from "../types/types";
 
-export default (id: string, props: CartType, timestamp: string) => ({
+export default (id: string, props: CartType, timestamp) => ({
   id: id,
   itemCount: props.itemCount,
   items: props.items,
