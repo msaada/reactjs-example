@@ -48,7 +48,7 @@ export const addArtTypeToFirebase = async (element: ArtTypeType) => {
       const model = artTypeModel(
         key,
         element,
-        String(firebase.database.ServerValue.TIMESTAMP)
+        firebase.database.ServerValue.TIMESTAMP
       );
       try {
         await database.ref(`${root}/${key}`).set(model);
@@ -70,7 +70,7 @@ export const addArtPieceToFirebase = async (element: ArtPieceType) => {
       const model = artPieceModel(
         key,
         element,
-        String(firebase.database.ServerValue.TIMESTAMP)
+        firebase.database.ServerValue.TIMESTAMP
       );
       try {
         await database.ref(`${root}/${key}`).set(model);
@@ -89,11 +89,7 @@ export const addCartToFirebase = (element: CartType) => {
   const root = "/cart";
   let key = database ? database.ref(root).push().key : null;
   const model = key
-    ? cartModel(
-        element.id,
-        element,
-        String(firebase.database.ServerValue.TIMESTAMP)
-      )
+    ? cartModel(element.id, element, firebase.database.ServerValue.TIMESTAMP)
     : null;
   return database && key
     ? database.ref(`${root}/${element.id}/${key}`).set(model)
@@ -108,7 +104,7 @@ export const addArtistToFirebase = async (element: ArtistType) => {
       const model = artistModel(
         key,
         element,
-        String(firebase.database.ServerValue.TIMESTAMP)
+        firebase.database.ServerValue.TIMESTAMP
       );
       try {
         await database.ref(`${root}/${key}`).set(model);
@@ -157,7 +153,7 @@ export const addOrderToFirebase = async (element: OrderType) => {
   const root = "/orders";
   let key = database ? database.ref(root).push().key : null;
   let model = key
-    ? orderModel(key, element, String(firebase.database.ServerValue.TIMESTAMP))
+    ? orderModel(key, element, firebase.database.ServerValue.TIMESTAMP)
     : null;
 
   return database && key
@@ -185,11 +181,7 @@ export const addUserExtraInfosToFirebase = async (
   element: UserType
 ) => {
   const root = "/userDatas";
-  let model = userModel(
-    key,
-    element,
-    String(firebase.database.ServerValue.TIMESTAMP)
-  );
+  let model = userModel(key, element, firebase.database.ServerValue.TIMESTAMP);
   return database && key
     ? await database.ref(root + "/" + key).set(model)
     : null;
@@ -201,11 +193,7 @@ export const addCallbackToFirebase = async (
 ) => {
   let key = database ? database.ref(root).push().key : null;
   let model = key
-    ? callbackModel(
-        key,
-        element,
-        String(firebase.database.ServerValue.TIMESTAMP)
-      )
+    ? callbackModel(key, element, firebase.database.ServerValue.TIMESTAMP)
     : null;
   return database && key
     ? await database.ref(root + "/" + key).set(model)
