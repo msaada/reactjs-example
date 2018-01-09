@@ -3,12 +3,7 @@
 import React, { Component } from "react";
 
 import Button from "material-ui/Button";
-import {
-  FormControl,
-  FormGroup,
-  ControlLabel,
-  Checkbox
-} from "react-bootstrap";
+import { Checkbox } from "react-bootstrap";
 import { CircularProgress } from "material-ui/Progress";
 
 import { FieldGroup } from "./FieldGroup";
@@ -28,37 +23,47 @@ import {
 import MyAlert from "./MyAlert";
 
 export default class ArtPieceForm extends Component {
-  state: ArtPieceType = {
-    id: "",
-    galeryId: "",
-    artistId: "",
-    reference: "",
-    name: "",
-    typeOfArtPieces: "",
-    description: "",
-    buyPriceTaxFree: -1,
-    buyPriceTaxIncluded: -1,
-    sellPriceTaxFree: -1,
-    sellPriceTaxIncluded: -1,
-    catalogPage: -1,
-    dimensions: "",
-    weight: -1,
-    year: "",
-    quantity: -1,
-    featured: false,
-    reserved: false,
+  state: {
+    artPiece: ArtPieceType,
+    picture: any,
+    saving: boolean,
+    alertVisible: boolean,
+    alertMessage: string,
+    fieldsStatus: any
+  } = {
+    artPiece: {
+      id: "",
+      galeryId: "",
+      artistId: "",
+      reference: "",
+      name: "",
+      typeOfArtPieces: "",
+      description: "",
+      buyPriceTaxFree: -1,
+      buyPriceTaxIncluded: -1,
+      sellPriceTaxFree: -1,
+      sellPriceTaxIncluded: -1,
+      catalogPage: -1,
+      dimensions: "",
+      weight: -1,
+      year: "",
+      quantity: -1,
+      featured: false,
+      reserved: false,
+      imagesLinks: []
+    },
     picture: null,
-    imagesLinks: [],
     saving: false,
     alertVisible: false,
-    alertMessage: ""
+    alertMessage: "",
+    fieldsStatus: {}
   };
 
   change(e: Event) {
     console.log(e);
     if (e.target instanceof HTMLInputElement) {
       this.setState({
-        [e.target.id]: e.target.value
+        artPiece: { ...this.state.artPiece, [e.target.id]: e.target.value }
       });
     }
   }
@@ -73,26 +78,6 @@ export default class ArtPieceForm extends Component {
     this.setState({ alertVisible: true, alertMessage: errorMessage });
   };
 
-  checkFields(artPiece: ArtPieceType) {
-    return (
-      artPiece.galeryId &&
-      artPiece.artistId &&
-      artPiece.reference &&
-      artPiece.name &&
-      artPiece.typeOfArtPieces &&
-      artPiece.relatedArtPiecesIds &&
-      artPiece.description &&
-      artPiece.buyPriceTaxFree &&
-      artPiece.buyPriceTaxIncluded &&
-      artPiece.sellPriceTaxFree &&
-      artPiece.sellPriceTaxIncluded &&
-      artPiece.catalogPage &&
-      artPiece.dimensions &&
-      artPiece.weight &&
-      artPiece.imagesLinks
-    );
-  }
-
   styles() {
     return {
       select: {
@@ -104,56 +89,93 @@ export default class ArtPieceForm extends Component {
     };
   }
 
+  getWrongFields = () => {
+    const fieldsStatus = this.state.fieldsStatus;
+    let wrongFields: string[] = [];
+    for (var property in fieldsStatus) {
+      if (fieldsStatus.hasOwnProperty(property)) {
+        if (!fieldsStatus[property]) {
+          wrongFields = [...wrongFields, property];
+        }
+      }
+    }
+    return wrongFields;
+  };
+
   onSubmit = async (e: Event) => {
     e.preventDefault();
     this.setState({
       saving: true
     });
-    if (this.state.picture) {
-      const imageLink = await uploadPictureToFirebase(this.state.picture);
-      if (imageLink) {
-        this.setState({
-          imagesLinks: [imageLink]
-        });
-      }
-    }
+    const wrongFields = this.getWrongFields();
 
-    const addArtpieceResponse = await addArtPieceToFirebase(this.state);
-    if (!addArtpieceResponse) {
-      this.setState({
-        galeryId: "",
-        reference: "",
-        name: "",
-        artistId: "",
-        description: "",
-        buyPriceTaxFree: -1,
-        buyPriceTaxIncluded: -1,
-        sellPriceTaxFree: -1,
-        sellPriceTaxIncluded: -1,
-        catalogPage: -1,
-        dimensions: "",
-        weight: -1,
-        year: "",
-        quantity: -1,
-        featured: false,
-        reserved: false,
-        imagesLinks: []
-      });
+    if (!wrongFields.length) {
+      if (this.state.picture) {
+        const imageLink = await uploadPictureToFirebase(this.state.picture);
+        if (imageLink) {
+          this.setState({
+            artPiece: { ...this.state.artPiece, imagesLinks: [imageLink] }
+          });
+        } else {
+          this.handleAlertShow(
+            "La sauvegarde de la photo de l'oeuvre a écouhé. Veuillez rééssayer."
+          );
+          this.setState({
+            saving: false
+          });
+          return;
+        }
+      }
+      const addArtpieceResponse = await addArtPieceToFirebase(
+        this.state.artPiece
+      );
+      if (!addArtpieceResponse) {
+        this.setState({
+          artPiece: {
+            id: "",
+            galeryId: "",
+            reference: "",
+            name: "",
+            artistId: "",
+            description: "",
+            typeOfArtPieces: "",
+            buyPriceTaxFree: -1,
+            buyPriceTaxIncluded: -1,
+            sellPriceTaxFree: -1,
+            sellPriceTaxIncluded: -1,
+            catalogPage: -1,
+            dimensions: "",
+            weight: -1,
+            year: "",
+            quantity: -1,
+            featured: false,
+            reserved: false,
+            imagesLinks: []
+          },
+          picture: null
+        });
+      } else {
+        this.handleAlertShow(addArtpieceResponse.message);
+      }
     } else {
-      this.handleAlertShow(addArtpieceResponse.message);
+      this.handleAlertShow(`Champs manquants: ${wrongFields.join(", ")}`);
     }
     this.setState({ saving: false });
   };
 
   handleChangeArtistId = (event: any) => {
-    this.setState({ artistId: event.target.value });
+    this.setState({
+      artPiece: { ...this.state.artPiece, artistId: event.target.value }
+    });
   };
 
   handleChangeArtTypeId = (event: any) => {
-    this.setState({ typeOfArtPieces: event.target.value });
+    this.setState({
+      artPiece: { ...this.state.artPiece, typeOfArtPieces: event.target.value }
+    });
   };
 
-  renderArtistsChoices(artists: Array<ArtistType>) {
+  renderArtistsChoices(artists: ArtistType[]) {
     if (artists) {
       return artists.map(artist => (
         <option value={artist.id}>{artist.name}</option>
@@ -161,7 +183,7 @@ export default class ArtPieceForm extends Component {
     }
   }
 
-  renderArtTypesChoices(arttypes: Array<ArtTypeType>) {
+  renderArtTypesChoices(arttypes: ArtTypeType[]) {
     if (arttypes) {
       return arttypes.map(arttype => (
         <option value={arttype.id}>{arttype.name}</option>
@@ -177,9 +199,18 @@ export default class ArtPieceForm extends Component {
     }
   };
 
-  validateFormField(predicate: boolean) {
-    return predicate ? "success" : "error";
-  }
+  // validateFormField(predicate: boolean) {
+  //   return predicate ? "success" : "error";
+  // }
+  validateFormField = (predicate: boolean, fieldLabel: string) => {
+    if (predicate) {
+      this.state.fieldsStatus[fieldLabel] = true;
+      return "success";
+    } else {
+      this.state.fieldsStatus[fieldLabel] = false;
+      return "error";
+    }
+  };
 
   render() {
     return (
@@ -190,9 +221,10 @@ export default class ArtPieceForm extends Component {
             type="text"
             label="Référence"
             placeholder="Ex: 1010"
-            value={this.state.reference}
+            value={this.state.artPiece.reference}
             validationState={this.validateFormField(
-              this.state.reference !== ""
+              this.state.artPiece.reference !== "",
+              "Référence"
             )}
             onChange={(e: Event) => this.change(e)}
           />
@@ -201,8 +233,11 @@ export default class ArtPieceForm extends Component {
             type="text"
             label="Nom de l'oeuvre"
             placeholder="Kong résine rouge"
-            value={this.state.name}
-            validationState={this.validateFormField(this.state.name !== "")}
+            value={this.state.artPiece.name}
+            validationState={this.validateFormField(
+              this.state.artPiece.name !== "",
+              "Nom de l'oeuvre"
+            )}
             onChange={(e: Event) => this.change(e)}
           />
 
@@ -210,7 +245,10 @@ export default class ArtPieceForm extends Component {
             id="artistId"
             label="Artiste"
             placeholder="Selectionner l'artiste"
-            validationState={this.validateFormField(this.state.artistId !== "")}
+            validationState={this.validateFormField(
+              this.state.artPiece.artistId !== "",
+              "Artiste"
+            )}
             componentClass="select"
             onChange={e => this.handleChangeArtistId(e)}
             selectOptions={this.renderArtistsChoices(this.props.artists)}
@@ -221,7 +259,8 @@ export default class ArtPieceForm extends Component {
             label="Type de l'oeuvre"
             placeholder="Selectionner le type de l'oeuvre"
             validationState={this.validateFormField(
-              this.state.typeOfArtPieces !== ""
+              this.state.artPiece.typeOfArtPieces !== "",
+              "Type de l'oeuvre"
             )}
             componentClass="select"
             onChange={e => this.handleChangeArtTypeId(e)}
@@ -232,7 +271,7 @@ export default class ArtPieceForm extends Component {
             id="description"
             label="Description"
             type="text"
-            value={this.state.description}
+            value={this.state.artPiece.description}
             onChange={(e: Event) => this.change(e)}
           />
 
@@ -240,14 +279,14 @@ export default class ArtPieceForm extends Component {
             id="buyPriceTaxFree"
             label="Prix d'achat (HT)"
             type="text"
-            value={this.state.buyPriceTaxFree}
+            value={this.state.artPiece.buyPriceTaxFree}
             onChange={(e: Event) => this.change(e)}
           />
           <FieldGroup
             id="buyPriceTaxIncluded"
             label="Prix d'achat (TTC)"
             type="text"
-            value={this.state.buyPriceTaxIncluded}
+            value={this.state.artPiece.buyPriceTaxIncluded}
             onChange={(e: Event) => this.change(e)}
           />
 
@@ -255,7 +294,7 @@ export default class ArtPieceForm extends Component {
             id="sellPriceTaxFree"
             label="Prix de vente (HT)"
             type="text"
-            value={this.state.sellPriceTaxFree}
+            value={this.state.artPiece.sellPriceTaxFree}
             onChange={(e: Event) => this.change(e)}
           />
           <FieldGroup
@@ -263,37 +302,38 @@ export default class ArtPieceForm extends Component {
             label="Prix de vente (TTC)"
             type="text"
             validationState={this.validateFormField(
-              this.state.sellPriceTaxIncluded > 0
+              this.state.artPiece.sellPriceTaxIncluded > 0,
+              "Prix de vente (TTC)"
             )}
-            value={this.state.sellPriceTaxIncluded}
+            value={this.state.artPiece.sellPriceTaxIncluded}
             onChange={(e: Event) => this.change(e)}
           />
           <FieldGroup
             id="catalogPage"
             label="Page du catalogue"
             type="text"
-            value={this.state.catalogPage}
+            value={this.state.artPiece.catalogPage}
             onChange={(e: Event) => this.change(e)}
           />
           <FieldGroup
             id="dimensions"
             label="Dimensions"
             type="text"
-            value={this.state.dimensions}
+            value={this.state.artPiece.dimensions}
             onChange={(e: Event) => this.change(e)}
           />
           <FieldGroup
             id="weight"
             label="Poids"
             type="text"
-            value={this.state.weight}
+            value={this.state.artPiece.weight}
             onChange={(e: Event) => this.change(e)}
           />
           <FieldGroup
             id="year"
             label="Année"
             type="text"
-            value={this.state.year}
+            value={this.state.artPiece.year}
             onChange={(e: Event) => this.change(e)}
           />
 
@@ -301,28 +341,49 @@ export default class ArtPieceForm extends Component {
             id="quantity"
             label="Nombre d'exemplaires"
             type="text"
-            value={this.state.quantity}
-            validationState={this.validateFormField(this.state.quantity > 0)}
+            value={this.state.artPiece.quantity}
+            validationState={this.validateFormField(
+              this.state.artPiece.quantity > 0,
+              "Nombre d'exemplaires"
+            )}
             onChange={(e: Event) => this.change(e)}
           />
 
           <FieldGroup
             id="picture"
             type="file"
-            label="File"
+            label="Photo"
+            validationState={this.validateFormField(
+              this.state.picture !== null,
+              "Photo"
+            )}
             onChange={(e: Event) => this.onImageChange(e)}
           />
 
           <Checkbox
-            checked={this.state.featured}
-            onChange={e => this.setState({ featured: !this.state.featured })}
+            checked={this.state.artPiece.featured}
+            onChange={e =>
+              this.setState({
+                artPiece: {
+                  ...this.state.artPiece,
+                  featured: !this.state.artPiece.featured
+                }
+              })
+            }
           >
             Oeuvre dans la rubrique "Sélection"
           </Checkbox>
 
           <Checkbox
-            checked={this.state.reserved}
-            onChange={e => this.setState({ reserved: !this.state.reserved })}
+            checked={this.state.artPiece.reserved}
+            onChange={e =>
+              this.setState({
+                artPiece: {
+                  ...this.state.artPiece,
+                  reserved: !this.state.artPiece.reserved
+                }
+              })
+            }
           >
             Oeuvre marquée comme "Réservée"
           </Checkbox>
