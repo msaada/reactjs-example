@@ -1,31 +1,31 @@
 // @flow
 
-import React, { Component } from "react";
+import React, { Component } from 'react';
 
-import { GridList, GridListTile, GridListTileBar } from "material-ui/GridList";
-import { CircularProgress } from "material-ui/Progress";
-import Divider from "material-ui/Divider";
+import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
+import { CircularProgress } from 'material-ui/Progress';
+import Divider from 'material-ui/Divider';
 
-import { Image } from "react-bootstrap";
+import { Image } from 'react-bootstrap';
 
-import "../css/App.css";
+import '../css/App.css';
 
-import type { ArtistType, ArtPieceType } from "../types/types";
-import { ArtistHomeGrid } from "./ArtistHomeGrid";
-import { ArtPieceGrid } from "./ArtPieceGrid";
+import type { ArtistType, ArtPieceType } from '../types/types';
+import { ArtistHomeGrid } from './ArtistHomeGrid';
+import { ArtPieceGrid } from './ArtPieceGrid';
 
-import Header from "./Header";
-import Footer from "./Footer";
+import Header from './Header';
+import Footer from './Footer';
 
-import { getArtists, getArtPieces } from "../javascript/firebaseUtils";
+import { getArtists, getArtPieces } from '../javascript/firebaseUtils';
 
 class Home extends Component {
   state: {
     artists: ?Array<ArtistType>,
-    artpieces: ?Array<ArtPieceType>
+    artpieces: ?Array<ArtPieceType>,
   } = {
     artists: null,
-    artpieces: null
+    artpieces: null,
   };
 
   setStateAsync(state: any) {
@@ -37,14 +37,14 @@ class Home extends Component {
   componentWillMount() {
     const callbackArtists = dataArtists => {
       this.setState({
-        artists: dataArtists
+        artists: dataArtists,
       });
     };
     getArtists(callbackArtists);
 
     const callbackArtpieces = dataArtpieces => {
       this.setState({
-        artpieces: dataArtpieces
+        artpieces: dataArtpieces,
       });
     };
     getArtPieces(callbackArtpieces);
@@ -53,74 +53,74 @@ class Home extends Component {
   styles() {
     return {
       root: {
-        display: "flex",
-        flexWrap: "wrap",
-        justifyContent: "space-around"
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'space-around',
       },
       gridList: {
-        overflowY: "auto",
-        display: "flex",
-        flexWrap: "wrap",
-        justifyContent: "center",
-        overflow: "hidden"
+        overflowY: 'auto',
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        overflow: 'hidden',
       },
       fullwidth: {
-        width: "100%",
-        height: "auto"
+        width: '100%',
+        height: 'auto',
       },
       centered: {
-        display: "flex",
-        justifyContent: "center"
+        display: 'flex',
+        justifyContent: 'center',
       },
       button: {
-        margin: 12
+        margin: 12,
       },
       divider: {
-        color: "#ff7e17",
-        marginTop: "0.5em",
-        marginBottom: "3em"
+        color: '#ff7e17',
+        marginTop: '0.5em',
+        marginBottom: '3em',
       },
       headers: {
-        display: "flex",
-        justifyContent: "space-between"
+        display: 'flex',
+        justifyContent: 'space-between',
       },
       category: {
-        marginBottom: "2em"
+        marginBottom: '2em',
       },
       image: {
-        height: "100%",
-        marginLeft: "auto",
-        marginRight: "auto",
-        display: "flex",
-        justifyContent: "center"
+        height: '100%',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        display: 'flex',
+        justifyContent: 'center',
       },
       relative: {
-        position: "relative",
-        width: "100%",
-        height: "35em"
+        position: 'relative',
+        width: '100%',
+        height: '35em',
       },
       slides: {
         root: {
-          marginTop: "2em"
+          marginTop: '2em',
         },
         image: {
-          height: "30em",
-          width: "100%",
-          position: "absolute"
+          height: '30em',
+          width: '100%',
+          position: 'absolute',
         },
         catchphrase: {
-          display: "flex",
-          position: "absolute",
-          justifyContent: "center",
-          width: "100%",
-          marginTop: "12em",
-          color: "#FFFFFF"
-        }
+          display: 'flex',
+          position: 'absolute',
+          justifyContent: 'center',
+          width: '100%',
+          marginTop: '12em',
+          color: '#FFFFFF',
+        },
       },
       titleBar: {
-        background: "rgba(0,0,0,0.15)",
-        height: "2.5em"
-      }
+        background: 'rgba(0,0,0,0.15)',
+        height: '2.5em',
+      },
     };
   }
 
@@ -140,7 +140,7 @@ class Home extends Component {
       return this.state.artpieces
         .slice(startIndex, endIndex)
         .map((artpiece, index) => {
-          return ArtPieceGrid(artpiece, index, "");
+          return ArtPieceGrid(artpiece, index, '');
         });
     }
   }
@@ -150,27 +150,28 @@ class Home extends Component {
         (e: ArtPieceType) => (e.featured ? e.featured : false)
       );
       return featuredArtPieces.map((artpiece, index) => {
-        return ArtPieceGrid(artpiece, index, "");
+        return ArtPieceGrid(artpiece, index, '');
       });
     }
   }
 
   render() {
+    console.log(this.styles().gridList);
     return (
       <div className="Home">
         <Header />
         <div className style={this.styles().slides.root}>
           <div style={this.styles().relative}>
             <Image
-              src={require("../assets/home.jpg")}
+              src={require('../assets/home.jpg')}
               style={this.styles().slides.image}
             />
             <div style={this.styles().slides.catchphrase}>
               <h1
                 style={{
-                  textAlign: "center",
-                  fontStyle: "italic",
-                  fontSize: "2.5rem"
+                  textAlign: 'center',
+                  fontStyle: 'italic',
+                  fontSize: '2.5rem',
                 }}
               >
                 Bienvenue dans notre nouveau concept store, la Mega Dental Art
@@ -204,10 +205,10 @@ class Home extends Component {
                     />
 
                     <Image
-                      src={require("../assets/more.jpg")}
+                      src={require('../assets/more.jpg')}
                       alt="Voir plus d'oeuvres"
                       style={this.styles().image}
-                      onClick={e => (window.location.href = "/nouveautes")}
+                      onClick={e => (window.location.href = '/nouveautes')}
                     />
                   </GridListTile>
                 </GridList>
@@ -236,10 +237,10 @@ class Home extends Component {
                     />
 
                     <Image
-                      src={require("../assets/more.jpg")}
+                      src={require('../assets/more.jpg')}
                       alt="Voir plus d'artistes"
                       style={this.styles().image}
-                      onClick={e => (window.location.href = "/artistes")}
+                      onClick={e => (window.location.href = '/artistes')}
                     />
                   </GridListTile>
                 </GridList>
@@ -253,16 +254,16 @@ class Home extends Component {
             <div className="ProgressBar" style={this.styles().centered}>
               {!this.state.artpieces && <CircularProgress size={90} />}
             </div>
-            {this.state.artpieces &&
-              this.state.artpieces.length && (
-                <GridList
-                  cellHeight={250}
-                  style={this.styles().gridList}
-                  cols={4}
-                >
-                  {this.listArtPieces(3, 7)}
-                </GridList>
-              )}
+                {this.state.artpieces &&
+                  this.state.artpieces.length && (
+                    <GridList
+                      cellHeight={250}
+                      style={this.styles().gridList}
+                      cols={4}
+                    >
+                      {this.listArtPieces(3, 7)}
+                    </GridList>
+                  )}
           </div>
         </div>
         <Footer />
