@@ -2,14 +2,14 @@
 
 import React, { Component } from "react";
 
-import TextField from "material-ui/TextField";
 import Button from "material-ui/Button";
 
 import type { ArtistType, File } from "../types/types";
 import { Checkbox } from "react-bootstrap";
 import {
   addArtistToFirebase,
-  uploadPictureToFirebase
+  uploadPictureToFirebase,
+  updateArtist
 } from "../javascript/firebaseUtils";
 
 import MyAlert from "./MyAlert";
@@ -19,8 +19,8 @@ import { CircularProgress } from "material-ui/Progress";
 export default class ArtistForm extends Component {
   state: {
     artist: ArtistType,
-    logoFile: any,
-    pictureFile: any,
+    logoFile: ?File | null,
+    pictureFile: ?File,
     alertVisible: boolean,
     alertMessage: string,
     saving: boolean,
@@ -42,6 +42,15 @@ export default class ArtistForm extends Component {
     saving: false,
     fieldsStatus: {}
   };
+
+  componentDidMount() {
+    const artist = this.props.defaultArtist;
+    if (this.props.defaultArtist) {
+      this.setState({
+        artist
+      });
+    }
+  }
 
   change(e: Event) {
     if (e.target instanceof HTMLInputElement) {
@@ -111,8 +120,14 @@ export default class ArtistForm extends Component {
         }
       }
 
-      const firebaseResponse = await addArtistToFirebase(this.state.artist);
-
+      let firebaseResponse;
+      if (this.props.defaultArtist) {
+        firebaseResponse = await updateArtist(this.state.artist);
+        console.log(firebaseResponse);
+      } else {
+        firebaseResponse = await addArtistToFirebase(this.state.artist);
+        console.log(firebaseResponse);
+      }
       if (firebaseResponse) {
         this.handleAlertShow(firebaseResponse.message);
       } else {
@@ -194,7 +209,8 @@ export default class ArtistForm extends Component {
             type="file"
             label="Photo"
             validationState={this.validateFormField(
-              this.state.pictureFile !== null,
+              this.state.artist.picture !== "" ||
+                this.state.pictureFile !== null,
               "Photo"
             )}
             onChange={(e: Event) => this.onImageChange(e, false)}
@@ -205,7 +221,7 @@ export default class ArtistForm extends Component {
             type="file"
             label="Logo"
             validationState={this.validateFormField(
-              this.state.logoFile !== null,
+              this.state.artist.logo !== "" || this.state.logoFile !== null,
               "Logo"
             )}
             onChange={(e: Event) => this.onImageChange(e, true)}
@@ -245,7 +261,7 @@ export default class ArtistForm extends Component {
             />
           )}
           <Button raised onClick={(e: Event) => this.onSubmit(e)}>
-            Confirmer
+            Sauvegarder
           </Button>
           {this.state.saving && <CircularProgress size={90} />}
         </form>

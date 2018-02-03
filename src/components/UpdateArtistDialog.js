@@ -10,10 +10,10 @@ import Button from "material-ui/Button";
 
 import ArtistForm from "./ArtistForm";
 
-export default class AddArtistDialog extends Component {
+export default class UpdateArtistDialog extends Component {
   state: {
     open: boolean
-  } = { open: this.props.artist ? true : false };
+  } = { open: false };
 
   handleOpen = () => {
     this.setState({ open: true });
@@ -22,11 +22,6 @@ export default class AddArtistDialog extends Component {
   handleClose = () => {
     this.setState({ open: false });
   };
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.artist) {
-      this.handleOpen();
-    }
-  }
 
   render() {
     return (
@@ -38,7 +33,7 @@ export default class AddArtistDialog extends Component {
           <DialogTitle>Ajouter un artiste</DialogTitle>
           <DialogContent>
             <DialogContentText>Tous les champs sont requis.</DialogContentText>
-            <ArtistForm defaultArtist={this.props.artist} />
+            <ArtistForm />
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleClose}>Terminer</Button>

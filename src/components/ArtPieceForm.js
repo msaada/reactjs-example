@@ -17,7 +17,6 @@ import type {
 
 import {
   addArtPieceToFirebase,
-  addArtistToFirebase,
   uploadPictureToFirebase
 } from "../javascript/firebaseUtils";
 import MyAlert from "./MyAlert";
@@ -199,14 +198,27 @@ export default class ArtPieceForm extends Component {
     }
   };
 
-  // validateFormField(predicate: boolean) {
-  //   return predicate ? "success" : "error";
-  // }
   validateFormField = (predicate: boolean, fieldLabel: string) => {
     if (predicate) {
+      // if (!this.state.fieldsStatus[fieldLabel]) {
+      //   this.setState({
+      //     fieldsStatus: {
+      //       ...this.state.fieldsStatus,
+      //       fieldLabel: true
+      //     }
+      //   });
+      // }
       this.state.fieldsStatus[fieldLabel] = true;
       return "success";
     } else {
+      // if (this.state.fieldsStatus[fieldLabel]) {
+      //   this.setState({
+      //     fieldsStatus: {
+      //       ...this.state.fieldsStatus,
+      //       fieldLabel: false
+      //     }
+      //   });
+      // }
       this.state.fieldsStatus[fieldLabel] = false;
       return "error";
     }

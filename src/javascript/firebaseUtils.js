@@ -7,8 +7,7 @@ import type {
   CartType,
   OrderType,
   UserType,
-  CallbackType,
-  FirebaseUser
+  CallbackType
 } from "../types/types";
 import artistModel from "../models/artist";
 import artPieceModel from "../models/artPiece";
@@ -26,6 +25,7 @@ export let auth = null;
 export let storage = null;
 
 export const init = () => {
+  const appName = "Megadental Art Gallery";
   const config = {
     apiKey: "AIzaSyCVHvfzWzV5p2G8VkXW7k_3ALHLuS_m-WQ",
     authDomain: "ohmyart-ee13a.firebaseapp.com",
@@ -33,10 +33,24 @@ export const init = () => {
     storageBucket: "ohmyart-ee13a.appspot.com",
     messagingSenderId: "564094140683.4"
   };
-  app = firebase.initializeApp(config);
+  app = firebase.initializeApp(config, appName);
   database = app.database();
   auth = app.auth();
   storage = app.storage();
+};
+
+export const initTestApp = () => {
+  const appName = "Megadental Art Gallery Test";
+  const config = {
+    apiKey: "AIzaSyCVHvfzWzV5p2G8VkXW7k_3ALHLuS_m-WQ",
+    authDomain: "ohmyart-ee13a.firebaseapp.com",
+    databaseURL: "https://ohmyart-ee13a.firebaseio.com",
+    storageBucket: "ohmyart-ee13a.appspot.com",
+    messagingSenderId: "564094140683.4"
+  };
+  app = firebase.initializeApp(config, appName);
+  database = app.database();
+  auth = app.auth();
 };
 
 // add new section
@@ -55,8 +69,6 @@ export const addArtTypeToFirebase = async (element: ArtTypeType) => {
       } catch (e) {
         return e;
       }
-    } else {
-      return null;
     }
   }
   return null;
@@ -64,24 +76,31 @@ export const addArtTypeToFirebase = async (element: ArtTypeType) => {
 
 export const addArtPieceToFirebase = async (element: ArtPieceType) => {
   const root = "/artpieces";
+  console.log(database);
   if (database) {
     const key = database.ref(root).push().key;
+    console.log(key);
     if (key) {
       const model = artPieceModel(
         key,
         element,
         firebase.database.ServerValue.TIMESTAMP
       );
-      try {
-        await database.ref(`${root}/${key}`).set(model);
-      } catch (e) {
-        return e;
+      if (model) {
+        try {
+          await database.ref(`${root}/${key}`).set(model);
+          return null;
+        } catch (e) {
+          return e;
+        }
+      } else {
+        return { message: "Error: no model" };
       }
     } else {
-      return null;
+      return { message: "Error: no key" };
     }
   } else {
-    return null;
+    return { message: "Error: no database" };
   }
 };
 
@@ -129,11 +148,6 @@ export const uploadPictureToFirebase = async (file: File) => {
 
   // Upload file and metadata to the object 'images/mountains.jpg'
   if (storage) {
-    const uploadTask = await storage
-      .ref()
-      .child("images/" + file.name)
-      .put(file, metadata);
-
     // Listen for state changes, errors, and completion of the upload.
     const snapshot = await storage
       .ref()
@@ -159,21 +173,6 @@ export const addOrderToFirebase = async (element: OrderType) => {
   return database && key
     ? await database.ref(`${root}/${key}`).set(model)
     : null;
-};
-
-export const addImageToFirebase = async (
-  root: string,
-  image: File,
-  callback
-) => {
-  if (storage) {
-    const imagesRef = storage.child("images/mountains.jpg");
-    imagesRef.put(image).then(function(snapshot) {
-      console.log("Uploaded a blob or file!");
-      console.log(snapshot);
-      callback(snapshot);
-    });
-  }
 };
 
 export const addUserExtraInfosToFirebase = async (
@@ -450,4 +449,20 @@ export async function logOut() {
   if (auth) {
     await auth.signOut();
   }
+}
+
+export async function updateArtist(artist: ArtistType) {
+  const { id, ...updatedValues } = artist;
+  console.log(artist);
+  const artistRef = database ? database.ref(`artists/${id}`) : null;
+  if (artistRef) {
+    return artistRef.transaction(function(loadedArtist) {
+      if (loadedArtist) {
+        console.log(loadedArtist);
+        // artist.name = updatedValues.name;
+      }
+      return loadedArtist;
+    });
+  }
+  return null;
 }

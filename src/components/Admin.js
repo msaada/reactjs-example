@@ -127,7 +127,7 @@ class Admin extends Component {
             />
           )}
 
-          <AddArtistDialog />
+          {/* <AddArtistDialog /> */}
 
           <Pagination
             style={this.styles().centered}

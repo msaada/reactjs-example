@@ -2,7 +2,6 @@
 
 import React, { Component } from "react";
 
-import TextField from "material-ui/TextField";
 import Button from "material-ui/Button";
 
 import type { ArtTypeType } from "../types/types";
@@ -126,7 +125,7 @@ export default class ArtTypeForm extends Component {
               alertDissmiss={this.handleAlertDismiss}
             />
           )}
-          <Button onClick={e => this.onSubmit(e)}>Confirmer</Button>
+          <Button onClick={e => this.onSubmit(e)}>Sauvegarder</Button>
           {this.state.saving && <CircularProgress size={90} />}
         </form>
       </div>
