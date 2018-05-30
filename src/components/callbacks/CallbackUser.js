@@ -1,39 +1,38 @@
 // @flow
 
-import React, { Component } from "react";
+import Divider from 'material-ui/Divider';
+import React, { Component } from 'react';
+import '../../css/App.css';
+import { addCallbackToFirebase } from '../../javascript/firebaseUtils';
+import Footer from '../common/Footer';
+import Header from '../common/Header';
+import AlertDialogSuccessCallbackRequest from './AlertDialogSuccessCallbackRequest';
+import { CallbackForm } from './CallbackForm';
 
-import "../css/App.css";
+import type { CallbackType } from '../../types/types';
 
-import Header from "./Header";
-import Footer from "./Footer";
+type Props = {};
+type State = {
+  name: string,
+  email: string,
+  phoneNumber: string,
+  callbackRequestDialog: boolean,
+};
 
-import Divider from "material-ui/Divider";
-import AlertDialogSuccessCallbackRequest from "./AlertDialogSuccessCallbackRequest";
-import { CallbackForm } from "./CallbackForm";
-
-import type { CallbackType } from "../types/types";
-
-import { addCallbackToFirebase } from "../javascript/firebaseUtils";
-
-class CallbackUser extends Component {
-  state: {
-    name: string,
-    email: string,
-    phoneNumber: string,
-    callbackRequestDialog: boolean
-  } = {
-    name: "",
-    email: "",
-    phoneNumber: "",
-    callbackRequestDialog: false
+class CallbackUser extends Component<Props, State> {
+  state = {
+    name: '',
+    email: '',
+    phoneNumber: '',
+    callbackRequestDialog: false,
   };
 
   componentDidMount = () => {};
 
-  change = (e: Event) => {
+  change = (e: SyntheticInputEvent<>) => {
     if (e.target instanceof HTMLInputElement) {
       this.setState({
-        [e.target.id]: e.target.value
+        [e.target.id]: e.target.value,
       });
     }
   };
@@ -49,35 +48,35 @@ class CallbackUser extends Component {
   styles = () => {
     return {
       root: {
-        display: "flex",
-        justifyContent: "space-around",
-        flexDirection: "column"
+        display: 'flex',
+        justifyContent: 'space-around',
+        flexDirection: 'column',
       },
       divider: {
-        marginBottom: "2em"
+        marginBottom: '2em',
       },
       centered: {
-        display: "flex",
-        justifyContent: "center"
+        display: 'flex',
+        justifyContent: 'center',
       },
       buttons: {
-        display: "flex",
-        justifyContent: "flex-start"
-      }
+        display: 'flex',
+        justifyContent: 'flex-start',
+      },
     };
   };
   callbackUser = async () => {
     const callback: CallbackType = {
       name: this.state.name,
       email: this.state.email,
-      phoneNumber: this.state.phoneNumber
+      phoneNumber: this.state.phoneNumber,
     };
-    await addCallbackToFirebase("/callbacks", callback);
+    await addCallbackToFirebase('/callbacks', callback);
     this.setState({
-      name: "",
-      email: "",
-      phoneNumber: "",
-      callbackRequestDialog: true
+      name: '',
+      email: '',
+      phoneNumber: '',
+      callbackRequestDialog: true,
     });
   };
   render() {
