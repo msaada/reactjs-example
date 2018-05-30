@@ -1,37 +1,31 @@
 // @flow
-import React, { Component } from "react";
+import Divider from 'material-ui/Divider';
+import React from 'react';
+import '../../css/App.css';
+import Footer from '../common/Footer';
+import Header from '../common/Header';
 
-import "../css/App.css";
-
-import Header from "./Header";
-import Footer from "./Footer";
-
-import Divider from "material-ui/Divider";
-
-class About extends Component {
-  styles() {
-    return {
-      divider: {
-        marginBottom: "1em"
-      },
-      CEOletter: {
-        maxWidth: "50rem",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center"
-      }
-    };
-  }
-
-  render = () => {
-    return (
-      <div>
-        <Header />
-
-        <div className="body">
+const styles = {
+  divider: {
+    marginBottom: '1em',
+  },
+  CEOletter: {
+    maxWidth: '50rem',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+  },
+};
+type Props = {};
+export default (props: Props) => {
+  return (
+    <div>
+      <Header />
+      <div className="body">
+        <div>
           <h1>A propos</h1>
-          <Divider style={this.styles().divider} />
-          <div style={this.styles().CEOletter}>
+          <Divider style={styles.divider} />
+          <div style={styles.CEOletter}>
             <p>Cher Docteur,</p>
             <p>
               Nous sommes heureux de vous présenter notre nouveau concept store,
@@ -70,11 +64,8 @@ class About extends Component {
             <p>Président.</p>
           </div>
         </div>
-
-        <Footer />
       </div>
-    );
-  };
-}
-
-export default About;
+      <Footer />
+    </div>
+  );
+};
