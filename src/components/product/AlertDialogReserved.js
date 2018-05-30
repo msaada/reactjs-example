@@ -1,28 +1,26 @@
 //@flow
-import React from "react";
-import Button from "material-ui/Button";
+import Button from 'material-ui/Button';
 import Dialog, {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle
-} from "material-ui/Dialog";
-import Slide from "material-ui/transitions/Slide";
+  DialogTitle,
+} from 'material-ui/Dialog';
+import Slide from 'material-ui/transitions/Slide';
+import React from 'react';
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
 
-class AlertDialogReserved extends React.Component {
-  state: { open: boolean } = { open: false };
-  handleClickOpen = () => {
-    this.setState({ open: true });
-  };
+type Props = {
+  open: boolean,
+  handleRequestClose: () => void,
+};
 
-  handleRequestClose = () => {
-    this.setState({ open: false });
-  };
+type State = {};
 
+class AlertDialogReserved extends React.Component<Props, State> {
   render() {
     return (
       <div>
@@ -32,7 +30,7 @@ class AlertDialogReserved extends React.Component {
           keepMounted
           onRequestClose={this.props.handleRequestClose}
         >
-          <DialogTitle>{"Attention !"}</DialogTitle>
+          <DialogTitle>{'Attention !'}</DialogTitle>
           <DialogContent>
             <DialogContentText>
               Cette oeuvre est déjà reservée, vous ne pouvez pas l'ajouter au

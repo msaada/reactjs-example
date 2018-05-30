@@ -1,28 +1,24 @@
 //@flow
-import React from "react";
-import Button from "material-ui/Button";
+import Button from 'material-ui/Button';
 import Dialog, {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle
-} from "material-ui/Dialog";
-import Slide from "material-ui/transitions/Slide";
+  DialogTitle,
+} from 'material-ui/Dialog';
+import Slide from 'material-ui/transitions/Slide';
+import React from 'react';
 
 function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
 
-class AlertDialogNoUser extends React.Component {
-  state: { open: boolean } = { open: false };
-  handleClickOpen = () => {
-    this.setState({ open: true });
-  };
-
-  handleRequestClose = () => {
-    this.setState({ open: false });
-  };
-
+type Props = {
+  open: boolean,
+  handleRequestClose: () => void,
+};
+type State = {};
+class AlertDialogNoUser extends React.Component<Props, State> {
   render() {
     return (
       <div>
@@ -32,7 +28,7 @@ class AlertDialogNoUser extends React.Component {
           keepMounted
           onRequestClose={this.props.handleRequestClose}
         >
-          <DialogTitle>{"Attention !"}</DialogTitle>
+          <DialogTitle>{'Attention !'}</DialogTitle>
           <DialogContent>
             <DialogContentText>
               Vous devez vous identifier ou créer un compte pour ajouter cette
@@ -43,10 +39,10 @@ class AlertDialogNoUser extends React.Component {
             <Button onClick={this.props.handleRequestClose} color="primary">
               Continuer à visiter
             </Button>
-            <Button raised href={"/connexion"} color="primary">
+            <Button raised href={'/connexion'} color="primary">
               Connexion
             </Button>
-            <Button raised href={"/creercompte"} color="primary">
+            <Button raised href={'/creercompte'} color="primary">
               Créer un compte
             </Button>
           </DialogActions>
