@@ -1,38 +1,30 @@
 // @flow
 
-import React, { Component } from 'react';
-
-import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
-import { CircularProgress } from 'material-ui/Progress';
 import Divider from 'material-ui/Divider';
-
+import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
+import React, { Component } from 'react';
 import { Image } from 'react-bootstrap';
-
-import '../css/App.css';
-
-import type { ArtistType, ArtPieceType } from '../types/types';
+import ReactGA from 'react-ga';
+import '../../css/App.css';
+import { getArtPieces, getArtists } from '../../javascript/firebaseUtils';
+import Footer from '.././common/Footer';
+import Header from '.././common/Header';
+import ArtPiecesGrid from '../artpieces/ArtPiecesGrid';
+import ConditionalCircularProgress from '../common/ConditionalCircularProgress';
 import { ArtistHomeGrid } from './ArtistHomeGrid';
-import { ArtPieceGrid } from './ArtPieceGrid';
 
-import Header from './Header';
-import Footer from './Footer';
+import type { ArtistType, ArtPieceType } from '../../types/types';
 
-import { getArtists, getArtPieces } from '../javascript/firebaseUtils';
-
-class Home extends Component {
-  state: {
-    artists: ?Array<ArtistType>,
-    artpieces: ?Array<ArtPieceType>,
-  } = {
-    artists: null,
-    artpieces: null,
+type Props = {};
+type State = {
+  artists: ArtistType[],
+  artpieces: ArtPieceType[],
+};
+class Home extends Component<Props, State> {
+  state: State = {
+    artists: [],
+    artpieces: [],
   };
-
-  setStateAsync(state: any) {
-    return new Promise(resolve => {
-      this.setState(state, resolve);
-    });
-  }
 
   componentWillMount() {
     const callbackArtists = dataArtists => {
@@ -49,14 +41,12 @@ class Home extends Component {
     };
     getArtPieces(callbackArtpieces);
   }
+  componentDidMount() {
+    ReactGA.pageview('acceuil');
+  }
 
   styles() {
     return {
-      root: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'space-around',
-      },
       gridList: {
         overflowY: 'auto',
         display: 'flex',
@@ -64,25 +54,14 @@ class Home extends Component {
         justifyContent: 'center',
         overflow: 'hidden',
       },
-      fullwidth: {
-        width: '100%',
-        height: 'auto',
-      },
       centered: {
         display: 'flex',
         justifyContent: 'center',
-      },
-      button: {
-        margin: 12,
       },
       divider: {
         color: '#ff7e17',
         marginTop: '0.5em',
         marginBottom: '3em',
-      },
-      headers: {
-        display: 'flex',
-        justifyContent: 'space-between',
       },
       category: {
         marginBottom: '2em',
@@ -135,35 +114,15 @@ class Home extends Component {
     }
   }
 
-  listArtPieces(startIndex: number, endIndex: number) {
-    if (this.state.artpieces) {
-      return this.state.artpieces
-        .slice(startIndex, endIndex)
-        .map((artpiece, index) => {
-          return ArtPieceGrid(artpiece, index, '');
-        });
-    }
-  }
-  listFeaturedArtPieces() {
-    if (this.state.artpieces) {
-      const featuredArtPieces = this.state.artpieces.filter(
-        (e: ArtPieceType) => (e.featured ? e.featured : false)
-      );
-      return featuredArtPieces.map((artpiece, index) => {
-        return ArtPieceGrid(artpiece, index, '');
-      });
-    }
-  }
-
   render() {
     console.log(this.styles().gridList);
     return (
       <div className="Home">
         <Header />
-        <div className style={this.styles().slides.root}>
+        <div style={this.styles().slides.root}>
           <div style={this.styles().relative}>
             <Image
-              src={require('../assets/home.jpg')}
+              src={require('../../assets/home.jpg')}
               style={this.styles().slides.image}
             />
             <div style={this.styles().slides.catchphrase}>
@@ -186,42 +145,26 @@ class Home extends Component {
               <h1>Nouveautés</h1>
             </div>
             <Divider style={this.styles().divider} />
-
-            <div className="ProgressBar" style={this.styles().centered}>
-              {!this.state.artpieces && <CircularProgress size={90} />}
-            </div>
-            {this.state.artpieces &&
-              this.state.artpieces.length && (
-                <GridList
-                  cellHeight={250}
-                  style={this.styles().gridList}
-                  cols={4}
-                >
-                  {this.listFeaturedArtPieces()}
-                  <GridListTile key={4}>
-                    <GridListTileBar
-                      title="Voir toutes les nouveautés..."
-                      style={this.styles().titleBar}
-                    />
-
-                    <Image
-                      src={require('../assets/more.jpg')}
-                      alt="Voir plus d'oeuvres"
-                      style={this.styles().image}
-                      onClick={e => (window.location.href = '/nouveautes')}
-                    />
-                  </GridListTile>
-                </GridList>
+            <ConditionalCircularProgress
+              predicate={this.state.artpieces.length === 0}
+            />
+            <ArtPiecesGrid
+              artPieces={this.state.artpieces.filter(
+                (e: ArtPieceType) => (e.featured ? e.featured : false)
               )}
+              artistName={''}
+              hasSeeMoreTyle
+            />
           </div>
           <div style={this.styles().category}>
             <div style={this.styles().centered}>
               <h1>Artistes du moment</h1>
             </div>
             <Divider style={this.styles().divider} />
-            <div className="ProgressBar" style={this.styles().centered}>
-              {!this.state.artists && <CircularProgress size={90} />}
-            </div>
+
+            <ConditionalCircularProgress
+              predicate={this.state.artists.length === 0}
+            />
             {this.state.artists &&
               this.state.artists.length && (
                 <GridList
@@ -237,7 +180,7 @@ class Home extends Component {
                     />
 
                     <Image
-                      src={require('../assets/more.jpg')}
+                      src={require('../../assets/more.jpg')}
                       alt="Voir plus d'artistes"
                       style={this.styles().image}
                       onClick={e => (window.location.href = '/artistes')}
@@ -251,19 +194,14 @@ class Home extends Component {
               <h1>Notre Sélection</h1>
             </div>
             <Divider style={this.styles().divider} />
-            <div className="ProgressBar" style={this.styles().centered}>
-              {!this.state.artpieces && <CircularProgress size={90} />}
-            </div>
-                {this.state.artpieces &&
-                  this.state.artpieces.length && (
-                    <GridList
-                      cellHeight={250}
-                      style={this.styles().gridList}
-                      cols={4}
-                    >
-                      {this.listArtPieces(3, 7)}
-                    </GridList>
-                  )}
+
+            <ConditionalCircularProgress
+              predicate={this.state.artpieces.length === 0}
+            />
+            <ArtPiecesGrid
+              artPieces={this.state.artpieces.slice(3, 7)}
+              artistName={''}
+            />
           </div>
         </div>
         <Footer />
