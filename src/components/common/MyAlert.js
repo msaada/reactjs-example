@@ -1,8 +1,14 @@
 // @flow
 
-import React, { Component } from "react";
-import { Button, Alert } from "react-bootstrap";
-class MyAlert extends Component {
+import React, { Component } from 'react';
+import { Alert, Button } from 'react-bootstrap';
+
+type Props = {
+  alertDissmiss: () => void,
+  message: string,
+};
+type State = {};
+class MyAlert extends Component<Props, State> {
   render() {
     return (
       <Alert bsStyle="danger" onDismiss={this.props.alertDissmiss}>

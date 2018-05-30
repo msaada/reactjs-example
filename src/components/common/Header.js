@@ -1,48 +1,50 @@
 //@flow
-import React, { Component } from "react";
-
-import Divider from "material-ui/Divider";
-import Button from "material-ui/Button";
-import PersonIcon from "material-ui-icons/Person";
-import ShoppingBasketIcon from "material-ui-icons/ShoppingBasket";
-
-import { Image } from "react-bootstrap";
-import Badge from "material-ui/Badge";
-import logo from "../assets/Art-Gallery-Logo.jpg";
-import type { CartType, UserType } from "../types/types";
-
+import PersonIcon from 'material-ui-icons/Person';
+import ShoppingBasketIcon from 'material-ui-icons/ShoppingBasket';
+import Badge from 'material-ui/Badge';
+import Button from 'material-ui/Button';
+import Divider from 'material-ui/Divider';
+import React, { Component } from 'react';
+import { Image } from 'react-bootstrap';
+import logo from '../../assets/Art-Gallery-Logo.jpg';
 import {
   auth,
-  logOut,
-  listenToCartChange,
   getCart,
-  getUserExtraInfos
-} from "../javascript/firebaseUtils";
+  getUserExtraInfos,
+  listenToCartChange,
+  logOut,
+} from '../../javascript/firebaseUtils';
 
-class Header extends Component {
-  state: {
-    user: ?any,
-    userInfos: ?UserType,
-    cart: ?CartType
-  } = {
+import type { CartType, UserType, FirebaseUser } from '../../types/types';
+
+type Props = {};
+type State = {
+  user: ?FirebaseUser,
+  userInfos: ?UserType,
+  cart: ?CartType,
+};
+
+class Header extends Component<Props, State> {
+  state = {
     user: null,
     cart: null,
-    userInfos: null
+    userInfos: null,
   };
 
   componentDidMount = () => {
     (async () => {
       const callbackExtraInfos = userInfos => {
         this.setState({
-          userInfos
+          userInfos,
         });
       };
       if (auth) {
-        await auth.onAuthStateChanged(async user => {
+        await auth.onAuthStateChanged(async (user: ?FirebaseUser) => {
+          console.log('HEADER user', user);
           this.setState({ user: user });
           if (user && user.uid) {
             getUserExtraInfos(user.uid, callbackExtraInfos);
-            const currentCart: CartType = await getCart(user.uid);
+            const currentCart: ?CartType = await getCart(user.uid);
             let cartId: ?string;
             if (currentCart && currentCart.active && currentCart.itemCount) {
               cartId = currentCart.id;
@@ -51,7 +53,9 @@ class Header extends Component {
             const callback = cart => {
               this.setState({ cart });
             };
-            if (user) listenToCartChange(user.uid, cartId, callback);
+            if (user) {
+              listenToCartChange(user.uid, cartId, callback);
+            }
           }
         });
       }
@@ -61,52 +65,52 @@ class Header extends Component {
   styles() {
     return {
       root: {
-        display: "flex",
-        justifyContent: "space-between",
-        marginTop: "1em",
-        height: "5em",
-        marginBottom: "2em"
+        display: 'flex',
+        justifyContent: 'space-between',
+        marginTop: '1em',
+        height: '5em',
+        marginBottom: '2em',
       },
       connect_buttons: {
-        display: "flex",
-        justifyContent: "flex-end",
-        height: "3.5em"
+        display: 'flex',
+        justifyContent: 'flex-end',
+        height: '3.5em',
       },
       mega: {
-        height: "2rem",
-        width: "auto"
+        height: '2rem',
+        width: 'auto',
       },
       nav_buttons: {
-        display: "flex",
-        justifyContent: "flex-end",
-        paddingTop: "0.5em"
+        display: 'flex',
+        justifyContent: 'flex-end',
+        paddingTop: '0.5em',
       },
       logo: {
-        height: "80%",
-        width: "auto",
-        marginBottom: "1em",
-        float: "left"
+        height: '80%',
+        width: 'auto',
+        marginBottom: '1em',
+        float: 'left',
       },
       padding: {
-        height: "3em"
+        height: '3em',
       },
       nav_div: {
-        flexGrow: "1"
+        flexGrow: '1',
       },
       hover_color: {
-        color: "#ff7e17"
+        color: '#ff7e17',
       },
       divider: {
-        marginBottom: "2em"
+        marginBottom: '2em',
       },
       button: {
-        fontFamily: "Din"
-      }
+        fontFamily: 'Din',
+      },
     };
   }
   render() {
     return (
-      <div style={{ marginBottom: "3em" }}>
+      <div style={{ marginBottom: '3em' }}>
         <div style={this.styles().divider}>
           <div style={this.styles().connect_buttons}>
             {this.state.user && (
@@ -116,14 +120,14 @@ class Header extends Component {
                   badgeContent={this.state.cart ? this.state.cart.itemCount : 0}
                   color="primary"
                 >
-                  <ShoppingBasketIcon style={{ marginLeft: "0.5em" }} />
+                  <ShoppingBasketIcon style={{ marginLeft: '0.5em' }} />
                 </Badge>
               </Button>
             )}
             {!this.state.user && (
               <Button style={this.styles().button} href="/connexion">
                 Connexion / Inscription
-                <PersonIcon style={{ marginLeft: "1em" }} />
+                <PersonIcon style={{ marginLeft: '1em' }} />
               </Button>
             )}
             {this.state.user && (
@@ -137,24 +141,25 @@ class Header extends Component {
             >
               Retour vers
               <Image
-                src={require("../assets/MEGA-DENTAL-logo.png")}
-                alt={"Megadental logo"}
+                src={require('../../assets/MEGA-DENTAL-logo.png')}
+                alt={'Megadental logo'}
                 style={this.styles().mega}
                 onClick={e =>
-                  (window.location.href = "http://www.megadental.fr")
+                  (window.location.href = 'http://www.megadental.fr')
                 }
               />
             </Button>
           </div>
-          <Divider style={{ backgroundColor: "black", marginBottom: "3em" }} />
+          <Divider style={{ backgroundColor: 'black', marginBottom: '3em' }} />
         </div>
         <div style={this.styles().root}>
-          <Image
-            src={logo}
-            style={this.styles().logo}
-            onClick={e => (window.location = "/")}
-            alt="Mega Dental concept store Art Gallery"
-          />
+          <a href={'/'}>
+            <Image
+              src={logo}
+              style={this.styles().logo}
+              alt="Mega Dental concept store Art Gallery"
+            />
+          </a>
           <div style={this.styles().nav_div}>
             <div style={this.styles().padding} />
             <Divider />
