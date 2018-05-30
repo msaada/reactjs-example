@@ -1,7 +1,7 @@
 // @flow
-import React from "react";
-import Category from "./Category";
-import { categories } from "../datas/categories";
+import React from 'react';
+import { categories } from '../datas/categories';
+import Category from './categories/Category';
 
 export const Paintings = () => {
   return <Category category={categories.peinture} />;

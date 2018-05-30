@@ -1,59 +1,59 @@
 // @flow
 
-import React, { Component } from "react";
-import Home from "./Home";
-import Login from "./Login";
-import Admin from "./Admin";
-import Orders from "./Orders";
-import Product from "./Product";
-import Artist from "./Artist";
-import Artists from "./Artists";
-import News from "./News";
-import Categories from "./Categories";
-import Header from "./Header";
-import Footer from "./Footer";
-import Cart from "./Cart";
-import About from "./About";
-import SignIn from "./SignIn";
-import BailArt from "./BailArt";
-import Success from "./Success";
-import CallbackUser from "./CallbackUser";
-import CallbackAdmin from "./CallbackAdmin";
-import "../css/App.css";
-
+import React, { Component } from 'react';
+import { Route, Router, browserHistory } from 'react-router';
+import '../css/App.css';
+import { categories } from '../datas/categories';
+import { init as firebaseInit } from '../javascript/firebaseUtils';
 import {
-  Paintings,
-  Sculpture,
+  AcrylicAerosol,
+  AcrylicCanvas,
+  AngleArtPiece,
+  Canvas,
+  CanvasArtPiece,
+  CardboardPainting,
+  DestroyedWallArtpiece,
+  Digigraphy,
+  DigitalTechnique,
   Engraving,
   Furniture,
-  Photography,
-  Digigraphy,
-  AcrylicAerosol,
-  OilOnCanvas,
+  FurnituresAccessories,
   LinoEngraving,
   MontagePhoto,
-  CardboardPainting,
+  OilOnCanvas,
   OilPainting,
+  Paintings,
+  Photography,
   Photomontage,
+  Sculpture,
   SculpturePainting,
   SculptureResin,
   Serigraphy,
-  AcrylicCanvas,
-  DigitalTechnique,
-  Canvas,
-  AngleArtPiece,
-  CanvasArtPiece,
-  FurnituresAccessories,
-  DestroyedWallArtpiece
-} from "./PagesWrapper";
+} from './PagesWrapper';
+import About from './about/About';
+import Admin from './admin/Admin';
+import Callbacks from './admin/callbacks/Callbacks';
+import Orders from './admin/orders/Orders';
+import Artist from './artists/Artist';
+import Artists from './artists/Artists';
+import BailArt from './bailArt/BailArt';
+import CallbackUser from './callbacks/CallbackUser';
+import Categories from './categories/Categories';
+import Footer from './common/Footer';
+import Header from './common/Header';
+import Home from './home/Home';
+import News from './home/News';
+import Login from './login/Login';
+import Cart from './orders/Cart';
+import Success from './orders/Success';
+import Product from './product/Product';
+import SignIn from './signIn/SignIn';
 
-import { init as firebaseInit } from "../javascript/firebaseUtils";
+type Props = {};
+type State = {};
 
-import { Router, Route, browserHistory } from "react-router";
-import { categories } from "../datas/categories";
-
-class App extends Component {
-  constructor(props: any) {
+class App extends Component<Props, State> {
+  constructor(props: Props) {
     super(props);
     firebaseInit();
   }
@@ -62,22 +62,22 @@ class App extends Component {
     return (
       <div className="App">
         <Router onUpdate={() => window.scrollTo(0, 0)} history={browserHistory}>
-          <Route path={"/"} component={Home} />
-          <Route path={"/admin"} component={Admin} />
-          <Route path={"/commandes"} component={Orders} />
-          <Route path={"/connexion"} component={Login} />
-          <Route path={"/nouveautes"} component={News} />
-          <Route path={"/panier"} component={Cart} />
-          <Route path={"/apropos"} component={About} />
-          <Route path={"/bailart"} component={BailArt} />
-          <Route path={"/success"} component={Success} />
-          <Route path={"/demander-rappel"} component={CallbackUser} />
-          <Route path={"/rappels"} component={CallbackAdmin} />
-          <Route path={"/creercompte"} component={SignIn} />
-          <Route path={"/product/:productId"} component={Product} />
-          <Route path={"/artistes"} component={Artists} />
-          <Route path={"/artist/:artistId"} component={Artist} />
-          <Route path={"/categories"} component={Categories} />
+          <Route path={'/'} component={Home} />
+          <Route path={'/admin'} component={Admin} />
+          <Route path={'/commandes'} component={Orders} />
+          <Route path={'/connexion'} component={Login} />
+          <Route path={'/nouveautes'} component={News} />
+          <Route path={'/panier'} component={Cart} />
+          <Route path={'/apropos'} component={About} />
+          <Route path={'/bailart'} component={BailArt} />
+          <Route path={'/success'} component={Success} />
+          <Route path={'/demander-rappel'} component={CallbackUser} />
+          <Route path={'/rappels'} component={Callbacks} />
+          <Route path={'/creercompte'} component={SignIn} />
+          <Route path={'/product/:productId'} component={Product} />
+          <Route path={'/artistes'} component={Artists} />
+          <Route path={'/artist/:artistId'} component={Artist} />
+          <Route path={'/categories'} component={Categories} />
           <Route path={categories.gravure.url} component={Engraving} />
           <Route path={categories.sculpture.url} component={Sculpture} />
           <Route path={categories.peinture.url} component={Paintings} />

@@ -2,18 +2,18 @@
 }
 
 @font-face {
-  font-family: "CanvasFont";
-  src: local("CanvasFont"), url("../assets/fonts/mistral.woff") format("woff");
+  font-family: 'CanvasFont';
+  src: local('CanvasFont'), url('../assets/fonts/mistral.woff') format('woff');
 }
 @font-face {
-  font-family: "Avenir";
-  src: local("Avenir"),
-    url("../assets/fonts/AvenirNextLTPro-It.otf") format("truetype");
+  font-family: 'Avenir';
+  src: local('Avenir'),
+    url('../assets/fonts/AvenirNextLTPro-It.otf') format('truetype');
 }
 
 @font-face {
-  font-family: "Din";
-  src: local("Din"), url("../assets/fonts/DIN-Regular.otf") format("truetype");
+  font-family: 'Din';
+  src: local('Din'), url('../assets/fonts/DIN-Regular.otf') format('truetype');
 }
 
 .canvasTitle {
@@ -31,8 +31,14 @@
   margin-left: 2rem;
   margin-right: 2rem;
   font-family: Din !important;
-  color: "#4d545c";
+  color: '#4d545c';
 }
 .p {
   text-align: justify;
+}
+
+.gridList {
+  overflow-y: 'auto';
+  display: 'flex';
+  justify-content: 'center';
 }
