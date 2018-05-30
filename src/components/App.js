@@ -57,11 +57,14 @@ class App extends Component<Props, State> {
     super(props);
     firebaseInit();
   }
+  onRouterUpdate(): void {
+    window.scrollTo(0, 0);
+  }
 
   render() {
     return (
       <div className="App">
-        <Router onUpdate={() => window.scrollTo(0, 0)} history={browserHistory}>
+        <Router onUpdate={this.onRouterUpdate} history={browserHistory}>
           <Route path={'/'} component={Home} />
           <Route path={'/admin'} component={Admin} />
           <Route path={'/commandes'} component={Orders} />
