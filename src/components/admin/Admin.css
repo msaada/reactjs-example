@@ -1,0 +1,11 @@
+.pagination {
+  display: flex;
+  justify-content: center;
+}
+.paper {
+  padding: 3em;
+}
+.root {
+  display: 'flex';
+  flex-direction: column;
+}

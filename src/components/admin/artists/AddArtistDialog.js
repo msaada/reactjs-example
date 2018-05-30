@@ -1,18 +1,27 @@
 //@flow
-import React, { Component } from "react";
+import Button from 'material-ui/Button';
 import Dialog, {
-  DialogTitle,
+  DialogActions,
   DialogContent,
   DialogContentText,
-  DialogActions
-} from "material-ui/Dialog";
-import Button from "material-ui/Button";
+  DialogTitle,
+} from 'material-ui/Dialog';
+import React, { Component } from 'react';
+import ArtistForm from './ArtistForm';
 
-import ArtistForm from "./ArtistForm";
+import type { ArtistType } from '../../../types/types';
 
-export default class AddArtistDialog extends Component {
+type State = {
+  open: boolean,
+};
+type Props = {
+  artist: ?ArtistType,
+  resetFields: () => void,
+};
+
+export default class AddArtistDialog extends Component<Props, State> {
   state: {
-    open: boolean
+    open: boolean,
   } = { open: this.props.artist ? true : false };
 
   handleOpen = () => {
@@ -21,8 +30,9 @@ export default class AddArtistDialog extends Component {
 
   handleClose = () => {
     this.setState({ open: false });
+    this.props.resetFields();
   };
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: { artist?: ?ArtistType }) {
     if (nextProps.artist) {
       this.handleOpen();
     }
@@ -31,9 +41,7 @@ export default class AddArtistDialog extends Component {
   render() {
     return (
       <div>
-        <Button raised onClick={this.handleOpen}>
-          Ajouter un artiste
-        </Button>
+        <Button onClick={this.handleOpen}>Ajouter un artiste</Button>
         <Dialog open={this.state.open} onRequestClose={this.handleClose}>
           <DialogTitle>Ajouter un artiste</DialogTitle>
           <DialogContent>

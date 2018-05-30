@@ -1,61 +1,64 @@
 //@flow
 
-import React, { Component } from "react";
-
-import Button from "material-ui/Button";
-
-import type { ArtistType, File } from "../types/types";
-import { Checkbox } from "react-bootstrap";
+import Button from 'material-ui/Button';
+import React, { Component } from 'react';
+import { Checkbox } from 'react-bootstrap';
 import {
   addArtistToFirebase,
+  updateArtist,
   uploadPictureToFirebase,
-  updateArtist
-} from "../javascript/firebaseUtils";
+} from '../../../javascript/firebaseUtils';
+import ConditionalCircularProgress from '../../common/ConditionalCircularProgress';
+import { FieldGroup } from '../../common/FieldGroup';
+import MyAlert from '../../common/MyAlert';
 
-import MyAlert from "./MyAlert";
-import { FieldGroup } from "./FieldGroup";
-import { CircularProgress } from "material-ui/Progress";
+import type { ArtistType } from '../../../types/types';
 
-export default class ArtistForm extends Component {
-  state: {
-    artist: ArtistType,
-    logoFile: ?File | null,
-    pictureFile: ?File,
-    alertVisible: boolean,
-    alertMessage: string,
-    saving: boolean,
-    fieldsStatus: any
-  } = {
+type Props = {
+  defaultArtist: ?ArtistType,
+};
+
+type State = {
+  artist: ArtistType,
+  logoFile: ?File,
+  pictureFile: ?File,
+  alertVisible: boolean,
+  alertMessage: string,
+  saving: boolean,
+  fieldsStatus: { [string]: boolean },
+};
+
+export default class ArtistForm extends Component<Props, State> {
+  state = {
     artist: {
-      id: "",
-      name: "",
-      picture: "",
-      description: "",
-      logo: "",
-      typeOfArtPieces: "",
-      featured: false
+      id: '',
+      name: '',
+      picture: '',
+      description: '',
+      logo: '',
+      typeOfArtPieces: '',
+      featured: false,
     },
     pictureFile: null,
     logoFile: null,
     alertVisible: false,
-    alertMessage: "",
+    alertMessage: '',
     saving: false,
-    fieldsStatus: {}
+    fieldsStatus: {},
   };
 
   componentDidMount() {
-    const artist = this.props.defaultArtist;
     if (this.props.defaultArtist) {
       this.setState({
-        artist
+        artist: this.props.defaultArtist,
       });
     }
   }
 
-  change(e: Event) {
+  change(e: SyntheticInputEvent<>) {
     if (e.target instanceof HTMLInputElement) {
       this.setState({
-        artist: { ...this.state.artist, [e.target.id]: e.target.value }
+        artist: { ...this.state.artist, [e.target.id]: e.target.value },
       });
     }
   }
@@ -73,33 +76,34 @@ export default class ArtistForm extends Component {
     return wrongFields;
   };
 
-  onSubmit = async (e: Event) => {
+  onSubmit = async (e: SyntheticInputEvent<>) => {
     e.preventDefault();
     this.setState({
-      saving: true
+      saving: true,
     });
 
     const wrongFields = this.getWrongFields();
     if (!wrongFields.length) {
-      if (this.state.artist.logo === "" && this.state.logoFile) {
-        const logoUrl = await uploadPictureToFirebase(this.state.logoFile);
+      const { logoFile } = this.state;
+      if (this.state.artist.logo === '' && logoFile) {
+        const logoUrl = await uploadPictureToFirebase(logoFile);
         console.log(logoUrl);
         if (logoUrl) {
           this.setState({
-            artist: { ...this.state.artist, logo: logoUrl }
+            artist: { ...this.state.artist, logo: logoUrl },
           });
         } else {
           this.handleAlertShow(
             "La sauvegarde du logo de l'artiste a échoué. Veuillez rééssayer."
           );
           this.setState({
-            saving: false
+            saving: false,
           });
           return;
         }
       }
 
-      if (this.state.artist.picture === "" && this.state.pictureFile) {
+      if (this.state.artist.picture === '' && this.state.pictureFile) {
         const pictureUrl = await uploadPictureToFirebase(
           this.state.pictureFile
         );
@@ -107,14 +111,14 @@ export default class ArtistForm extends Component {
 
         if (pictureUrl) {
           this.setState({
-            artist: { ...this.state.artist, picture: pictureUrl }
+            artist: { ...this.state.artist, picture: pictureUrl },
           });
         } else {
           this.handleAlertShow(
             "La sauvegarde de la photo de l'artiste a échoué. Veuillez rééssayer."
           );
           this.setState({
-            saving: false
+            saving: false,
           });
           return;
         }
@@ -123,40 +127,39 @@ export default class ArtistForm extends Component {
       let firebaseResponse;
       if (this.props.defaultArtist) {
         firebaseResponse = await updateArtist(this.state.artist);
-        console.log(firebaseResponse);
+        console.log('firebase response:', firebaseResponse);
       } else {
         firebaseResponse = await addArtistToFirebase(this.state.artist);
-        console.log(firebaseResponse);
       }
-      if (firebaseResponse) {
+      if (firebaseResponse && !firebaseResponse.committed) {
         this.handleAlertShow(firebaseResponse.message);
       } else {
         this.setState({
           artist: {
-            id: "",
-            name: "",
-            picture: "",
-            description: "",
-            logo: "",
-            typeOfArtPieces: "",
-            featured: false
+            id: '',
+            name: '',
+            picture: '',
+            description: '',
+            logo: '',
+            typeOfArtPieces: '',
+            featured: false,
           },
           pictureFile: null,
-          logoFile: null
+          logoFile: null,
         });
       }
     } else {
-      this.handleAlertShow(`Champs manquants: ${wrongFields.join(", ")}`);
+      this.handleAlertShow(`Champs manquants: ${wrongFields.join(', ')}`);
     }
     this.setState({
-      saving: false
+      saving: false,
     });
   };
 
   handleAlertDismiss = () => {
     this.setState({
       alertVisible: false,
-      alertMessage: ""
+      alertMessage: '',
     });
   };
 
@@ -165,24 +168,23 @@ export default class ArtistForm extends Component {
   };
 
   validateFormField = (predicate: boolean, fieldLabel: string) => {
+    this.state.fieldsStatus[fieldLabel] = predicate;
     if (predicate) {
-      this.state.fieldsStatus[fieldLabel] = true;
-      return "success";
+      return 'success';
     } else {
-      this.state.fieldsStatus[fieldLabel] = false;
-      return "error";
+      return 'error';
     }
   };
 
-  onImageChange = (event, logo: boolean) => {
+  onImageChange = (event: SyntheticInputEvent<>, logo: boolean) => {
     if (event.target.files && event.target.files[0]) {
       if (logo) {
         this.setState({
-          logoFile: event.target.files[0]
+          logoFile: event.target.files[0],
         });
       } else {
         this.setState({
-          pictureFile: event.target.files[0]
+          pictureFile: event.target.files[0],
         });
       }
     }
@@ -198,22 +200,24 @@ export default class ArtistForm extends Component {
             label="Nom de l'artiste"
             value={this.state.artist.name}
             validationState={this.validateFormField(
-              this.state.artist.name !== "",
+              this.state.artist.name !== '',
               "Nom de l'artiste"
             )}
-            onChange={(e: Event) => this.change(e)}
+            onChange={(e: SyntheticInputEvent<>) => this.change(e)}
           />
 
           <FieldGroup
             id="photo"
             type="file"
-            label="Photo"
+            label="Photo "
             validationState={this.validateFormField(
-              this.state.artist.picture !== "" ||
+              this.state.artist.picture !== '' ||
                 this.state.pictureFile !== null,
-              "Photo"
+              'Photo'
             )}
-            onChange={(e: Event) => this.onImageChange(e, false)}
+            onChange={(e: SyntheticInputEvent<>) =>
+              this.onImageChange(e, false)
+            }
           />
 
           <FieldGroup
@@ -221,10 +225,10 @@ export default class ArtistForm extends Component {
             type="file"
             label="Logo"
             validationState={this.validateFormField(
-              this.state.artist.logo !== "" || this.state.logoFile !== null,
-              "Logo"
+              this.state.artist.logo !== '' || this.state.logoFile !== null,
+              'Logo'
             )}
-            onChange={(e: Event) => this.onImageChange(e, true)}
+            onChange={(e: SyntheticInputEvent<>) => this.onImageChange(e, true)}
           />
 
           <FieldGroup
@@ -233,10 +237,10 @@ export default class ArtistForm extends Component {
             label="Biographie de l'artiste"
             value={this.state.artist.description}
             validationState={this.validateFormField(
-              this.state.artist.description !== "",
+              this.state.artist.description !== '',
               "Biographie de l'artiste"
             )}
-            onChange={(e: Event) => this.change(e)}
+            onChange={(e: SyntheticInputEvent<>) => this.change(e)}
           />
 
           <Checkbox
@@ -246,8 +250,8 @@ export default class ArtistForm extends Component {
               this.setState({
                 artist: {
                   ...this.state.artist,
-                  featured: !this.state.artist.featured
-                }
+                  featured: !this.state.artist.featured,
+                },
               })
             }
           >
@@ -260,10 +264,13 @@ export default class ArtistForm extends Component {
               alertDissmiss={this.handleAlertDismiss}
             />
           )}
-          <Button raised onClick={(e: Event) => this.onSubmit(e)}>
+          <Button
+            raised
+            onClick={(e: SyntheticInputEvent<>) => this.onSubmit(e)}
+          >
             Sauvegarder
           </Button>
-          {this.state.saving && <CircularProgress size={90} />}
+          <ConditionalCircularProgress predicate={this.state.saving} />
         </form>
       </div>
     );
