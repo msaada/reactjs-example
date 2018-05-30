@@ -1,23 +1,27 @@
 //@flow
 
+import firebase from 'firebase/app';
+import { Transaction } from 'firebase/firestore';
+import artPieceModel from '../models/artPiece';
+import artTypeModel from '../models/artType';
+import artistModel from '../models/artist';
+import callbackModel from '../models/callback';
+import cartModel from '../models/cart';
+import orderModel from '../models/order';
+import userModel from '../models/user';
+
 import type {
   ArtistType,
   ArtPieceType,
   ArtTypeType,
   CartType,
   OrderType,
+  FirebaseOrderType,
   UserType,
-  CallbackType
-} from "../types/types";
-import artistModel from "../models/artist";
-import artPieceModel from "../models/artPiece";
-import artTypeModel from "../models/artType";
-import cartModel from "../models/cart";
-import orderModel from "../models/order";
-import userModel from "../models/user";
-import callbackModel from "../models/callback";
-
-import * as firebase from "firebase";
+  FirebaseUser,
+  FirebaseCallbackType,
+  CallbackType,
+} from '../types/types';
 
 export let app = null;
 export let database = null;
@@ -25,13 +29,13 @@ export let auth = null;
 export let storage = null;
 
 export const init = () => {
-  const appName = "Megadental Art Gallery";
+  const appName = 'Megadental Art Gallery';
   const config = {
-    apiKey: "AIzaSyCVHvfzWzV5p2G8VkXW7k_3ALHLuS_m-WQ",
-    authDomain: "ohmyart-ee13a.firebaseapp.com",
-    databaseURL: "https://ohmyart-ee13a.firebaseio.com",
-    storageBucket: "ohmyart-ee13a.appspot.com",
-    messagingSenderId: "564094140683.4"
+    apiKey: 'AIzaSyCVHvfzWzV5p2G8VkXW7k_3ALHLuS_m-WQ',
+    authDomain: 'ohmyart-ee13a.firebaseapp.com',
+    databaseURL: 'https://ohmyart-ee13a.firebaseio.com',
+    storageBucket: 'ohmyart-ee13a.appspot.com',
+    messagingSenderId: '564094140683.4',
   };
   app = firebase.initializeApp(config, appName);
   database = app.database();
@@ -39,23 +43,9 @@ export const init = () => {
   storage = app.storage();
 };
 
-export const initTestApp = () => {
-  const appName = "Megadental Art Gallery Test";
-  const config = {
-    apiKey: "AIzaSyCVHvfzWzV5p2G8VkXW7k_3ALHLuS_m-WQ",
-    authDomain: "ohmyart-ee13a.firebaseapp.com",
-    databaseURL: "https://ohmyart-ee13a.firebaseio.com",
-    storageBucket: "ohmyart-ee13a.appspot.com",
-    messagingSenderId: "564094140683.4"
-  };
-  app = firebase.initializeApp(config, appName);
-  database = app.database();
-  auth = app.auth();
-};
-
-// add new section
-export const addArtTypeToFirebase = async (element: ArtTypeType) => {
-  const root = "/arttypes";
+type AddArtTypeToFirebase = (element: ArtTypeType) => Promise<null>;
+export const addArtTypeToFirebase: AddArtTypeToFirebase = async element => {
+  const root = '/arttypes';
   if (database) {
     const key = database.ref(root).push().key;
     if (key) {
@@ -67,19 +57,22 @@ export const addArtTypeToFirebase = async (element: ArtTypeType) => {
       try {
         await database.ref(`${root}/${key}`).set(model);
       } catch (e) {
+        console.log(e);
         return e;
       }
     }
   }
   return null;
 };
-
-export const addArtPieceToFirebase = async (element: ArtPieceType) => {
-  const root = "/artpieces";
+type AddArtPieceToFirebase = (
+  element: ArtPieceType
+) => Promise<{ message: string } | null>;
+export const addArtPieceToFirebase: AddArtPieceToFirebase = async element => {
+  const root = '/artpieces';
   console.log(database);
   if (database) {
     const key = database.ref(root).push().key;
-    console.log(key);
+    console.log('key', key);
     if (key) {
       const model = artPieceModel(
         key,
@@ -94,18 +87,19 @@ export const addArtPieceToFirebase = async (element: ArtPieceType) => {
           return e;
         }
       } else {
-        return { message: "Error: no model" };
+        return { message: 'Error: no model' };
       }
     } else {
-      return { message: "Error: no key" };
+      return { message: 'Error: no key' };
     }
   } else {
-    return { message: "Error: no database" };
+    return { message: 'Error: no database' };
   }
 };
 
-export const addCartToFirebase = (element: CartType) => {
-  const root = "/cart";
+type AddCartToFirebase = (element: CartType) => null;
+export const addCartToFirebase: AddCartToFirebase = element => {
+  const root = '/cart';
   let key = database ? database.ref(root).push().key : null;
   const model = key
     ? cartModel(element.id, element, firebase.database.ServerValue.TIMESTAMP)
@@ -115,8 +109,9 @@ export const addCartToFirebase = (element: CartType) => {
     : null;
 };
 
-export const addArtistToFirebase = async (element: ArtistType) => {
-  const root = "/artists";
+type AddArtistToFirebase = (element: ArtistType) => Promise<null>;
+export const addArtistToFirebase: AddArtistToFirebase = async element => {
+  const root = '/artists';
   if (database) {
     const key = database.ref(root).push().key;
     if (key) {
@@ -128,7 +123,7 @@ export const addArtistToFirebase = async (element: ArtistType) => {
       try {
         await database.ref(`${root}/${key}`).set(model);
       } catch (e) {
-        return e;
+        console.log(JSON.stringify(e));
       }
     } else {
       return null;
@@ -138,33 +133,42 @@ export const addArtistToFirebase = async (element: ArtistType) => {
   }
 };
 
-export const uploadPictureToFirebase = async (file: File) => {
+type UploadPictureToFirebase = (file: File) => Promise<?string>;
+export const uploadPictureToFirebase: UploadPictureToFirebase = async file => {
   const metadata = {
-    contentType: "image/jpeg"
+    contentType: 'image/jpeg',
   };
-  console.log(file);
-  console.log(file.name);
-  console.log(metadata);
+  console.log('file', file);
+  console.log('filename', file.name);
+  console.log('metadata', metadata);
 
   // Upload file and metadata to the object 'images/mountains.jpg'
   if (storage) {
     // Listen for state changes, errors, and completion of the upload.
     const snapshot = await storage
       .ref()
-      .child("images/" + file.name)
+      .child('images/' + file.name)
       .put(file, metadata);
-    console.log(snapshot);
-    if (snapshot.state === "success") {
+    console.log('snapshot', snapshot);
+    if (snapshot.state === 'success') {
+      console.log(
+        storage
+          .ref()
+          .child(`images/${file.name}`)
+          .getDownloadURL()
+      );
+
       return snapshot.downloadURL;
     } else {
-      console.log("Error on upload");
+      console.log('Error on upload');
       return null;
     }
   }
 };
 
-export const addOrderToFirebase = async (element: OrderType) => {
-  const root = "/orders";
+type AddOrderToFirebase = (element: OrderType) => Promise<null>;
+export const addOrderToFirebase: AddOrderToFirebase = async element => {
+  const root = '/orders';
   let key = database ? database.ref(root).push().key : null;
   let model = key
     ? orderModel(key, element, firebase.database.ServerValue.TIMESTAMP)
@@ -175,137 +179,130 @@ export const addOrderToFirebase = async (element: OrderType) => {
     : null;
 };
 
-export const addUserExtraInfosToFirebase = async (
+type AddUserExtraInfosToFirebase = (
   key: string,
   element: UserType
+) => Promise<null>;
+export const addUserExtraInfosToFirebase: AddUserExtraInfosToFirebase = async (
+  key,
+  element
 ) => {
-  const root = "/userDatas";
+  const root = '/userDatas';
   let model = userModel(key, element, firebase.database.ServerValue.TIMESTAMP);
   return database && key
-    ? await database.ref(root + "/" + key).set(model)
+    ? await database.ref(root + '/' + key).set(model)
     : null;
 };
 
-export const addCallbackToFirebase = async (
+type AddCallbackToFirebase = (
   root: string,
   element: CallbackType
+) => Promise<null>;
+export const addCallbackToFirebase: AddCallbackToFirebase = async (
+  root,
+  element
 ) => {
   let key = database ? database.ref(root).push().key : null;
   let model = key
     ? callbackModel(key, element, firebase.database.ServerValue.TIMESTAMP)
     : null;
   return database && key
-    ? await database.ref(root + "/" + key).set(model)
+    ? await database.ref(root + '/' + key).set(model)
     : null;
 };
-
-export function getArtPieces(callback: (Array<ArtPieceType>) => void) {
-  const artPiecesRef = database ? database.ref("/artpieces") : null;
-  const artPieces: Array<ArtPieceType> = [];
+type GetArtPieces = (callback: (ArtPieceType[]) => void) => void;
+export const getArtPieces: GetArtPieces = callback => {
+  const artPiecesRef = database ? database.ref('/artpieces') : null;
+  const artPieces: ArtPieceType[] = [];
   if (artPiecesRef) {
-    artPiecesRef.on("value", snap => {
+    artPiecesRef.on('value', snap => {
       snap.forEach(child => {
         artPieces.push(child.val());
       });
       callback(artPieces);
     });
   }
-}
+};
 
-export function getUsersExtraInfos(callback: (Array<UserType>) => void) {
-  const userDatasRef = database ? database.ref("/userDatas") : null;
-  const usersInfos: Array<ArtPieceType> = [];
+type GetUsersExtraInfos = (callback: (UserType[]) => void) => void;
+export const getUsersExtraInfos: GetUsersExtraInfos = callback => {
+  const userDatasRef = database ? database.ref('/userDatas') : null;
+  const usersInfos: UserType[] = [];
   if (userDatasRef) {
-    userDatasRef.on("value", snap => {
+    userDatasRef.on('value', snap => {
       snap.forEach(child => {
         usersInfos.push(child.val());
       });
       callback(usersInfos);
     });
   }
-}
-export function getArtPiece(
-  artpieceId: string,
-  callback: ArtPieceType => void
-) {
-  const artPiecesRef = database
-    ? database.ref("/artpieces/" + artpieceId)
-    : null;
-  if (artPiecesRef) {
-    artPiecesRef.on("value", snap => {
-      snap.forEach(child => {
-        callback(child.val());
-      });
-    });
-  }
-}
-export async function getArtPiece2(artpieceId: string) {
+};
+
+type GetArtPiece = (artpieceId: string) => Promise<null | ArtPieceType>;
+export const getArtPiece: GetArtPiece = async artpieceId => {
   const artPiecesRef = database
     ? database.ref(`artpieces/${artpieceId}`)
     : null;
   if (artPiecesRef) {
-    const artPieceSnapshot = await artPiecesRef.once("value");
+    const artPieceSnapshot = await artPiecesRef.once('value');
     return artPieceSnapshot.val();
   }
   return null;
-}
+};
 
-export async function getArtist2(artistId: string): ArtistType {
+type GetArtist = (artistId: string) => Promise<ArtistType | null>;
+export const getArtist: GetArtist = async artistId => {
   const artistRef = database ? database.ref(`artists/${artistId}`) : null;
   if (artistRef) {
-    const artistSnapshot = await artistRef.once("value");
+    const artistSnapshot = await artistRef.once('value');
     return await artistSnapshot.val();
   }
-}
+  return null;
+};
 
-export function getArtist(artistId: string, callback: ArtistType => void) {
-  const artistRef = database ? database.ref("/artists/" + artistId) : null;
-  if (artistRef) {
-    artistRef.on("value", snap => {
-      snap.forEach(child => {
-        callback(child.val());
-      });
-    });
-  }
-}
-
-export async function getArtPieceFromArtist(artistId: string) {
-  const artpieceRef = database ? database.ref("/artpieces") : null;
-  let res: Array<ArtPieceType> = [];
+type GetArtPieceFromArtist = (artistId: string) => Promise<ArtPieceType[]>;
+export const getArtPieceFromArtist: GetArtPieceFromArtist = async artistId => {
+  const artpieceRef = database ? database.ref('/artpieces') : null;
+  let res: ArtPieceType[] = [];
   if (artpieceRef) {
-    const artistSnapshot = await artpieceRef.once("value");
+    const artistSnapshot = await artpieceRef.once('value');
     artistSnapshot.forEach(function(child) {
       if (child.val().artistId === artistId) res.push(child.val());
     });
-    return res;
   }
-  return [];
-}
+  return res;
+};
 
-export async function getArtPieceFromArtType(arttypeId: string) {
-  const artpieceRef = database ? database.ref("/artpieces") : null;
-  let res: Array<ArtPieceType> = [];
+type GetArtPieceFromArtType = (arttypeId: string) => Promise<ArtPieceType[]>;
+export const getArtPieceFromArtType: GetArtPieceFromArtType = async arttypeId => {
+  const artpieceRef = database ? database.ref('/artpieces') : null;
+  let res: ArtPieceType[] = [];
   if (artpieceRef) {
-    const artistSnapshot = await artpieceRef.once("value");
+    const artistSnapshot = await artpieceRef.once('value');
     artistSnapshot.forEach(function(child) {
       if (child.val().typeOfArtPieces === arttypeId) {
         const artPiece: ArtPieceType = child.val();
         res.push(artPiece);
       }
     });
-    return res;
   }
-}
+  return res;
+};
 
-export function listenToCartChange(
+type ListenToCartChange = (
   userId: string,
   cartId: ?string,
-  callback: any => any
-) {
+  callback: (cart: ?CartType) => void
+) => void;
+export const listenToCartChange: ListenToCartChange = (
+  userId,
+  cartId,
+  callback
+) => {
   if (cartId) {
     const cartRef = database ? database.ref(`/cart/${userId}/${cartId}`) : null;
     if (cartRef) {
-      cartRef.on("value", snap =>
+      cartRef.on('value', snap =>
         snap.forEach(function(child) {
           if (child.val().active) callback(child.val());
           else {
@@ -315,16 +312,17 @@ export function listenToCartChange(
       );
     }
   }
-}
+};
 
-export async function getCart(userId: string) {
+type GetCart = (userId: string) => Promise<?CartType>;
+export const getCart: GetCart = async userId => {
   const cartRef = database
-    ? database.ref(`/cart/`).orderByChild("timestamp")
+    ? database.ref(`/cart/`).orderByChild('timestamp')
     : null;
 
   if (cartRef) {
-    const cartSnapshot = await cartRef.once("value");
-    const res: Array<string> = [];
+    const cartSnapshot = await cartRef.once('value');
+    const res: CartType[] = [];
     cartSnapshot.forEach(function(child) {
       Object.keys(child.val()).forEach(key => {
         if (child.val()[key].id === userId) res.push(child.val()[key]);
@@ -333,136 +331,165 @@ export async function getCart(userId: string) {
 
     return res.length ? res[res.length - 1] : null;
   }
-}
+};
 
-export function getArtists(callback: (Array<ArtistType>) => void) {
-  const artistRef = database ? database.ref("/artists") : null;
-  const artists: Array<ArtistType> = [];
+type GetArtists = (callback: (ArtistType[]) => void) => void;
+export const getArtists: GetArtists = callback => {
+  const artistRef = database ? database.ref('/artists') : null;
+  const artists: ArtistType[] = [];
   if (artistRef) {
-    artistRef.on("value", snap => {
+    artistRef.on('value', snap => {
       snap.forEach(child => {
         artists.push(child.val());
       });
       callback(artists);
     });
   }
-}
+};
 
-export function getArtTypes(callback: (Array<ArtTypeType>) => void) {
-  const arttypeRef = database ? database.ref("/arttypes") : null;
-  const arttypes: Array<ArtTypeType> = [];
+type GetArtTypes = (callback: (ArtTypeType[]) => void) => void;
+export const getArtTypes: GetArtTypes = callback => {
+  const arttypeRef = database ? database.ref('/arttypes') : null;
+  const arttypes: ArtTypeType[] = [];
   if (arttypeRef) {
-    arttypeRef.on("value", snap => {
+    arttypeRef.on('value', snap => {
       snap.forEach(child => {
         arttypes.push(child.val());
       });
       callback(arttypes);
     });
   }
-}
+};
 
-export function getLastArtist(callback: ArtistType => void) {
-  const artistRef = database ? database.ref("/artists") : null;
+type GetLastArtist = (callback: (ArtistType) => void) => void;
+export const getLastArtist: GetLastArtist = callback => {
+  const artistRef = database ? database.ref('/artists') : null;
   if (artistRef) {
-    artistRef.on("child_added", snap => {
+    artistRef.on('child_added', snap => {
       callback(snap.val());
     });
   } else {
-    console.log("database not initiated");
+    console.log('database not initiated');
   }
-}
-
-export function getLastOrder(callback: OrderType => void) {
-  const ordersRef = database ? database.ref("/orders") : null;
+};
+type GetLastOrder = (callback: (FirebaseOrderType) => void) => void;
+export const getLastOrder: GetLastOrder = callback => {
+  const ordersRef = database ? database.ref('/orders') : null;
   if (ordersRef) {
-    ordersRef.on("child_added", snap => {
+    ordersRef.on('child_added', snap => {
       callback(snap.val());
     });
   } else {
-    console.log("database not initiated");
+    console.log('database not initiated');
   }
-}
+};
 
-export function getLastCallback(callback: CallbackType => void) {
-  const callbackRef = database ? database.ref("/callbacks") : null;
+type GetLastCallback = (callback: (FirebaseCallbackType) => void) => void;
+export const getLastCallback: GetLastCallback = callback => {
+  const callbackRef = database ? database.ref('/callbacks') : null;
   if (callbackRef) {
-    callbackRef.on("child_added", snap => {
+    callbackRef.on('child_added', snap => {
       callback(snap.val());
     });
   } else {
-    console.log("database not initiated");
+    console.log('database not initiated');
   }
-}
+};
 
-export function getLastCartItem(userId: string, callback: CartType => void) {
-  const artistRef = database ? database.ref(`/cart/${userId}`) : null;
-  if (artistRef) {
-    artistRef.on("child_added", snap => {
-      callback(snap.val());
-    });
-  } else {
-    console.log("database not initiated");
-  }
-}
-
-export function getLastArtPiece(callback: ArtPieceType => void) {
-  const artPieceRef = database ? database.ref("/artpieces") : null;
+type GetLastArtPiece = (callback: (ArtPieceType) => void) => void;
+export const getLastArtPiece: GetLastArtPiece = callback => {
+  const artPieceRef = database ? database.ref('/artpieces') : null;
   if (artPieceRef) {
-    artPieceRef.on("child_added", snap => {
+    artPieceRef.on('child_added', snap => {
       callback(snap.val());
     });
   } else {
-    console.log("database not initiated");
+    console.log('database not initiated');
   }
-}
+};
 
-export function getLastArtType(callback: ArtTypeType => void) {
-  const artTypeRef = database ? database.ref("/arttypes") : null;
+type GetLastArtType = (callback: (ArtTypeType) => void) => void;
+export const getLastArtType: GetLastArtType = callback => {
+  const artTypeRef = database ? database.ref('/arttypes') : null;
   if (artTypeRef) {
-    artTypeRef.on("child_added", snap => {
+    artTypeRef.on('child_added', snap => {
       callback(snap.val());
     });
   } else {
-    console.log("database not initiated");
+    console.log('database not initiated');
   }
-}
+};
 
-export async function getUserExtraInfos(key: string, callback: any) {
+type GetUserExtraInfos = (
+  key: string,
+  callback: (info: any) => void
+) => Promise<void>;
+export const getUserExtraInfos: GetUserExtraInfos = async (key, callback) => {
   if (database) {
-    const ref = database.ref("/userDatas/" + key);
+    const ref = database.ref('/userDatas/' + key);
 
     // Attach an asynchronous callback to read the data at our posts reference
-    const userSnapshot = await ref.once("value");
+    const userSnapshot = await ref.once('value');
     callback(userSnapshot.val());
   }
-}
+};
 
-export async function getCurrentUser() {
+type GetCurrentUser = () => ?FirebaseUser;
+export const getCurrentUser: GetCurrentUser = () => {
   if (auth) {
-    const user = auth.currentUser;
-    return user;
+    return auth.currentUser;
   }
   return null;
-}
+};
 
-export async function logOut() {
+type LogOut = () => Promise<void>;
+export const logOut: LogOut = async () => {
   if (auth) {
     await auth.signOut();
   }
-}
+};
 
-export async function updateArtist(artist: ArtistType) {
+type UpdateArtist = (artist: ArtistType) => null;
+export const updateArtist: UpdateArtist = artist => {
   const { id, ...updatedValues } = artist;
-  console.log(artist);
   const artistRef = database ? database.ref(`artists/${id}`) : null;
   if (artistRef) {
     return artistRef.transaction(function(loadedArtist) {
       if (loadedArtist) {
-        console.log(loadedArtist);
-        // artist.name = updatedValues.name;
+        loadedArtist = { ...loadedArtist, ...updatedValues };
       }
       return loadedArtist;
     });
   }
   return null;
-}
+};
+
+type UpdateArtPieceToFirebase = (artpiece: ArtPieceType) => null;
+export const updateArtPieceToFirebase: UpdateArtPieceToFirebase = artpiece => {
+  const { id, ...updatedValues } = artpiece;
+  const artpieceRef = database ? database.ref(`artpieces/${id}`) : null;
+  if (artpieceRef) {
+    return artpieceRef.transaction(function(loadedArtpiece) {
+      if (loadedArtpiece) {
+        loadedArtpiece = { ...loadedArtpiece, ...updatedValues };
+      }
+      return loadedArtpiece;
+    });
+  }
+  return null;
+};
+
+type UpdateArtTypeInFirebase = (arttype: ArtTypeType) => Transaction | null;
+export const updateArtTypeInFirebase: UpdateArtTypeInFirebase = arttype => {
+  const { id, ...updatedValues } = arttype;
+  const arttypeRef = database ? database.ref(`arttypes/${id}`) : null;
+  if (arttypeRef) {
+    return arttypeRef.transaction(function(loadedArtType) {
+      if (loadedArtType) {
+        loadedArtType = { ...loadedArtType, ...updatedValues };
+      }
+      return loadedArtType;
+    });
+  }
+  return null;
+};
