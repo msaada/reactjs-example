@@ -1,41 +1,39 @@
 // @flow
 
-import React, { Component } from "react";
+import * as firebase from 'firebase';
+import Button from 'material-ui/Button';
+import Divider from 'material-ui/Divider';
+import React, { Component } from 'react';
+import '../../css/App.css';
+import { auth, getCurrentUser } from '../../javascript/firebaseUtils';
+import Footer from '../common/Footer';
+import Header from '../common/Header';
+import MyAlert from '../common/MyAlert';
+import TextFieldControlled from '../common/TextFieldControlled';
+import type { FirebaseUser } from '../../types/types';
 
-import "../css/App.css";
-
-import Header from "./Header";
-import Footer from "./Footer";
-
-import Button from "material-ui/Button";
-import Divider from "material-ui/Divider";
-import TextFieldControlled from "./TextFieldControlled";
-import MyAlert from "./MyAlert";
-
-import * as firebase from "firebase";
-
-import { auth, getCurrentUser } from "../javascript/firebaseUtils";
-
-class Login extends Component {
-  state: {
-    user: any,
-    email: string,
-    password: string,
-    alertVisible: boolean,
-    alertMessage: string
-  } = {
+type Props = {};
+type State = {
+  user: ?FirebaseUser,
+  email: string,
+  password: string,
+  alertVisible: boolean,
+  alertMessage: string,
+};
+class Login extends Component<Props, State> {
+  state: State = {
     user: null,
-    email: "",
-    password: "",
+    email: '',
+    password: '',
     alertVisible: false,
-    alertMessage: ""
+    alertMessage: '',
   };
 
   componentDidMount = () => {
     const user = getCurrentUser();
     if (user) {
       this.setState({
-        user: user
+        user: user,
       });
     }
   };
@@ -60,11 +58,11 @@ class Login extends Component {
           const errorCode = error.code;
 
           let frenchErrorMessage: string;
-          if (errorCode === "auth/invalid-email") {
+          if (errorCode === 'auth/invalid-email') {
             frenchErrorMessage = "L'adresse mail est mal formatée.";
-          } else if (errorCode === "auth/wrong-password") {
-            frenchErrorMessage = "Mot de passe erroné";
-          } else if (errorCode === "auth/user-not-found") {
+          } else if (errorCode === 'auth/wrong-password') {
+            frenchErrorMessage = 'Mot de passe erroné';
+          } else if (errorCode === 'auth/user-not-found') {
             frenchErrorMessage =
               "Cette addresse mail n'est réliée à aucun compte. Veuillez créer un compte avant de pouvoir vous authentifier.";
           } else {
@@ -76,26 +74,26 @@ class Login extends Component {
       const user = await getCurrentUser();
       if (user) {
         this.setState({
-          user: user
+          user: user,
         });
         console.log(user);
-        window.location.href = "/";
+        window.location.href = '/';
       }
     }
   };
 
-  handleEmailChange = (event: Event) => {
+  handleEmailChange = (event: SyntheticInputEvent<>) => {
     if (event.target instanceof HTMLInputElement) {
       this.setState({
-        email: event.target.value
+        email: event.target.value,
       });
     }
   };
 
-  handlePasswordChange = (event: Event) => {
+  handlePasswordChange = (event: SyntheticInputEvent<>) => {
     if (event.target instanceof HTMLInputElement) {
       this.setState({
-        password: event.target.value
+        password: event.target.value,
       });
     }
   };
@@ -110,9 +108,9 @@ class Login extends Component {
 
           let frenchErrorMessage: string;
 
-          if (errorCode === "auth/email-already-in-use") {
+          if (errorCode === 'auth/email-already-in-use') {
             frenchErrorMessage =
-              "Cette adresse mail est déjà liée à un compte.";
+              'Cette adresse mail est déjà liée à un compte.';
           } else {
             frenchErrorMessage = `Une erreur inconnue est survenue (${errorCode})`;
           }
@@ -133,21 +131,21 @@ class Login extends Component {
   styles = () => {
     return {
       root: {
-        display: "flex",
-        justifyContent: "space-around",
-        flexDirection: "column"
+        display: 'flex',
+        justifyContent: 'space-around',
+        flexDirection: 'column',
       },
       divider: {
-        marginBottom: "2em"
+        marginBottom: '2em',
       },
       centered: {
-        display: "flex",
-        justifyContent: "center"
+        display: 'flex',
+        justifyContent: 'center',
       },
       buttons: {
-        display: "flex",
-        justifyContent: "flex-start"
-      }
+        display: 'flex',
+        justifyContent: 'flex-start',
+      },
     };
   };
   render() {
