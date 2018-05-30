@@ -1,33 +1,32 @@
 // @flow
-import React, { Component } from "react";
+import Button from 'material-ui/Button';
+import Divider from 'material-ui/Divider';
+import React, { Component } from 'react';
+import { Image } from 'react-bootstrap';
+import '../../css/App.css';
+import Footer from '../common/Footer';
+import Header from '../common/Header';
 
-import "../css/App.css";
+type Props = {};
+type State = {};
 
-import Header from "./Header";
-import Footer from "./Footer";
-
-import Divider from "material-ui/Divider";
-
-import { Image } from "react-bootstrap";
-import Button from "material-ui/Button";
-
-class Success extends Component {
+class Success extends Component<Props, State> {
   styles() {
     return {
       centered: {
-        display: "flex",
-        justifyContent: "center"
+        display: 'flex',
+        justifyContent: 'center',
       },
       button: {
-        fontFamily: "Din"
+        fontFamily: 'Din',
       },
       divider: {
-        marginBottom: "1em"
+        marginBottom: '1em',
       },
       mega: {
-        height: "2rem",
-        width: "auto"
-      }
+        height: '2rem',
+        width: 'auto',
+      },
     };
   }
 
@@ -44,16 +43,16 @@ class Success extends Component {
             Un conseiller va vous contacter dans les plus bref délais pour
             finaliser votre commande.
           </p>
-          <Button raised href={"/"} style={this.styles().button}>
+          <Button raised href={'/'} style={this.styles().button}>
             Retourner à l'acceuil
           </Button>
           <Button style={this.styles().button} href="http://www.megadental.fr">
             Retour vers
             <Image
-              src={require("../assets/MEGA-DENTAL-logo.png")}
-              alt={"Megadental logo"}
+              src={require('../../assets/MEGA-DENTAL-logo.png')}
+              alt={'Megadental logo'}
               style={this.styles().mega}
-              onClick={e => (window.location.href = "http://www.megadental.fr")}
+              onClick={e => (window.location.href = 'http://www.megadental.fr')}
             />
           </Button>
         </div>

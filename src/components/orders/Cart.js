@@ -1,56 +1,50 @@
 // @flow
-import React, { Component } from "react";
+import Avatar from 'material-ui/Avatar';
+import Button from 'material-ui/Button';
+import Checkbox from 'material-ui/Checkbox';
+import Divider from 'material-ui/Divider';
+import List, {
+  ListItem,
+  ListItemSecondaryAction,
+  ListItemText,
+} from 'material-ui/List';
+import React, { Component } from 'react';
+import '../../css/App.css';
+import {
+  addCartToFirebase,
+  addOrderToFirebase,
+  auth,
+  getCart,
+} from '../../javascript/firebaseUtils';
+import ConditionalCircularProgress from '../common/ConditionalCircularProgress';
+import Footer from '../common/Footer';
+import Header from '../common/Header';
 
-import "../css/App.css";
-
-import Header from "./Header";
-import Footer from "./Footer";
-
-import Divider from "material-ui/Divider";
 import type {
   CartType,
   ArtPieceType,
   OrderType,
-  firebaseUser
-} from "../types/types";
+  FirebaseUser,
+} from '../../types/types';
 
-import { CircularProgress } from "material-ui/Progress";
-import {
-  getCart,
-  auth,
-  addCartToFirebase,
-  addOrderToFirebase
-} from "../javascript/firebaseUtils";
+type Props = {};
 
-import List, {
-  ListItem,
-  ListItemSecondaryAction,
-  ListItemText
-} from "material-ui/List";
-import Checkbox from "material-ui/Checkbox";
-import Avatar from "material-ui/Avatar";
-import Button from "material-ui/Button";
+type State = {
+  checked: number[],
+  artpieces: ArtPieceType[],
+  user: ?FirebaseUser,
+  ordering: boolean,
+  loadingCart: boolean,
+};
 
-class Cart extends Component {
-  state: {
-    checked: Array<number>,
-    artpieces: Array<ArtPieceType>,
-    user: ?firebaseUser,
-    ordering: boolean,
-    loadingCart: boolean
-  } = {
+class Cart extends Component<Props, State> {
+  state = {
     checked: [],
     artpieces: [],
     user: null,
     ordering: false,
-    loadingCart: true
+    loadingCart: true,
   };
-
-  setStateAsync(state: any) {
-    return new Promise(resolve => {
-      this.setState(state, resolve);
-    });
-  }
 
   componentWillMount() {
     (async () => {
@@ -62,11 +56,11 @@ class Cart extends Component {
             if (currentCart && currentCart.active && currentCart.itemCount) {
               this.setState({
                 artpieces: currentCart.items,
-                loadingCart: false
+                loadingCart: false,
               });
             } else {
               this.setState({
-                loadingCart: false
+                loadingCart: false,
               });
             }
           }
@@ -87,54 +81,58 @@ class Cart extends Component {
     }
 
     this.setState({
-      checked: newChecked
+      checked: newChecked,
     });
   };
 
   styles() {
     return {
       centered: {
-        display: "flex",
-        justifyContent: "center"
+        display: 'flex',
+        justifyContent: 'center',
       },
       margin: {
-        marginBottom: "1em"
+        marginBottom: '1em',
       },
       marginButtons: {
-        margin: "1em"
+        margin: '1em',
       },
       total: {
-        fontSize: "2rem"
-      }
+        fontSize: '2rem',
+      },
     };
   }
 
   updateCart = async () => {
     if (this.state.user && this.state.artpieces) {
+      // Avoid flow screaming
+      const user: FirebaseUser = this.state.user;
       const currentCart: ?CartType = await getCart(this.state.user.uid);
       const newCart: CartType = {
         ...currentCart,
-        id: this.state.user.uid,
+        id: user.uid,
         itemCount: this.state.artpieces.length,
-        items: this.state.artpieces
+        items: this.state.artpieces,
       };
       addCartToFirebase(newCart);
     } else {
-      console.log("You must login");
+      console.log('You must login');
     }
   };
 
   closeCart = async () => {
     if (this.state.user) {
+      // Avoid flow screaming
+      const user: FirebaseUser = this.state.user;
       const currentCart: ?CartType = await getCart(this.state.user.uid);
       const newCart: CartType = {
         ...currentCart,
         active: false,
-        id: this.state.user.uid
+        id: user.uid,
       };
       addCartToFirebase(newCart);
     } else {
-      console.log("You must login");
+      console.log('You must login');
     }
   };
 
@@ -142,7 +140,7 @@ class Cart extends Component {
     this.state.checked.forEach((index: number) => {
       if (this.state.artpieces.length) this.state.artpieces.splice(index, 1);
       this.setState({
-        checked: []
+        checked: [],
       });
       this.updateCart();
     });
@@ -151,30 +149,32 @@ class Cart extends Component {
   computeTotal = () => {
     let total: number = 0;
     this.state.artpieces.forEach((e: ArtPieceType) => {
-      total += Number(e.sellPriceTaxIncluded.replace(/\s/g, ""));
+      total += Number(e.sellPriceTaxIncluded.replace(/\s/g, ''));
     });
     return total;
   };
 
   performOrder = async () => {
     if (this.state.user && this.state.artpieces.length) {
+      // Avoid flow screaming
+      const user: FirebaseUser = this.state.user;
       this.setState({
-        ordering: true
+        ordering: true,
       });
       const order: OrderType = {
-        userId: this.state.user.uid,
+        userId: user.uid,
         artpieces: this.state.artpieces,
-        userEmail: this.state.user.email,
+        userEmail: user.email,
         total: this.computeTotal(),
-        status: false
+        status: false,
       };
       await addOrderToFirebase(order);
       await this.closeCart();
       this.setState({
         ordering: false,
-        artpieces: []
+        artpieces: [],
       });
-      window.location.href = "/success";
+      window.location.href = '/success';
     }
   };
 
@@ -186,7 +186,8 @@ class Cart extends Component {
         <div className="body">
           <h1 style={this.styles().centered}> Votre sélection </h1>
           <Divider style={this.styles().margin} />
-          {this.state.loadingCart && <CircularProgress size={90} />}
+          <ConditionalCircularProgress predicate={this.state.loadingCart} />
+
           <List>
             {this.state.artpieces.length &&
               this.state.artpieces.map((value: ArtPieceType, index: number) => (
