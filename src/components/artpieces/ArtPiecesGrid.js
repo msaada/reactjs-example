@@ -51,15 +51,13 @@ export default (props: Props) => {
       {artPieces.map((artPiece: ArtPieceType, index: number) =>
         ArtPiecesGridTyle(artPiece, index, artistName)
       )}
-      {hasSeeMoreTyle && artPieces.length ? (
-        seeMoreTyle(
-          artPieces.length,
-          'Voir toutes les nouveautés...',
-          '/nouveautes'
-        )
-      ) : (
-        <div />
-      )}
+      {hasSeeMoreTyle && artPieces.length
+        ? seeMoreTyle(
+            artPieces.length,
+            'Voir toutes les nouveautés...',
+            '/nouveautes'
+          )
+        : null}
     </GridList>
   );
 };

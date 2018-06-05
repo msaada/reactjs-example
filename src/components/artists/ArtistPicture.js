@@ -16,6 +16,6 @@ export default (props: Props) => {
       </div>
     );
   } else {
-    return <div />;
+    return null;
   }
 };
