@@ -54,14 +54,15 @@ class Orders extends Component<Props, State> {
         justifyContent: 'center',
       },
       paper: {
-        padding: 20,
+        padding: '3em',
+        margin: '3em',
       },
     };
   }
   render() {
     return (
       <div style={this.styles().root}>
-        <AppBar>
+        <AppBar position="sticky">
           <Toolbar>
             <Typography variant="display2" color="inherit">
               Commandes
@@ -84,8 +85,6 @@ class Orders extends Component<Props, State> {
               />
             )}
         </Paper>
-        <br />
-        <br />
       </div>
     );
   }

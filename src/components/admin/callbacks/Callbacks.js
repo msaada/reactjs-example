@@ -42,14 +42,15 @@ export default class Callbacks extends Component<Props, State> {
         justifyContent: 'center',
       },
       paper: {
-        padding: 20,
+        padding: '3em',
+        margin: '3em',
       },
     };
   }
   render() {
     return (
       <div style={this.styles().root}>
-        <AppBar>
+        <AppBar position="sticky">
           <Toolbar>
             <Typography variant="display2" color="inherit">
               Demandes de rappel
@@ -68,8 +69,6 @@ export default class Callbacks extends Component<Props, State> {
             <CallbacksAdminList callbacks={this.state.callbacks} />
           )}
         </Paper>
-        <br />
-        <br />
       </div>
     );
   }
