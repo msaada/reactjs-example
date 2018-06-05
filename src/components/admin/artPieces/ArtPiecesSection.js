@@ -34,6 +34,7 @@ export default class ArtPiecesSection extends Component<Props, State> {
   };
   render() {
     const { artPieces, artists, artTypes } = this.props;
+    const itemsPerPage = 5;
     return (
       <Paper elevation={3} className="paper">
         <Toolbar>
@@ -45,8 +46,8 @@ export default class ArtPiecesSection extends Component<Props, State> {
         {artPieces.length && (
           <ArtPiecesAdminList
             artpieces={artPieces.slice(
-              5 * (this.state.artpiecesActivePage - 1),
-              5 * this.state.artpiecesActivePage
+              itemsPerPage * (this.state.artpiecesActivePage - 1),
+              itemsPerPage * this.state.artpiecesActivePage
             )}
             artists={artists}
             arttypes={artTypes}
@@ -54,7 +55,7 @@ export default class ArtPiecesSection extends Component<Props, State> {
         )}
         <Paginator
           items={artPieces}
-          itemsPerPage={5}
+          itemsPerPage={itemsPerPage}
           className="centered"
           onSelect={this.handleSelectArtPieces}
           activePage={this.state.artpiecesActivePage}
