@@ -55,7 +55,10 @@ class SignIn extends Component<Props, State> {
   change = (e: SyntheticInputEvent<>) => {
     if (e.target instanceof HTMLInputElement) {
       this.setState({
-        [e.target.id]: e.target.value,
+        extraInfos: {
+          ...this.state.extraInfos,
+          [e.target.id]: e.target.value,
+        },
       });
     }
   };
