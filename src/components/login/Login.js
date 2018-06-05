@@ -180,7 +180,12 @@ class Login extends Component<Props, State> {
           />
           <br />
           <div style={this.styles().buttons}>
-            <Button raised keyboardFocused onClick={e => this.logIn()}>
+            <Button
+              id="login-button"
+              raised
+              keyboardFocused
+              onClick={e => this.logIn()}
+            >
               Connexion
             </Button>
             <Button href="/creercompte">Je n'ai pas de compte</Button>

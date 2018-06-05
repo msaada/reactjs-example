@@ -114,7 +114,11 @@ class Header extends Component<Props, State> {
         <div style={this.styles().divider}>
           <div style={this.styles().connect_buttons}>
             {this.state.user && (
-              <Button style={this.styles().button} href="/panier">
+              <Button
+                id="cart-button"
+                style={this.styles().button}
+                href="/panier"
+              >
                 {this.state.userInfos && this.state.userInfos.name}
                 <Badge
                   badgeContent={this.state.cart ? this.state.cart.itemCount : 0}
