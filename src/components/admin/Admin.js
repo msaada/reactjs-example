@@ -55,8 +55,8 @@ class Admin extends Component<Props, State> {
 
   render() {
     return (
-      <div className={'root'}>
-        <AppBar>
+      <div className="root">
+        <AppBar position="sticky">
           <Toolbar>
             <Typography variant="display2" gutterBottom>
               Panneau d'administration
