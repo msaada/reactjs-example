@@ -9,7 +9,7 @@ type Props = {
 export default (props: Props) => {
   if (props.predicate) {
     return (
-      <div className={'conditionalProgress'}>
+      <div className="conditionalProgress">
         <CircularProgress size={90} />
       </div>
     );

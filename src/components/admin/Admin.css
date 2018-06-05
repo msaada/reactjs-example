@@ -4,6 +4,7 @@
 }
 .paper {
   padding: 3em;
+  margin: 3em;
 }
 .root {
   display: 'flex';

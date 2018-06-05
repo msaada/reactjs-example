@@ -11,8 +11,8 @@ export default (props: Props) => {
   const { artist } = props;
   if (artist) {
     return (
-      <div className={'artistPictureContainer'}>
-        <Image src={artist.picture} className={'artistPicture'} />
+      <div className="artistPictureContainer">
+        <Image src={artist.picture} className="artistPicture" />
       </div>
     );
   } else {

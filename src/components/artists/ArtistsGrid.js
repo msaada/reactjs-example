@@ -13,7 +13,7 @@ export default (props: Props) => {
   const { artists } = props;
   return (
     artists.length && (
-      <GridList cellHeight={450} className={'gridList'} cols={3}>
+      <GridList cellHeight={450} className="gridList" cols={3}>
         {artists.map((artist: ArtistType, index: number) => {
           return ArtistsGridTyle(artist, index);
         })}

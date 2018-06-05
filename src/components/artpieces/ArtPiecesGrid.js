@@ -34,7 +34,7 @@ const seeMoreTyle: SeeMoreTyle = (key, title, destination) => (
     <Image
       src={require('../../assets/more.jpg')}
       alt={title}
-      className={'seeMoreImage'}
+      className="seeMoreImage"
       onClick={e => (window.location.href = destination)}
     />
   </GridListTile>
@@ -46,7 +46,7 @@ export default (props: Props) => {
     <GridList
       cellHeight={gridSize ? gridSize.cellHeight : 250}
       cols={gridSize ? gridSize.cols : 4}
-      className={'gridList'}
+      className="gridList"
     >
       {artPieces.map((artPiece: ArtPieceType, index: number) =>
         ArtPiecesGridTyle(artPiece, index, artistName)

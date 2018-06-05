@@ -10,7 +10,7 @@ type Props = {
   onSelect: (index: number) => (event: SyntheticInputEvent<>) => void,
 };
 
-export default function Paginator(props: Props) {
+export default (props: Props) => {
   let renderedItems = [];
   let nbPages = props.items.length / props.itemsPerPage;
   for (let page = 1; page <= nbPages; page++) {
@@ -27,10 +27,10 @@ export default function Paginator(props: Props) {
   }
   if (props.items.length) {
     if (nbPages < 5) {
-      return <Pagination className={'pagination'}>{renderedItems}</Pagination>;
+      return <Pagination className="pagination">{renderedItems}</Pagination>;
     } else {
       return (
-        <Pagination className={'pagination'}>
+        <Pagination className="pagination">
           <Pagination.Prev onClick={props.onSelect(props.activePage - 1)} />
           {renderedItems.slice(0, 3)}
           <Pagination.Ellipsis active={false} />
@@ -41,4 +41,4 @@ export default function Paginator(props: Props) {
     }
   }
   return null;
-}
+};

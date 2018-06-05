@@ -29,7 +29,7 @@ export default class ArtistsSection extends Component<Props, State> {
   render() {
     const { artists } = this.props;
     return (
-      <Paper elevation={3} className={'paper'}>
+      <Paper elevation={3} className="paper">
         <Toolbar>
           <Typography variant="display3" gutterBottom>
             Artistes
@@ -47,7 +47,7 @@ export default class ArtistsSection extends Component<Props, State> {
         <Paginator
           items={artists}
           itemsPerPage={5}
-          className={'centered'}
+          className="centered"
           onSelect={this.handleSelectArtist}
           activePage={this.state.artistsActivePage}
         />

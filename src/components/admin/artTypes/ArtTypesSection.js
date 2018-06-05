@@ -29,7 +29,7 @@ export default class ArtTypesSection extends Component<Props, State> {
   render() {
     const { artTypes } = this.props;
     return (
-      <Paper elevation={3} className={'paper'}>
+      <Paper elevation={3} className="paper">
         <Toolbar>
           <Typography variant="display3">Types d'oeuvres</Typography>
         </Toolbar>
@@ -45,7 +45,7 @@ export default class ArtTypesSection extends Component<Props, State> {
         <Paginator
           items={artTypes}
           itemsPerPage={5}
-          className={'centered'}
+          className="centered"
           onSelect={this.handleSelectArtType}
           activePage={this.state.arttypesActivePage}
         />
