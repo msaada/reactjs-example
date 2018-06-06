@@ -1,5 +1,4 @@
 //@flow
-import _ from 'lodash';
 import React, { Component } from 'react';
 import { ListGroup, ListGroupItem, Panel, PanelGroup } from 'react-bootstrap';
 
@@ -30,8 +29,7 @@ export default class CallbacksAdminList extends Component<Props, State> {
         onSelect={this.handleSelect}
         accordion
       >
-        {_.map(
-          this.props.callbacks,
+        {this.props.callbacks.map(
           (callback: FirebaseCallbackType, pos: number) => (
             <Panel header={callback.name} eventKey={String(pos)}>
               <ListGroup>
