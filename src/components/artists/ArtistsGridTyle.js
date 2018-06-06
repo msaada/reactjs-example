@@ -8,26 +8,7 @@ import type { ArtistType } from '../../types/types';
 
 export default (artist: ArtistType, key: number) => {
   const style = {
-    root: {
-      height: '100%',
-      marginLeft: 'auto',
-      marginRight: 'auto',
-      display: 'flex',
-      justifyContent: 'center',
-    },
-    titleBar: {
-      background: 'rgba(0,0,0,0.15)',
-      height: '2.5em',
-      textAlign: 'center',
-    },
     buttonBase: {
-      root: {
-        marginTop: '2em',
-        display: 'flex',
-        flexWrap: 'wrap',
-        minWidth: 300,
-        width: '100%',
-      },
       image: {
         position: 'relative',
         height: '100%',
