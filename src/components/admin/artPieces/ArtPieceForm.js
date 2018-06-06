@@ -403,12 +403,11 @@ export default class ArtPieceForm extends Component<Props, State> {
           >
             Oeuvre marquée comme "Réservée"
           </Checkbox>
-          {this.state.alertVisible && (
-            <MyAlert
-              message={this.state.alertMessage}
-              alertDissmiss={this.handleAlertDismiss}
-            />
-          )}
+          <MyAlert
+            visible={this.state.alertVisible}
+            message={this.state.alertMessage}
+            alertDissmiss={this.handleAlertDismiss}
+          />
           <Button onClick={(e: SyntheticInputEvent<>) => this.onSubmit(e)}>
             Confirmer
           </Button>

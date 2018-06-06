@@ -258,12 +258,12 @@ export default class ArtistForm extends Component<Props, State> {
             Artiste dans la rubrique "Artiste du moment"
           </Checkbox>
 
-          {this.state.alertVisible && (
-            <MyAlert
-              message={this.state.alertMessage}
-              alertDissmiss={this.handleAlertDismiss}
-            />
-          )}
+          <MyAlert
+            visible={this.state.alertVisible}
+            message={this.state.alertMessage}
+            alertDissmiss={this.handleAlertDismiss}
+          />
+
           <Button
             raised
             onClick={(e: SyntheticInputEvent<>) => this.onSubmit(e)}

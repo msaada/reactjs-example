@@ -147,12 +147,11 @@ export default class ArtTypeForm extends Component<Props, State> {
               'Nom'
             )}
           />
-          {this.state.alertVisible && (
-            <MyAlert
-              message={this.state.alertMessage}
-              alertDissmiss={this.handleAlertDismiss}
-            />
-          )}
+          <MyAlert
+            visible={this.state.alertVisible}
+            message={this.state.alertMessage}
+            alertDissmiss={this.handleAlertDismiss}
+          />
           <Button onClick={e => this.onSubmit(e)}>Sauvegarder</Button>
 
           <ConditionalCircularProgress predicate={this.state.saving} />

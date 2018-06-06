@@ -130,12 +130,11 @@ class SignIn extends Component<Props, State> {
             <h1>Créer un compte</h1>
           </div>
           <Divider style={this.styles().divider} />
-          {this.state.alertVisible && (
-            <MyAlert
-              message={this.state.alertMessage}
-              alertDissmiss={this.handleAlertDismiss}
-            />
-          )}
+          <MyAlert
+            visible={this.state.alertVisible}
+            message={this.state.alertMessage}
+            alertDissmiss={this.handleAlertDismiss}
+          />
           <SignInForm
             signIn={this.signIn}
             email={this.state.extraInfos.email}

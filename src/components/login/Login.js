@@ -157,12 +157,11 @@ class Login extends Component<Props, State> {
             <h1>Connexion</h1>
           </div>
           <Divider style={this.styles().divider} />
-          {this.state.alertVisible && (
-            <MyAlert
-              message={this.state.alertMessage}
-              alertDissmiss={this.handleAlertDismiss}
-            />
-          )}
+          <MyAlert
+            visible={this.state.alertVisible}
+            message={this.state.alertMessage}
+            alertDissmiss={this.handleAlertDismiss}
+          />
           <TextFieldControlled
             id="email-field"
             floatingLabelText="Email"
