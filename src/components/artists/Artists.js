@@ -46,7 +46,6 @@ class Artists extends Component<Props, State> {
     return (
       <div>
         <Header />
-
         <div className="body">
           <h1 style={this.styles().centered}> Artistes </h1>
           <Divider style={this.styles().margin} />

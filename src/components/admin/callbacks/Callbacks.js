@@ -65,9 +65,7 @@ export default class Callbacks extends Component<Props, State> {
           <ConditionalCircularProgress
             predicate={this.state.callbacks.length === 0}
           />
-          {this.state.callbacks.length && (
-            <CallbacksAdminList callbacks={this.state.callbacks} />
-          )}
+          <CallbacksAdminList callbacks={this.state.callbacks} />
         </Paper>
       </div>
     );

@@ -189,25 +189,24 @@ class Cart extends Component<Props, State> {
           <ConditionalCircularProgress predicate={this.state.loadingCart} />
 
           <List>
-            {this.state.artpieces.length &&
-              this.state.artpieces.map((value: ArtPieceType, index: number) => (
-                <ListItem
-                  key={index}
-                  dense
-                  divider
-                  button
-                  href={`/product/${value.id}`}
-                >
-                  <Avatar alt={value.name} src={value.imagesLinks[0]} />
-                  <ListItemText primary={value.name} />
-                  <ListItemSecondaryAction>
-                    <Checkbox
-                      onChange={this.handleToggle(index)}
-                      checked={this.state.checked.indexOf(index) !== -1}
-                    />
-                  </ListItemSecondaryAction>
-                </ListItem>
-              ))}
+            {this.state.artpieces.map((value: ArtPieceType, index: number) => (
+              <ListItem
+                key={index}
+                dense
+                divider
+                button
+                href={`/product/${value.id}`}
+              >
+                <Avatar alt={value.name} src={value.imagesLinks[0]} />
+                <ListItemText primary={value.name} />
+                <ListItemSecondaryAction>
+                  <Checkbox
+                    onChange={this.handleToggle(index)}
+                    checked={this.state.checked.indexOf(index) !== -1}
+                  />
+                </ListItemSecondaryAction>
+              </ListItem>
+            ))}
             <ListItem key={this.state.artpieces.length} dense divider button>
               <ListItemText
                 style={this.styles().total}

@@ -11,13 +11,14 @@ type Props = {
 
 export default (props: Props) => {
   const { artists } = props;
-  return (
-    artists.length && (
+  if (artists.length !== 0) {
+    return (
       <GridList cellHeight={450} className="gridList" cols={3}>
         {artists.map((artist: ArtistType, index: number) => {
           return ArtistsGridTyle(artist, index);
         })}
       </GridList>
-    )
-  );
+    );
+  }
+  return null;
 };

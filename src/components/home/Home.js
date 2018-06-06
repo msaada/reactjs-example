@@ -165,29 +165,22 @@ class Home extends Component<Props, State> {
             <ConditionalCircularProgress
               predicate={this.state.artists.length === 0}
             />
-            {this.state.artists &&
-              this.state.artists.length && (
-                <GridList
-                  cellHeight={300}
-                  style={this.styles().gridList}
-                  cols={4}
-                >
-                  {this.listArtists()}
-                  <GridListTile key={4}>
-                    <GridListTileBar
-                      title="Voir plus d'artistes..."
-                      style={this.styles().titleBar}
-                    />
+            <GridList cellHeight={300} style={this.styles().gridList} cols={4}>
+              {this.listArtists()}
+              <GridListTile key={4}>
+                <GridListTileBar
+                  title="Voir plus d'artistes..."
+                  style={this.styles().titleBar}
+                />
 
-                    <Image
-                      src={require('../../assets/more.jpg')}
-                      alt="Voir plus d'artistes"
-                      style={this.styles().image}
-                      onClick={e => (window.location.href = '/artistes')}
-                    />
-                  </GridListTile>
-                </GridList>
-              )}
+                <Image
+                  src={require('../../assets/more.jpg')}
+                  alt="Voir plus d'artistes"
+                  style={this.styles().image}
+                  onClick={e => (window.location.href = '/artistes')}
+                />
+              </GridListTile>
+            </GridList>
           </div>
           <div style={this.styles().category}>
             <div style={this.styles().centered}>

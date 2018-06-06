@@ -35,14 +35,12 @@ export default class ArtTypesSection extends Component<Props, State> {
           <Typography variant="display3">Types d'oeuvres</Typography>
         </Toolbar>
         <ConditionalCircularProgress predicate={artTypes.length === 0} />
-        {artTypes.length && (
-          <ArtTypesAdminList
-            arttypes={artTypes.slice(
-              itemsPerPage * (this.state.arttypesActivePage - 1),
-              itemsPerPage * this.state.arttypesActivePage
-            )}
-          />
-        )}
+        <ArtTypesAdminList
+          arttypes={artTypes.slice(
+            itemsPerPage * (this.state.arttypesActivePage - 1),
+            itemsPerPage * this.state.arttypesActivePage
+          )}
+        />
         <Paginator
           items={artTypes}
           itemsPerPage={itemsPerPage}

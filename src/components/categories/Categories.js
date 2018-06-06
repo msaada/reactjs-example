@@ -86,16 +86,11 @@ class Categories extends Component<Props, State> {
           <ConditionalCircularProgress
             predicate={this.state.arttypes.length === 0}
           />
-
-          {this.state.arttypes.length && (
-            <GridList cellHeight={300} style={this.styles().gridList} cols={3}>
-              {this.state.arttypes.map(
-                (arttype: ArtTypeType, index: number) => {
-                  return CategoryTyle(index, arttype);
-                }
-              )}
-            </GridList>
-          )}
+          <GridList cellHeight={300} style={this.styles().gridList} cols={3}>
+            {this.state.arttypes.map((arttype: ArtTypeType, index: number) => {
+              return CategoryTyle(index, arttype);
+            })}
+          </GridList>
         </div>
 
         <Footer />
