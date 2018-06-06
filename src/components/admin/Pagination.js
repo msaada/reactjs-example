@@ -33,7 +33,7 @@ export default (props: Props) => {
         <Pagination className="pagination">
           <Pagination.Prev onClick={props.onSelect(props.activePage - 1)} />
           {renderedItems.slice(0, 3)}
-          <Pagination.Ellipsis active={false} />
+          <Pagination.Ellipsis disabled />
           {renderedItems.slice(nbPages - 3, nbPages)}
           <Pagination.Next onClick={props.onSelect(props.activePage + 1)} />
         </Pagination>
