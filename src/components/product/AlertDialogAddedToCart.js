@@ -18,7 +18,7 @@ type Props = {
   handleRequestClose: () => void,
 };
 
-export const AlertDialogSlide = (props: Props) => {
+export default function AlertDialogAddedToCart(props: Props) {
   return (
     <div>
       <Dialog
@@ -27,7 +27,7 @@ export const AlertDialogSlide = (props: Props) => {
         keepMounted
         onRequestClose={props.handleRequestClose}
       >
-        <DialogTitle>{'Félicitation !'}</DialogTitle>
+        <DialogTitle>Félicitation !</DialogTitle>
         <DialogContent>
           <DialogContentText>
             Cette oeuvre a bien été ajoutée à votre panier.
@@ -44,4 +44,4 @@ export const AlertDialogSlide = (props: Props) => {
       </Dialog>
     </div>
   );
-};
+}
