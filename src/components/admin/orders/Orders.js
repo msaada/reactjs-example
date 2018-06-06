@@ -73,17 +73,13 @@ class Orders extends Component<Props, State> {
           <Toolbar>
             <Typography variant="display3">Commandes</Typography>
           </Toolbar>
-
           <ConditionalCircularProgress
             predicate={this.state.orders.length === 0}
           />
-          {this.state.orders.length &&
-            this.state.usersExtras.length && (
-              <OrdersList
-                orders={this.state.orders}
-                usersExtras={this.state.usersExtras}
-              />
-            )}
+          <OrdersList
+            orders={this.state.orders}
+            usersExtras={this.state.usersExtras}
+          />
         </Paper>
       </div>
     );
