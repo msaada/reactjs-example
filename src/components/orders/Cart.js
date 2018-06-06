@@ -147,11 +147,11 @@ class Cart extends Component<Props, State> {
   };
 
   computeTotal = () => {
-    let total: number = 0;
-    this.state.artpieces.forEach((e: ArtPieceType) => {
-      total += Number(e.sellPriceTaxIncluded.replace(/\s/g, ''));
-    });
-    return total;
+    return this.state.artpieces.reduce(
+      (total: number, artPiece: ArtPieceType) =>
+        (total += artPiece.sellPriceTaxIncluded),
+      0
+    );
   };
 
   performOrder = async () => {
