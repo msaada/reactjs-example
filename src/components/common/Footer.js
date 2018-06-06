@@ -40,12 +40,13 @@ class Footer extends Component<Props, State> {
   render() {
     return (
       <div style={this.styles().root}>
-        <Image
-          src={logo}
-          onClick={e => (window.location.href = '/')}
-          style={this.styles().logo}
-          alt="Mega Dental concept store Art Gallery"
-        />
+        <a href={'/'}>
+          <Image
+            src={logo}
+            style={this.styles().logo}
+            alt="Mega Dental concept store Art Gallery"
+          />
+        </a>
         <div style={this.styles().nav_div}>
           <div style={this.styles().padding} />
           <Divider />
