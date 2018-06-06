@@ -58,7 +58,7 @@ export type ArtPieceType = {
   sellPriceTaxIncluded: number,
   catalogPage: number,
   dimensions: string,
-  weight: number,
+  weight: string,
   year: string,
   quantity: number,
   imagesLinks: string[],
