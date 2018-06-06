@@ -40,7 +40,6 @@ class Header extends Component<Props, State> {
       };
       if (auth) {
         await auth.onAuthStateChanged(async (user: ?FirebaseUser) => {
-          console.log('HEADER user', user);
           this.setState({ user: user });
           if (user && user.uid) {
             getUserExtraInfos(user.uid, callbackExtraInfos);
