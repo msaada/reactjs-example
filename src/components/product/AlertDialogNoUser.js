@@ -1,12 +1,12 @@
 //@flow
-import Button from 'material-ui/Button';
+import Button from '@material-ui/core/Button';
 import Dialog, {
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-} from 'material-ui/Dialog';
-import Slide from 'material-ui/transitions/Slide';
+} from '@material-ui/core/Dialog';
+import Slide from '@material-ui/core/Slide';
 import React from 'react';
 
 function Transition(props) {

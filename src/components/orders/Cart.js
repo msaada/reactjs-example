@@ -1,13 +1,13 @@
 // @flow
-import Avatar from 'material-ui/Avatar';
-import Button from 'material-ui/Button';
-import Checkbox from 'material-ui/Checkbox';
-import Divider from 'material-ui/Divider';
+import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
+import Checkbox from '@material-ui/core/Checkbox';
+import Divider from '@material-ui/core/Divider';
 import List, {
   ListItem,
   ListItemSecondaryAction,
   ListItemText,
-} from 'material-ui/List';
+} from '@material-ui/core/List';
 import React, { Component } from 'react';
 import '../../css/App.css';
 import {

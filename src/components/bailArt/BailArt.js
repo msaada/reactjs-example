@@ -1,5 +1,5 @@
 // @flow
-import Divider from 'material-ui/Divider';
+import Divider from '@material-ui/core/Divider';
 import React from 'react';
 import { Image } from 'react-bootstrap';
 import '../../css/App.css';

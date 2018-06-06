@@ -1,6 +1,6 @@
 //@flow
 
-import Button from 'material-ui/Button';
+import Button from '@material-ui/core/Button';
 import React, { Component } from 'react';
 import {
   addArtTypeToFirebase,

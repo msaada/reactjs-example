@@ -1,7 +1,9 @@
 // @flow
 
-import Divider from 'material-ui/Divider';
-import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
+import Divider from '@material-ui/core/Divider';
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
+import GridListTileBar from '@material-ui/core/GridListTileBar';
 import React, { Component } from 'react';
 import { Image } from 'react-bootstrap';
 import ReactGA from 'react-ga';

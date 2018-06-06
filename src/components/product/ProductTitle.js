@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import Divider from 'material-ui/Divider';
+import Divider from '@material-ui/core/Divider';
 
 import type { ArtPieceType } from '../../types/types';
 

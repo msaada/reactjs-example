@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import Button from 'material-ui/Button';
+import Button from '@material-ui/core/Button';
 
 import AlertDialogNoUser from './AlertDialogNoUser';
 import AlertDialogReserved from './AlertDialogReserved';

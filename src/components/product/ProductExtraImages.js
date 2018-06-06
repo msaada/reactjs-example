@@ -1,7 +1,8 @@
 // @flow
 import React from 'react';
-import Divider from 'material-ui/Divider';
-import GridList, { GridListTile } from 'material-ui/GridList';
+import Divider from '@material-ui/core/Divider';
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
 
 import type { ArtPieceType } from '../../types/types';
 

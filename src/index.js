@@ -1,7 +1,7 @@
 //@flow
 import 'babel-polyfill';
-import orangeA700 from 'material-ui/colors/orange';
-import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
+import orangeA700 from '@material-ui/core/colors/orange';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactGA from 'react-ga';

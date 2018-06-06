@@ -1,9 +1,9 @@
 //@flow
-import PersonIcon from 'material-ui-icons/Person';
-import ShoppingBasketIcon from 'material-ui-icons/ShoppingBasket';
-import Badge from 'material-ui/Badge';
-import Button from 'material-ui/Button';
-import Divider from 'material-ui/Divider';
+import PersonIcon from '@material-ui/icons/Person';
+import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
+import Badge from '@material-ui/core/Badge';
+import Button from '@material-ui/core/Button';
+import Divider from '@material-ui/core/Divider';
 import React, { Component } from 'react';
 import { Image } from 'react-bootstrap';
 import logo from '../../assets/Art-Gallery-Logo.jpg';

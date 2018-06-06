@@ -1,6 +1,6 @@
 // @flow
 
-import Divider from 'material-ui/Divider';
+import Divider from '@material-ui/core/Divider';
 import React, { Component } from 'react';
 import '../../css/App.css';
 import {

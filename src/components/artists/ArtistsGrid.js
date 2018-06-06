@@ -1,6 +1,6 @@
 //@flow
 
-import GridList from 'material-ui/GridList';
+import GridList from '@material-ui/core/GridList';
 import React from 'react';
 import './Artist.css';
 import ArtistsGridTyle from './ArtistsGridTyle';

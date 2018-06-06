@@ -1,6 +1,6 @@
 // @flow
-import Divider from 'material-ui/Divider';
-import GridList from 'material-ui/GridList';
+import Divider from '@material-ui/core/Divider';
+import GridList from '@material-ui/core/GridList';
 import React, { Component } from 'react';
 import '../../css/App.css';
 import { getArtTypes } from '../../javascript/firebaseUtils';

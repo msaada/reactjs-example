@@ -1,6 +1,6 @@
 // @flow
 
-import Divider from 'material-ui/Divider';
+import Divider from '@material-ui/core/Divider';
 import React, { Component } from 'react';
 import { Image } from 'react-bootstrap';
 import mainImage from '../../assets/vue-galerie.jpg';

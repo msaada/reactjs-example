@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
-import Button from 'material-ui/Button';
-import Divider from 'material-ui/Divider';
+import Button from '@material-ui/core/Button';
+import Divider from '@material-ui/core/Divider';
 import { Image, Panel } from 'react-bootstrap';
 
 import ConditionalCircularProgress from '../common/ConditionalCircularProgress';

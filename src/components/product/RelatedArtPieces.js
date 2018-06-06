@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 
-import Divider from 'material-ui/Divider';
+import Divider from '@material-ui/core/Divider';
 import ArtPiecesGrid from '../artpieces/ArtPiecesGrid';
 import ConditionalCircularProgress from '../common/ConditionalCircularProgress';
 

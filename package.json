@@ -4,12 +4,10 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^1.2.0",
+    "@material-ui/icons": "^1.1.0",
     "babel-polyfill": "^6.26.0",
     "firebase": "^5.0.4",
     "flow": "^0.2.3",
-    "material-design-icons": "^3.0.1",
-    "material-ui": "^1.0.0-beta.34",
-    "material-ui-icons": "^1.0.0-beta.36",
     "react": "^16.4.0",
     "react-bootstrap": "^0.32.1",
     "react-dom": "^16.4.0",

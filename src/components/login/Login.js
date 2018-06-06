@@ -1,8 +1,8 @@
 // @flow
 
 import * as firebase from 'firebase';
-import Button from 'material-ui/Button';
-import Divider from 'material-ui/Divider';
+import Button from '@material-ui/core/Button';
+import Divider from '@material-ui/core/Divider';
 import React, { Component } from 'react';
 import '../../css/App.css';
 import { auth, getCurrentUser } from '../../javascript/firebaseUtils';

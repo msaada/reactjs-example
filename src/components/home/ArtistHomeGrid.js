@@ -1,5 +1,6 @@
 //@flow
-import { GridListTile, GridListTileBar } from 'material-ui/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
+import GridListTileBar from '@material-ui/core/GridListTileBar';
 import React from 'react';
 import { Image } from 'react-bootstrap';
 import '../../css/App.css';

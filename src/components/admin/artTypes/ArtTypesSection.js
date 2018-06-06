@@ -1,8 +1,8 @@
 // @flow
 
-import Paper from 'material-ui/Paper';
-import Toolbar from 'material-ui/Toolbar';
-import Typography from 'material-ui/Typography';
+import Paper from '@material-ui/core/Paper';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
 import React, { Component } from 'react';
 import ConditionalCircularProgress from '../../common/ConditionalCircularProgress';
 import '../Admin.css';
