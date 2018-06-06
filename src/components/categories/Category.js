@@ -87,7 +87,7 @@ class Category extends Component<Props, State> {
     return (
       <div>
         <Header />
-        <div className style={this.styles().root}>
+        <div style={this.styles().root}>
           <div style={this.styles().relative}>
             <Image src={banner} style={this.styles().image} />
             <div style={this.styles().categoryName}>
