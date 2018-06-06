@@ -105,7 +105,7 @@ export default class ArtPieceForm extends Component<Props, State> {
   getWrongFields = () => {
     const fieldsStatus = this.state.fieldsStatus;
     let wrongFields: string[] = [];
-    for (var property in fieldsStatus) {
+    for (let property in fieldsStatus) {
       if (fieldsStatus.hasOwnProperty(property)) {
         if (!fieldsStatus[property]) {
           wrongFields = [...wrongFields, property];
@@ -196,7 +196,9 @@ export default class ArtPieceForm extends Component<Props, State> {
   ) => Element<any>[] | void = artists => {
     if (artists) {
       return artists.map(artist => (
-        <option value={artist.id}>{artist.name}</option>
+        <option value={artist.id} key={artist.id}>
+          {artist.name}
+        </option>
       ));
     }
   };
@@ -206,7 +208,9 @@ export default class ArtPieceForm extends Component<Props, State> {
   ) => Element<any>[] | void = arttypes => {
     if (arttypes) {
       return arttypes.map(arttype => (
-        <option value={arttype.id}>{arttype.name}</option>
+        <option value={arttype.id} key={arttype.id}>
+          {arttype.name}
+        </option>
       ));
     }
   };

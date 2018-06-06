@@ -66,7 +66,7 @@ export default class ArtistForm extends Component<Props, State> {
   getWrongFields = () => {
     const fieldsStatus = this.state.fieldsStatus;
     let wrongFields: string[] = [];
-    for (var property in fieldsStatus) {
+    for (let property in fieldsStatus) {
       if (fieldsStatus.hasOwnProperty(property)) {
         if (!fieldsStatus[property]) {
           wrongFields = [...wrongFields, property];
