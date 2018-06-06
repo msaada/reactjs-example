@@ -105,7 +105,3 @@ export type CallbackType = {
 export type FirebaseCallbackType = CallbackType & {
   timestamp: string,
 };
-
-export type FileX = {
-  name: string,
-};

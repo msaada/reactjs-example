@@ -19,7 +19,7 @@ type State = {
   isLoading: boolean,
 };
 
-class News extends Component<{}, State> {
+class News extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {

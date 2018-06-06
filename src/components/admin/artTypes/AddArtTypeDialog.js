@@ -38,7 +38,7 @@ export default class AddArtTypeDialog extends Component<Props, State> {
     this.setState({ open: false });
     this.props.resetFields();
   };
-  componentWillReceiveProps(nextProps: { arttype?: ?ArtTypeType }) {
+  componentWillReceiveProps(nextProps: { arttype: ?ArtTypeType }) {
     if (nextProps.arttype) {
       this.handleOpen();
     }

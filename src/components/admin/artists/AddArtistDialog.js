@@ -32,7 +32,7 @@ export default class AddArtistDialog extends Component<Props, State> {
     this.setState({ open: false });
     this.props.resetFields();
   };
-  componentWillReceiveProps(nextProps: { artist?: ?ArtistType }) {
+  componentWillReceiveProps(nextProps: { artist: ?ArtistType }) {
     if (nextProps.artist) {
       this.handleOpen();
     }
