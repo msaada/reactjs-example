@@ -408,7 +408,10 @@ export default class ArtPieceForm extends Component<Props, State> {
             message={this.state.alertMessage}
             alertDissmiss={this.handleAlertDismiss}
           />
-          <Button onClick={(e: SyntheticInputEvent<>) => this.onSubmit(e)}>
+          <Button
+            variant="raised"
+            onClick={(e: SyntheticInputEvent<>) => this.onSubmit(e)}
+          >
             Confirmer
           </Button>
           <ConditionalCircularProgress predicate={this.state.saving} />

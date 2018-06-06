@@ -152,7 +152,9 @@ export default class ArtTypeForm extends Component<Props, State> {
             message={this.state.alertMessage}
             alertDissmiss={this.handleAlertDismiss}
           />
-          <Button onClick={e => this.onSubmit(e)}>Sauvegarder</Button>
+          <Button variant="raised" onClick={e => this.onSubmit(e)}>
+            Sauvegarder
+          </Button>
 
           <ConditionalCircularProgress predicate={this.state.saving} />
         </form>

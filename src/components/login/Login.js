@@ -181,7 +181,7 @@ class Login extends Component<Props, State> {
           <div style={this.styles().buttons}>
             <Button
               id="login-button"
-              raised
+              variant="raised"
               keyboardFocused
               onClick={e => this.logIn()}
             >

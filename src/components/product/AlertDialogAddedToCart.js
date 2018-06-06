@@ -37,7 +37,7 @@ export default function AlertDialogAddedToCart(props: Props) {
           <Button onClick={props.handleRequestClose} color="primary">
             Continuer mes achats
           </Button>
-          <Button raised href={'/panier'} color="primary">
+          <Button variant="raised" href={'/panier'} color="primary">
             Finaliser mes achats
           </Button>
         </DialogActions>

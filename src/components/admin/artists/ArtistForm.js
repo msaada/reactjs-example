@@ -265,7 +265,7 @@ export default class ArtistForm extends Component<Props, State> {
           />
 
           <Button
-            raised
+            variant="raised"
             onClick={(e: SyntheticInputEvent<>) => this.onSubmit(e)}
           >
             Sauvegarder

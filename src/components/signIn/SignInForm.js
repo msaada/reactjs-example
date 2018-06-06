@@ -91,7 +91,7 @@ export class SignInForm extends Component<Props, State> {
           value={this.props.clientCode}
           onChange={this.props.clientCodeChange}
         />
-        <Button raised onClick={this.props.signIn}>
+        <Button variant="raised" onClick={this.props.signIn}>
           Créer le compte
         </Button>
       </form>

@@ -42,7 +42,7 @@ export class CallbackForm extends Component<Props, State> {
           value={this.props.phoneNumber}
           onChange={this.props.phoneNumberChange}
         />
-        <Button raised onClick={this.props.handleCallback}>
+        <Button variant="raised" onClick={this.props.handleCallback}>
           Demander un rappel
         </Button>
       </form>

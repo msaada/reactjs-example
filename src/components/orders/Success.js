@@ -43,7 +43,7 @@ class Success extends Component<Props, State> {
             Un conseiller va vous contacter dans les plus bref délais pour
             finaliser votre commande.
           </p>
-          <Button raised href={'/'} style={this.styles().button}>
+          <Button variant="raised" href={'/'} style={this.styles().button}>
             Retourner à l'acceuil
           </Button>
           <Button style={this.styles().button} href="http://www.megadental.fr">

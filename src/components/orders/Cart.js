@@ -46,7 +46,7 @@ class Cart extends Component<Props, State> {
     loadingCart: true,
   };
 
-  componentWillMount() {
+  componentDidMount() {
     (async () => {
       if (auth) {
         await auth.onAuthStateChanged(async user => {
@@ -215,13 +215,13 @@ class Cart extends Component<Props, State> {
             </ListItem>
           </List>
           <Button
-            raised
+            variant="raised"
             onClick={e => this.performOrder()}
             style={this.styles().marginButtons}
           >
             Acheter
           </Button>
-          <Button raised onClick={e => this.deleteCartItem()}>
+          <Button variant="raised" onClick={e => this.deleteCartItem()}>
             Supprimer selection ({this.state.checked.length})
           </Button>
         </div>

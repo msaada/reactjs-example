@@ -39,10 +39,10 @@ class AlertDialogNoUser extends React.Component<Props, State> {
             <Button onClick={this.props.handleRequestClose} color="primary">
               Continuer à visiter
             </Button>
-            <Button raised href={'/connexion'} color="primary">
+            <Button variant="raised" href={'/connexion'} color="primary">
               Connexion
             </Button>
-            <Button raised href={'/creercompte'} color="primary">
+            <Button variant="raised" href={'/creercompte'} color="primary">
               Créer un compte
             </Button>
           </DialogActions>
