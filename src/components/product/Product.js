@@ -1,6 +1,5 @@
 // @flow
 import React, { Component } from 'react';
-import { Image } from 'react-bootstrap';
 import '../../css/App.css';
 import {
   auth,

@@ -8,7 +8,7 @@ type Props = {
   alertDissmiss: () => void,
   message: string,
 };
-type State = {};
+
 export default function MyAlert(props: Props) {
   if (props.visible) {
     return (
