@@ -1,11 +1,10 @@
 //@flow
 import Button from '@material-ui/core/Button';
-import Dialog, {
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from '@material-ui/core/Dialog';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import React from 'react';
 
@@ -23,9 +22,9 @@ export default (props: Props) => {
     <div>
       <Dialog
         open={props.open}
-        transition={Transition}
+        TransitionComponent={Transition}
         keepMounted
-        onRequestClose={props.handleRequestClose}
+        onClose={props.handleRequestClose}
       >
         <DialogTitle>{'Merci !'}</DialogTitle>
         <DialogContent>
@@ -34,7 +33,7 @@ export default (props: Props) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button raised href={'/'} color="primary">
+          <Button variant="raised" href={'/'} color="primary">
             Retour à l'acceuil
           </Button>
         </DialogActions>
