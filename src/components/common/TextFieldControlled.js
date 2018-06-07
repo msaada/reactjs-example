@@ -16,7 +16,7 @@ export default class TextFieldControlled extends React.Component<Props, State> {
     return (
       <TextField
         id={this.props.id}
-        fullwidth
+        fullWidth
         value={this.props.value}
         onChange={this.props.handleChange}
         type={this.props.type}

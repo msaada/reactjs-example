@@ -18,7 +18,7 @@ export default function OrderStatus(props: Props) {
   return (
     <ListGroupItem header="Status">
       <CompletedStatus status={props.status} />
-      <Button raised> Terminer commande</Button>
+      <Button variant="raised"> Terminer commande</Button>
     </ListGroupItem>
   );
 }

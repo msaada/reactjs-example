@@ -27,12 +27,14 @@ export class OrdersList extends Component<Props, State> {
   render() {
     return (
       <PanelGroup
+        id={'order-list-panel-group'}
         activeKey={this.state.activeKey}
         onSelect={this.handleSelect}
         accordion
       >
         {this.props.orders.map((order: FirebaseOrderType, position: number) => (
           <Order
+            key={position}
             order={order}
             usersExtras={this.props.usersExtras}
             position={position}

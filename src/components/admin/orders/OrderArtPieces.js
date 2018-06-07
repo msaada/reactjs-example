@@ -14,7 +14,7 @@ export default function OrderArtPieces(props: Props) {
     return (
       <div>
         {artpieces.map((artpiece: ArtPieceType, pos: number) => (
-          <ListGroupItem header={artpiece.name}>
+          <ListGroupItem header={artpiece.name} key={pos}>
             {'REF: ' + artpiece.reference}
             <br />
             {'PRIX: ' + artpiece.sellPriceTaxIncluded}

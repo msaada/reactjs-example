@@ -19,14 +19,17 @@ export default function Order(props: Props) {
   const { order, usersExtras, position } = props;
   const { userEmail, status, timestamp, userId, total, artpieces } = order;
   return (
-    <Panel header={userEmail} footer={status} key={position}>
-      <ListGroup>
-        <OrderStatus status={status} />
-        <OrderAskingDate timestamp={timestamp} />
-        <OrderUserInformation userId={userId} usersExtras={usersExtras} />
-        <OrderArtPieces artpieces={artpieces} />
-        <ListGroupItem header="TOTAL">{total}</ListGroupItem>
-      </ListGroup>
+    <Panel key={position}>
+      <Panel.Heading>{userEmail}</Panel.Heading>
+      <Panel.Body>
+        <ListGroup>
+          <OrderStatus status={status} />
+          <OrderAskingDate timestamp={timestamp} />
+          <OrderUserInformation userId={userId} usersExtras={usersExtras} />
+          <OrderArtPieces artpieces={artpieces} />
+          <ListGroupItem header="TOTAL">{total}</ListGroupItem>
+        </ListGroup>
+      </Panel.Body>
     </Panel>
   );
 }

@@ -182,7 +182,6 @@ class Login extends Component<Props, State> {
             <Button
               id="login-button"
               variant="raised"
-              keyboardFocused
               onClick={e => this.logIn()}
             >
               Connexion

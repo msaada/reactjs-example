@@ -25,13 +25,19 @@ export default class CallbacksAdminList extends Component<Props, State> {
   render() {
     return (
       <PanelGroup
+        id={'callback-panel-group'}
         activeKey={this.state.activeKey}
         onSelect={this.handleSelect}
         accordion
       >
         {this.props.callbacks.map(
           (callback: FirebaseCallbackType, pos: number) => (
-            <Panel header={callback.name} eventKey={String(pos)}>
+            <Panel
+              id={callback.id}
+              header={callback.name}
+              eventKey={String(pos)}
+              key={pos}
+            >
               <ListGroup>
                 <ListGroupItem header={'Informations utilisateur'}>
                   {'Date de demande: ' +
