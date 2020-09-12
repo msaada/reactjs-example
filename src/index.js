@@ -5,7 +5,6 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactGA from 'react-ga';
-import injectTapEventPlugin from 'react-tap-event-plugin';
 import App from './components/App';
 import registerServiceWorker from './javascript/registerServiceWorker';
 
@@ -13,7 +12,6 @@ ReactGA.initialize('UA-111415811-1');
 
 // Needed for onTouchTap
 // http://stackoverflow.com/a/34015469/988941
-injectTapEventPlugin();
 
 const theme = createMuiTheme({
   typography: {
