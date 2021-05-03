@@ -1,7 +1,4 @@
-//@flow
-import type { ArtPieceType } from "../types/types";
-
-export default (id: string, props: ArtPieceType, timestamp: Date) => ({
+export default (id, props, timestamp) => ({
   id: id,
   galeryId: props.galeryId,
   artistId: props.artistId,

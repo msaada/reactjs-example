@@ -1,12 +1,7 @@
-// @flow
 import React from 'react';
 import { ListGroupItem } from 'react-bootstrap';
 
-type Props = {
-  timestamp: string,
-};
-
-export default function OrderAskingDate(props: Props) {
+export default function OrderAskingDate(props) {
   const { timestamp } = props;
   return (
     <ListGroupItem header="Date de la demande">

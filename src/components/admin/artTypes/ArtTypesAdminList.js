@@ -1,4 +1,3 @@
-//@flow
 import Avatar from '@material-ui/core/Avatar';
 
 import List from '@material-ui/core/List';
@@ -7,18 +6,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import React, { Component } from 'react';
 import AddArtTypeDialog from './AddArtTypeDialog';
 
-import type { ArtTypeType } from '../../../types/types';
-
-type Props = {
-  arttypes: ArtTypeType[],
-};
-
-type State = {
-  chosenArtType: ?ArtTypeType,
-};
-
-export default class AdminList extends Component<Props, State> {
-  state: State = {
+export default class AdminList extends Component {
+  state = {
     chosenArtType: null,
   };
 
@@ -30,7 +19,7 @@ export default class AdminList extends Component<Props, State> {
   render() {
     return (
       <List>
-        {this.props.arttypes.map((arttype: ArtTypeType, pos: number) => (
+        {this.props.arttypes.map((arttype, pos) => (
           <ListItem key={pos} dense button>
             <Avatar alt={arttype.name} src={arttype.name} />
             <ListItemText primary={arttype.name} />

@@ -1,21 +1,10 @@
-//@flow
 import React from 'react';
 import {
-  ControlLabel,
+  FormLabel,
   FormControl,
   FormGroup,
   HelpBlock,
 } from 'react-bootstrap';
-
-export type FieldGroupType = {
-  id: string,
-  label: string,
-  placeholder?: string,
-  validationState?: string,
-  selectOptions?: any,
-  help?: string,
-  componentClass?: string,
-};
 
 export function FieldGroup({
   id,
@@ -25,7 +14,7 @@ export function FieldGroup({
   selectOptions,
   help,
   ...props
-}: FieldGroupType) {
+}) {
   if (props.componentClass && props.componentClass === 'select')
     return (
       <FormGroup
@@ -33,12 +22,12 @@ export function FieldGroup({
         validationState={validationState}
         bsSize={'small'}
       >
-        <ControlLabel>{label}</ControlLabel>
+        <FormLabel>{label}</FormLabel>
         <FormControl {...props}>
           <option value="">{placeholder}</option>
           {selectOptions}
         </FormControl>
-        {help && <HelpBlock>{help}</HelpBlock>}
+        {/* {help && <HelpBlock>{help}</HelpBlock>} */}
       </FormGroup>
     );
   else
@@ -48,9 +37,9 @@ export function FieldGroup({
         validationState={validationState}
         bsSize={'small'}
       >
-        <ControlLabel>{label}</ControlLabel>
+        <FormLabel>{label}</FormLabel>
         <FormControl {...props} />
-        {help && <HelpBlock>{help}</HelpBlock>}
+        {/* {help && <HelpBlock>{help}</HelpBlock>} */}
       </FormGroup>
     );
 }

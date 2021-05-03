@@ -1,5 +1,3 @@
-// @flow
-
 import Divider from '@material-ui/core/Divider';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
@@ -14,16 +12,11 @@ import Header from '.././common/Header';
 import ArtPiecesGrid from '../artpieces/ArtPiecesGrid';
 import ConditionalCircularProgress from '../common/ConditionalCircularProgress';
 import { ArtistHomeGrid } from './ArtistHomeGrid';
+import moreLogo from '../../assets/more.jpg';
+import homeBanner from '../../assets/home.jpg';
 
-import type { ArtistType, ArtPieceType } from '../../types/types';
-
-type Props = {};
-type State = {
-  artists: ArtistType[],
-  artpieces: ArtPieceType[],
-};
-class Home extends Component<Props, State> {
-  state: State = {
+class Home extends Component {
+  state = {
     artists: [],
     artpieces: [],
   };
@@ -108,7 +101,7 @@ class Home extends Component<Props, State> {
   listArtists() {
     if (this.state.artists) {
       const featuredArtists = this.state.artists.filter(
-        (e: ArtistType) => (e.featured ? e.featured : false)
+        (e) => (e.featured ? e.featured : false)
       );
       return featuredArtists.map((artist, index) => {
         return ArtistHomeGrid(artist, index);
@@ -124,7 +117,7 @@ class Home extends Component<Props, State> {
         <div style={this.styles().slides.root}>
           <div style={this.styles().relative}>
             <Image
-              src={require('../../assets/home.jpg')}
+              src={homeBanner}
               style={this.styles().slides.image}
             />
             <div style={this.styles().slides.catchphrase}>
@@ -176,7 +169,7 @@ class Home extends Component<Props, State> {
                 />
 
                 <Image
-                  src={require('../../assets/more.jpg')}
+                  src={moreLogo}
                   alt="Voir plus d'artistes"
                   style={this.styles().image}
                   onClick={e => (window.location.href = '/artistes')}

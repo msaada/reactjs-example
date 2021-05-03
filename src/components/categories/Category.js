@@ -1,4 +1,3 @@
-// @flow
 import Divider from '@material-ui/core/Divider';
 import React, { Component } from 'react';
 import { Image } from 'react-bootstrap';
@@ -13,29 +12,19 @@ import Header from '../common/Header';
 import ArtPiecesGrid from '../artpieces/ArtPiecesGrid';
 import ConditionalCircularProgress from '../common/ConditionalCircularProgress';
 
-import type { ArtPieceType, ArtTypeType, XXX } from '../../types/types';
-
-type Props = {
-  category: XXX,
-};
-type State = {
-  artpieces: ArtPieceType[],
-  arttypes: ArtTypeType[],
-};
-
-class Category extends Component<Props, State> {
+class Category extends Component{
   state = {
     artpieces: [],
     arttypes: [],
   };
 
-  componentWillMount() {
+  componentDidMount() {
     (async () => {
-      let artPieces: ArtPieceType[];
-      const callbackTypes = (arttypes: ArtTypeType[]) => {
+      let artPieces;
+      const callbackTypes = (arttypes) => {
         this.setState({
           arttypes: arttypes.filter(
-            (arttype: ArtTypeType) => arttype.id === this.props.category.id
+            (arttype) => arttype.id === this.props.category.id
           ),
         });
       };

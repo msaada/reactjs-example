@@ -1,4 +1,3 @@
-//@flow
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -12,12 +11,7 @@ function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
 
-type Props = {
-  open: boolean,
-  handleRequestClose: () => void,
-};
-
-export default (props: Props) => {
+export default (props) => {
   return (
     <div>
       <Dialog

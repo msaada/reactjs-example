@@ -1,14 +1,8 @@
-// @flow
 import React from 'react';
 import Divider from '@material-ui/core/Divider';
 import { ListGroup, ListGroupItem } from 'react-bootstrap';
 
 import ConditionalCircularProgress from '../common/ConditionalCircularProgress';
-
-import type { ArtPieceType } from '../../types/types';
-type Props = {
-  product: ?ArtPieceType,
-};
 
 const styles = {
   divider: {
@@ -16,7 +10,7 @@ const styles = {
   },
 };
 
-export default function ProductDetails(props: Props) {
+export default function ProductDetails(props) {
   const { product } = props;
   if (product) {
     return (

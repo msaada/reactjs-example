@@ -1,7 +1,4 @@
-//@flow
-import type { UserType } from "../types/types";
-
-export default (id: string, props: UserType, timestamp: Date) => ({
+export default (id, props, timestamp) => ({
   id: id,
   name: props.name,
   address: props.address,

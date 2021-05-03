@@ -1,5 +1,3 @@
-//@flow
-
 const artistsInPartnership = [
   '-KxQN_PUOfW6imQjEiBl', // Patrick Chelli
   '-KxhHgzfrlX70IJcq9Qh', // Arman (PIERRE FERNANDEZ)
@@ -18,7 +16,6 @@ const artistsInPartnership = [
   '-KyGQsOD8hlRbf5D09Cb', // Philippe Pastor
 ];
 
-type CheckPartnership = (artistId: string) => boolean;
-export const checkPartnership: CheckPartnership = artistId => {
+export const checkPartnership = artistId => {
   return artistsInPartnership.indexOf(artistId) !== -1;
 };

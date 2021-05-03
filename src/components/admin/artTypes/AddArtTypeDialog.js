@@ -1,4 +1,3 @@
-//@flow
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -8,22 +7,11 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import React, { Component } from 'react';
 import ArtTypeForm from './ArtTypeForm';
 
-import type { ArtTypeType } from '../../../types/types';
-
-type State = {
-  open: boolean,
-};
-
-type Props = {
-  arttype: ?ArtTypeType,
-  resetFields: () => void,
-};
-
-export default class AddArtTypeDialog extends Component<Props, State> {
-  state: State = {
+export default class AddArtTypeDialog extends Component {
+  state = {
     open: false,
   };
-  constructor(props: Props) {
+  constructor(props) {
     super(props);
     this.setState({
       open: this.props.arttype ? true : false,
@@ -37,7 +25,7 @@ export default class AddArtTypeDialog extends Component<Props, State> {
     this.setState({ open: false });
     this.props.resetFields();
   };
-  componentWillReceiveProps(nextProps: { arttype: ?ArtTypeType }) {
+  componentWillReceiveProps(nextProps) {
     if (nextProps.arttype) {
       this.handleOpen();
     }

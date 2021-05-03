@@ -1,15 +1,14 @@
-//@flow
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import React from 'react';
 import { Image } from 'react-bootstrap';
 import '../../css/App.css';
-import type { ArtPieceType } from '../../types/types';
+import requiredLogo from '../../assets/reserved.png';
 
 export const ArtPiecesGridTyle = (
-  artpiece: ArtPieceType,
-  key: number,
-  artistName: string
+  artpiece,
+  key,
+  artistName
 ) => {
   const styles = {
     root: {
@@ -46,7 +45,7 @@ export const ArtPiecesGridTyle = (
       <div style={styles.root}>
         {artpiece.reserved && (
           <Image
-            src={require('../../assets/reserved.png')}
+            src={requiredLogo}
             alt={artistName ? `${artpiece.name}, ${artistName}` : artpiece.name}
             style={styles.reserved}
             onClick={e => (window.location.href = `/product/${artpiece.id}`)}

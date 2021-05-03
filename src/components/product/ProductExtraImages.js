@@ -1,17 +1,7 @@
-// @flow
 import React from 'react';
 import Divider from '@material-ui/core/Divider';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
-
-import type { ArtPieceType } from '../../types/types';
-
-type TriggerLightBox = (index: number) => void;
-
-type Props = {
-  product: ?ArtPieceType,
-  triggerLightBox: TriggerLightBox,
-};
 
 const styles = {
   divider: {
@@ -25,8 +15,8 @@ const styles = {
 };
 
 const listOtherPictures = (
-  product: ArtPieceType,
-  triggerLightBox: TriggerLightBox
+  product,
+  triggerLightBox
 ) => {
   const pictures = product.imagesLinks;
   return pictures.map((picture, index) => (
@@ -40,7 +30,7 @@ const listOtherPictures = (
   ));
 };
 
-export default function ProductTitle(props: Props) {
+export default function ProductTitle(props) {
   const { product, triggerLightBox } = props;
   if (product && product.imagesLinks.length > 1) {
     return (

@@ -1,20 +1,9 @@
-//@flow
 import Button from '@material-ui/core/Button';
 import React, { Component } from 'react';
 import { FieldGroup } from '../common/FieldGroup';
 
-type Props = {
-  name: string,
-  nameChange: (e: SyntheticInputEvent<>) => void,
-  email: string,
-  emailChange: (e: SyntheticInputEvent<>) => void,
-  phoneNumber: string,
-  phoneNumberChange: (e: SyntheticInputEvent<>) => void,
-  handleCallback: () => Promise<void>,
-};
-type State = {};
 
-export class CallbackForm extends Component<Props, State> {
+export class CallbackForm extends Component {
   render() {
     return (
       <form>

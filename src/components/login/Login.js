@@ -1,5 +1,3 @@
-// @flow
-
 import * as firebase from 'firebase';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
@@ -10,18 +8,8 @@ import Footer from '../common/Footer';
 import Header from '../common/Header';
 import MyAlert from '../common/MyAlert';
 import TextFieldControlled from '../common/TextFieldControlled';
-import type { FirebaseUser } from '../../types/types';
-
-type Props = {};
-type State = {
-  user: ?FirebaseUser,
-  email: string,
-  password: string,
-  alertVisible: boolean,
-  alertMessage: string,
-};
-class Login extends Component<Props, State> {
-  state: State = {
+class Login extends Component {
+  state = {
     user: null,
     email: '',
     password: '',
@@ -57,7 +45,7 @@ class Login extends Component<Props, State> {
           // Handle Errors here.
           const errorCode = error.code;
 
-          let frenchErrorMessage: string;
+          let frenchErrorMessage;
           if (errorCode === 'auth/invalid-email') {
             frenchErrorMessage = "L'adresse mail est mal formatée.";
           } else if (errorCode === 'auth/wrong-password') {
@@ -82,7 +70,7 @@ class Login extends Component<Props, State> {
     }
   };
 
-  handleEmailChange = (event: SyntheticInputEvent<>) => {
+  handleEmailChange = (event) => {
     if (event.target instanceof HTMLInputElement) {
       this.setState({
         email: event.target.value,
@@ -90,7 +78,7 @@ class Login extends Component<Props, State> {
     }
   };
 
-  handlePasswordChange = (event: SyntheticInputEvent<>) => {
+  handlePasswordChange = (event) => {
     if (event.target instanceof HTMLInputElement) {
       this.setState({
         password: event.target.value,
@@ -106,7 +94,7 @@ class Login extends Component<Props, State> {
           // Handle Errors here.
           const errorCode = error.code;
 
-          let frenchErrorMessage: string;
+          let frenchErrorMessage;
 
           if (errorCode === 'auth/email-already-in-use') {
             frenchErrorMessage =
@@ -124,7 +112,7 @@ class Login extends Component<Props, State> {
     this.setState({ alertVisible: false });
   };
 
-  handleAlertShow = (errorMessage: string) => {
+  handleAlertShow = (errorMessage) => {
     this.setState({ alertVisible: true, alertMessage: errorMessage });
   };
 

@@ -1,17 +1,6 @@
-//@flow
-
 import TextField from '@material-ui/core/TextField';
 import React from 'react';
-
-type Props = {
-  id: string,
-  value: string,
-  handleChange: (event: SyntheticInputEvent<>) => void,
-  type: string,
-  floatingLabelText: string,
-};
-type State = {};
-export default class TextFieldControlled extends React.Component<Props, State> {
+export default class TextFieldControlled extends React.Component {
   render() {
     return (
       <TextField

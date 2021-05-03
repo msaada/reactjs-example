@@ -1,4 +1,3 @@
-//@flow
 import ButtonBase from '@material-ui/core/ButtonBase';
 import GridListTile from '@material-ui/core/GridListTile';
 import Typography from '@material-ui/core/Typography';
@@ -6,9 +5,7 @@ import React from 'react';
 import '../../css/App.css';
 import { categories } from '../../datas/categories';
 
-import type { CategoryType } from '../../types/types';
-
-const findCategoryId = (category: CategoryType) => {
+const findCategoryId = (category) => {
   const keys = Object.keys(categories);
   for (let i = 0; i < keys.length; i++) {
     if (categories[keys[i]].id === category.id) {
@@ -18,7 +15,7 @@ const findCategoryId = (category: CategoryType) => {
   return '';
 };
 
-export const CategoryTyle = (key: number, category: CategoryType) => {
+export const CategoryTyle = (key, category) => {
   const style = {
     root: {
       display: 'flex',

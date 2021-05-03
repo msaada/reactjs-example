@@ -1,12 +1,10 @@
-//@flow
 import ButtonBase from '@material-ui/core/ButtonBase';
 import GridListTile from '@material-ui/core/GridListTile';
 import Typography from '@material-ui/core/Typography';
 import React from 'react';
 import '../../css/App.css';
-import type { ArtistType } from '../../types/types';
 
-export default (artist: ArtistType, key: number) => {
+export default (artist, key) => {
   const style = {
     buttonBase: {
       image: {

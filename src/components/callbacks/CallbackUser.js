@@ -1,5 +1,3 @@
-// @flow
-
 import Divider from '@material-ui/core/Divider';
 import React, { Component } from 'react';
 import '../../css/App.css';
@@ -9,17 +7,7 @@ import Header from '../common/Header';
 import AlertDialogSuccessCallbackRequest from './AlertDialogSuccessCallbackRequest';
 import { CallbackForm } from './CallbackForm';
 
-import type { CallbackType } from '../../types/types';
-
-type Props = {};
-type State = {
-  name: string,
-  email: string,
-  phoneNumber: string,
-  callbackRequestDialog: boolean,
-};
-
-class CallbackUser extends Component<Props, State> {
+class CallbackUser extends Component {
   state = {
     name: '',
     email: '',
@@ -29,7 +17,7 @@ class CallbackUser extends Component<Props, State> {
 
   componentDidMount = () => {};
 
-  change = (e: SyntheticInputEvent<>) => {
+  change = (e) => {
     if (e.target instanceof HTMLInputElement) {
       this.setState({
         [e.target.id]: e.target.value,
@@ -51,6 +39,8 @@ class CallbackUser extends Component<Props, State> {
         display: 'flex',
         justifyContent: 'space-around',
         flexDirection: 'column',
+        margin: 'auto', 
+        maxWidth: '50em'
       },
       divider: {
         marginBottom: '2em',
@@ -66,7 +56,7 @@ class CallbackUser extends Component<Props, State> {
     };
   };
   callbackUser = async () => {
-    const callback: CallbackType = {
+    const callback = {
       name: this.state.name,
       email: this.state.email,
       phoneNumber: this.state.phoneNumber,

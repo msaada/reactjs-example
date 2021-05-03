@@ -1,8 +1,6 @@
-//@flow
-
 import Button from '@material-ui/core/Button';
 import React, { Component } from 'react';
-import { Checkbox } from 'react-bootstrap';
+import { FormCheck } from 'react-bootstrap';
 import {
   addArtPieceToFirebase,
   updateArtPieceToFirebase,
@@ -12,30 +10,7 @@ import ConditionalCircularProgress from '../../common/ConditionalCircularProgres
 import { FieldGroup } from '../../common/FieldGroup';
 import MyAlert from '../../common/MyAlert';
 
-import type { Element } from 'react';
-
-import type {
-  ArtPieceType,
-  ArtistType,
-  ArtTypeType,
-} from '../../../types/types';
-
-type Props = {
-  defaultArtpiece: ?ArtPieceType,
-  artists: ArtistType[],
-  arttypes: ArtTypeType[],
-};
-
-type State = {
-  artPiece: ArtPieceType,
-  picture: ?File,
-  saving: boolean,
-  alertVisible: boolean,
-  alertMessage: string,
-  fieldsStatus: { [string]: boolean },
-};
-
-export default class ArtPieceForm extends Component<Props, State> {
+export default class ArtPieceForm extends Component {
   state = {
     artPiece: {
       id: '',
@@ -72,7 +47,7 @@ export default class ArtPieceForm extends Component<Props, State> {
       });
     }
   }
-  change(e: SyntheticInputEvent<>) {
+  change(e) {
     console.log(e);
     if (e.target instanceof HTMLInputElement) {
       this.setState({
@@ -87,7 +62,7 @@ export default class ArtPieceForm extends Component<Props, State> {
     });
   };
 
-  handleAlertShow = (errorMessage: string) => {
+  handleAlertShow = (errorMessage) => {
     this.setState({ alertVisible: true, alertMessage: errorMessage });
   };
 
@@ -104,7 +79,7 @@ export default class ArtPieceForm extends Component<Props, State> {
 
   getWrongFields = () => {
     const fieldsStatus = this.state.fieldsStatus;
-    let wrongFields: string[] = [];
+    let wrongFields = [];
     for (let property in fieldsStatus) {
       if (fieldsStatus.hasOwnProperty(property)) {
         if (!fieldsStatus[property]) {
@@ -115,7 +90,7 @@ export default class ArtPieceForm extends Component<Props, State> {
     return wrongFields;
   };
 
-  onSubmit = async (e: SyntheticInputEvent<>) => {
+  onSubmit = async (e) => {
     e.preventDefault();
     this.setState({
       saving: true,
@@ -179,21 +154,19 @@ export default class ArtPieceForm extends Component<Props, State> {
     this.setState({ saving: false });
   };
 
-  handleChangeArtistId = (event: SyntheticInputEvent<>) => {
+  handleChangeArtistId = (event) => {
     this.setState({
       artPiece: { ...this.state.artPiece, artistId: event.target.value },
     });
   };
 
-  handleChangeArtTypeId = (event: SyntheticInputEvent<>) => {
+  handleChangeArtTypeId = (event) => {
     this.setState({
       artPiece: { ...this.state.artPiece, typeOfArtPieces: event.target.value },
     });
   };
 
-  renderArtistsChoices: (
-    artist: ArtistType[]
-  ) => Element<any>[] | void = artists => {
+  renderArtistsChoices = artists => {
     if (artists) {
       return artists.map(artist => (
         <option value={artist.id} key={artist.id}>
@@ -203,9 +176,7 @@ export default class ArtPieceForm extends Component<Props, State> {
     }
   };
 
-  computeArtTypesOptions: (
-    arttypes: ArtTypeType[]
-  ) => Element<any>[] | void = arttypes => {
+  computeArtTypesOptions = arttypes => {
     if (arttypes) {
       return arttypes.map(arttype => (
         <option value={arttype.id} key={arttype.id}>
@@ -215,7 +186,7 @@ export default class ArtPieceForm extends Component<Props, State> {
     }
   };
 
-  onImageChange = (event: SyntheticInputEvent<>) => {
+  onImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
       this.setState({
         picture: event.target.files[0],
@@ -223,7 +194,7 @@ export default class ArtPieceForm extends Component<Props, State> {
     }
   };
 
-  validateFormField = (predicate: boolean, fieldLabel: string) => {
+  validateFormField = (predicate, fieldLabel) => {
     this.state.fieldsStatus[fieldLabel] = predicate;
     if (predicate) {
       return 'success';
@@ -246,7 +217,7 @@ export default class ArtPieceForm extends Component<Props, State> {
               this.state.artPiece.reference !== '',
               'Référence'
             )}
-            onChange={(e: SyntheticInputEvent<>) => this.change(e)}
+            onChange={(e) => this.change(e)}
           />
           <FieldGroup
             id="name"
@@ -258,7 +229,7 @@ export default class ArtPieceForm extends Component<Props, State> {
               this.state.artPiece.name !== '',
               "Nom de l'oeuvre"
             )}
-            onChange={(e: SyntheticInputEvent<>) => this.change(e)}
+            onChange={(e) => this.change(e)}
           />
 
           <FieldGroup
@@ -292,7 +263,7 @@ export default class ArtPieceForm extends Component<Props, State> {
             label="Description"
             type="text"
             value={this.state.artPiece.description}
-            onChange={(e: SyntheticInputEvent<>) => this.change(e)}
+            onChange={(e) => this.change(e)}
           />
 
           <FieldGroup
@@ -300,14 +271,14 @@ export default class ArtPieceForm extends Component<Props, State> {
             label="Prix d'achat (HT)"
             type="text"
             value={this.state.artPiece.buyPriceTaxFree}
-            onChange={(e: SyntheticInputEvent<>) => this.change(e)}
+            onChange={(e) => this.change(e)}
           />
           <FieldGroup
             id="buyPriceTaxIncluded"
             label="Prix d'achat (TTC)"
             type="text"
             value={this.state.artPiece.buyPriceTaxIncluded}
-            onChange={(e: SyntheticInputEvent<>) => this.change(e)}
+            onChange={(e) => this.change(e)}
           />
 
           <FieldGroup
@@ -315,7 +286,7 @@ export default class ArtPieceForm extends Component<Props, State> {
             label="Prix de vente (HT)"
             type="text"
             value={this.state.artPiece.sellPriceTaxFree}
-            onChange={(e: SyntheticInputEvent<>) => this.change(e)}
+            onChange={(e) => this.change(e)}
           />
           <FieldGroup
             id="sellPriceTaxIncluded"
@@ -326,35 +297,35 @@ export default class ArtPieceForm extends Component<Props, State> {
               'Prix de vente (TTC)'
             )}
             value={this.state.artPiece.sellPriceTaxIncluded}
-            onChange={(e: SyntheticInputEvent<>) => this.change(e)}
+            onChange={(e) => this.change(e)}
           />
           <FieldGroup
             id="catalogPage"
             label="Page du catalogue"
             type="text"
             value={this.state.artPiece.catalogPage}
-            onChange={(e: SyntheticInputEvent<>) => this.change(e)}
+            onChange={(e) => this.change(e)}
           />
           <FieldGroup
             id="dimensions"
             label="Dimensions"
             type="text"
             value={this.state.artPiece.dimensions}
-            onChange={(e: SyntheticInputEvent<>) => this.change(e)}
+            onChange={(e) => this.change(e)}
           />
           <FieldGroup
             id="weight"
             label="Poids"
             type="text"
             value={this.state.artPiece.weight}
-            onChange={(e: SyntheticInputEvent<>) => this.change(e)}
+            onChange={(e) => this.change(e)}
           />
           <FieldGroup
             id="year"
             label="Année"
             type="text"
             value={this.state.artPiece.year}
-            onChange={(e: SyntheticInputEvent<>) => this.change(e)}
+            onChange={(e) => this.change(e)}
           />
 
           <FieldGroup
@@ -366,7 +337,7 @@ export default class ArtPieceForm extends Component<Props, State> {
               this.state.artPiece.quantity > 0,
               "Nombre d'exemplaires"
             )}
-            onChange={(e: SyntheticInputEvent<>) => this.change(e)}
+            onChange={(e) => this.change(e)}
           />
 
           <FieldGroup
@@ -377,10 +348,10 @@ export default class ArtPieceForm extends Component<Props, State> {
               this.state.picture !== '' || this.state.picture !== null,
               'Photo'
             )}
-            onChange={(e: SyntheticInputEvent<>) => this.onImageChange(e)}
+            onChange={(e) => this.onImageChange(e)}
           />
 
-          <Checkbox
+          <FormCheck
             checked={this.state.artPiece.featured}
             onChange={e =>
               this.setState({
@@ -392,9 +363,9 @@ export default class ArtPieceForm extends Component<Props, State> {
             }
           >
             Oeuvre dans la rubrique "Sélection"
-          </Checkbox>
+          </FormCheck>
 
-          <Checkbox
+          <FormCheck
             checked={this.state.artPiece.reserved}
             onChange={e =>
               this.setState({
@@ -406,7 +377,7 @@ export default class ArtPieceForm extends Component<Props, State> {
             }
           >
             Oeuvre marquée comme "Réservée"
-          </Checkbox>
+          </FormCheck>
           <MyAlert
             visible={this.state.alertVisible}
             message={this.state.alertMessage}
@@ -414,7 +385,7 @@ export default class ArtPieceForm extends Component<Props, State> {
           />
           <Button
             variant="raised"
-            onClick={(e: SyntheticInputEvent<>) => this.onSubmit(e)}
+            onClick={(e) => this.onSubmit(e)}
           >
             Confirmer
           </Button>

@@ -1,4 +1,3 @@
-// @flow
 import { Selector } from 'testcafe';
 
 fixture`Display artist`.page`http://localhost:3000`; // specify the start page

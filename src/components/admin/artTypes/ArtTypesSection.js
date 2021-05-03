@@ -1,5 +1,3 @@
-// @flow
-
 import Paper from '@material-ui/core/Paper';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -8,20 +6,12 @@ import ConditionalCircularProgress from '../../common/ConditionalCircularProgres
 import '../Admin.css';
 import Paginator from '../Pagination';
 import ArtTypesAdminList from './ArtTypesAdminList';
-import type { ArtTypeType } from '../../../types/types';
-type Props = {
-  artTypes: ArtTypeType[],
-};
 
-type State = {
-  arttypesActivePage: number,
-};
-
-export default class ArtTypesSection extends Component<Props, State> {
-  state: State = {
+export default class ArtTypesSection extends Component {
+  state = {
     arttypesActivePage: 1,
   };
-  handleSelectArtType = (index: number) => (event: SyntheticInputEvent<>) => {
+  handleSelectArtType = (index) => (event) => {
     this.setState({
       arttypesActivePage: index,
     });

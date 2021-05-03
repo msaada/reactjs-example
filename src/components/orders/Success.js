@@ -1,4 +1,3 @@
-// @flow
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import React, { Component } from 'react';
@@ -6,11 +5,9 @@ import { Image } from 'react-bootstrap';
 import '../../css/App.css';
 import Footer from '../common/Footer';
 import Header from '../common/Header';
+import megadentalLogo from '../../assets/MEGA-DENTAL-logo.png';
 
-type Props = {};
-type State = {};
-
-class Success extends Component<Props, State> {
+class Success extends Component {
   styles() {
     return {
       centered: {
@@ -49,7 +46,7 @@ class Success extends Component<Props, State> {
           <Button style={this.styles().button} href="http://www.megadental.fr">
             Retour vers
             <Image
-              src={require('../../assets/MEGA-DENTAL-logo.png')}
+              src={megadentalLogo}
               alt={'Megadental logo'}
               style={this.styles().mega}
               onClick={e => (window.location.href = 'http://www.megadental.fr')}

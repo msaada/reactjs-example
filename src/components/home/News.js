@@ -1,5 +1,3 @@
-// @flow
-
 import Divider from '@material-ui/core/Divider';
 import React, { Component } from 'react';
 import { Image } from 'react-bootstrap';
@@ -10,17 +8,9 @@ import ArtPiecesGrid from '../artpieces/ArtPiecesGrid';
 import ConditionnalCircularProgress from '../common/ConditionalCircularProgress';
 import Footer from '../common/Footer';
 import Header from '../common/Header';
-import type { ArtPieceType } from '../../types/types';
 
-type Props = {};
-
-type State = {
-  artpieces: ArtPieceType[],
-  isLoading: boolean,
-};
-
-class News extends Component<Props, State> {
-  constructor(props: Props) {
+class News extends Component {
+  constructor(props) {
     super(props);
     this.state = {
       artpieces: [],

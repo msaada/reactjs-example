@@ -1,4 +1,3 @@
-//@flow
 import Avatar from '@material-ui/core/Avatar';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -6,23 +5,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import React, { Component } from 'react';
 import AddArtPieceDialog from './AddArtPieceDialog';
 
-import type {
-  ArtistType,
-  ArtPieceType,
-  ArtTypeType,
-} from '../../../types/types';
-
-type Props = {
-  artists: ArtistType[],
-  artpieces: ArtPieceType[],
-  arttypes: ArtTypeType[],
-};
-
-type State = {
-  chosenArtPiece: ?ArtPieceType,
-};
-
-export default class ArtpiecesAdminList extends Component<Props, State> {
+export default class ArtpiecesAdminList extends Component {
   state = {
     chosenArtPiece: null,
   };
@@ -32,7 +15,7 @@ export default class ArtpiecesAdminList extends Component<Props, State> {
       chosenArtPiece: null,
     });
   };
-  chooseArtpiece = (artpiece: ArtPieceType) => () =>
+  chooseArtpiece = (artpiece) => () =>
     this.setState({
       chosenArtPiece: artpiece,
     });
@@ -40,7 +23,7 @@ export default class ArtpiecesAdminList extends Component<Props, State> {
   render() {
     return (
       <List>
-        {this.props.artpieces.map((artpiece: ArtPieceType, pos: number) => (
+        {this.props.artpieces.map((artpiece, pos) => (
           <ListItem
             key={pos}
             dense

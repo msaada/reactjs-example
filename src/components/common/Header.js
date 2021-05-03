@@ -1,4 +1,3 @@
-//@flow
 import PersonIcon from '@material-ui/icons/Person';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
 import Badge from '@material-ui/core/Badge';
@@ -7,6 +6,8 @@ import Divider from '@material-ui/core/Divider';
 import React, { Component } from 'react';
 import { Image } from 'react-bootstrap';
 import logo from '../../assets/Art-Gallery-Logo.jpg';
+import megadentalLogo from '../../assets/MEGA-DENTAL-logo.png';
+
 import {
   auth,
   getCart,
@@ -15,16 +16,7 @@ import {
   logOut,
 } from '../../javascript/firebaseUtils';
 
-import type { CartType, UserType, FirebaseUser } from '../../types/types';
-
-type Props = {};
-type State = {
-  user: ?FirebaseUser,
-  userInfos: ?UserType,
-  cart: ?CartType,
-};
-
-class Header extends Component<Props, State> {
+class Header extends Component {
   state = {
     user: null,
     cart: null,
@@ -33,23 +25,23 @@ class Header extends Component<Props, State> {
 
   componentDidMount = () => {
     (async () => {
-      const callbackExtraInfos = userInfos => {
+      const callbackExtraInfos = (userInfos) => {
         this.setState({
           userInfos,
         });
       };
       if (auth) {
-        await auth.onAuthStateChanged(async (user: ?FirebaseUser) => {
+        await auth.onAuthStateChanged(async (user) => {
           this.setState({ user: user });
           if (user && user.uid) {
             getUserExtraInfos(user.uid, callbackExtraInfos);
-            const currentCart: ?CartType = await getCart(user.uid);
-            let cartId: ?string;
+            const currentCart = await getCart(user.uid);
+            let cartId;
             if (currentCart && currentCart.active && currentCart.itemCount) {
               cartId = currentCart.id;
               this.setState({ cart: currentCart });
             }
-            const callback = cart => {
+            const callback = (cart) => {
               this.setState({ cart });
             };
             if (user) {
@@ -85,8 +77,9 @@ class Header extends Component<Props, State> {
         paddingTop: '0.5em',
       },
       logo: {
-        height: '80%',
-        width: 'auto',
+        height: '50%',
+        maxWidth: '15em',
+
         marginBottom: '1em',
         float: 'left',
       },
@@ -144,10 +137,10 @@ class Header extends Component<Props, State> {
             >
               Retour vers
               <Image
-                src={require('../../assets/MEGA-DENTAL-logo.png')}
+                src={megadentalLogo}
                 alt={'Megadental logo'}
                 style={this.styles().mega}
-                onClick={e =>
+                onClick={(e) =>
                   (window.location.href = 'http://www.megadental.fr')
                 }
               />
@@ -163,7 +156,14 @@ class Header extends Component<Props, State> {
               alt="Mega Dental concept store Art Gallery"
             />
           </a>
-          <div style={this.styles().nav_div}>
+          {/* <Button style={this.styles().logo}>
+            <Image
+              src={logo}
+              style={this.styles().logo}
+              alt="Mega Dental concept store Art Gallery"
+            />
+          </Button> */}
+          <div>
             <div style={this.styles().padding} />
             <Divider />
             <div style={this.styles().nav_buttons}>
@@ -178,7 +178,7 @@ class Header extends Component<Props, State> {
               </Button>
               <Button
                 style={this.styles().button}
-                href="http://fr.calameo.com/read/00495707049da79b56ee2"
+                href="https://fr.calameo.com/read/0049570701acccdc80e6a"
               >
                 Catalogue
               </Button>

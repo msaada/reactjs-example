@@ -1,38 +1,27 @@
-//@flow
 import React, { Component } from 'react';
-import { PanelGroup } from 'react-bootstrap';
+import { CardGroup } from 'react-bootstrap';
 
 import Order from './Order';
-import type { FirebaseOrderType, UserType } from '../../../types/types';
 
-type Props = {
-  orders: FirebaseOrderType[],
-  usersExtras: UserType[],
-};
-type State = {
-  activeKey: string,
-  status: boolean,
-};
-
-export class OrdersList extends Component<Props, State> {
-  state: State = {
+export class OrdersList extends Component {
+  state= {
     activeKey: '0',
     status: false,
   };
 
-  handleSelect = (activeKey: string) => {
+  handleSelect = (activeKey) => {
     this.setState({ activeKey });
   };
 
   render() {
     return (
-      <PanelGroup
-        id={'order-list-panel-group'}
+      <CardGroup
+        id={'order-list-Card-group'}
         activeKey={this.state.activeKey}
         onSelect={this.handleSelect}
         accordion
       >
-        {this.props.orders.map((order: FirebaseOrderType, position: number) => (
+        {this.props.orders.map((order, position) => (
           <Order
             key={position}
             order={order}
@@ -40,7 +29,7 @@ export class OrdersList extends Component<Props, State> {
             position={position}
           />
         ))}
-      </PanelGroup>
+      </CardGroup>
     );
   }
 }

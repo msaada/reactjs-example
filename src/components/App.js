@@ -1,5 +1,3 @@
-// @flow
-
 import React, { Component } from 'react';
 import { Route, Router, browserHistory } from 'react-router';
 import '../css/App.css';
@@ -49,15 +47,12 @@ import Success from './orders/Success';
 import Product from './product/Product';
 import SignIn from './signIn/SignIn';
 
-type Props = {};
-type State = {};
-
-class App extends Component<Props, State> {
-  constructor(props: Props) {
+class App extends Component {
+  constructor(props) {
     super(props);
     firebaseInit();
   }
-  onRouterUpdate(): void {
+  onRouterUpdate() {
     window.scrollTo(0, 0);
   }
 

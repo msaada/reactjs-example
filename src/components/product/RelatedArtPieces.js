@@ -1,16 +1,8 @@
-// @flow
 import React from 'react';
 
 import Divider from '@material-ui/core/Divider';
 import ArtPiecesGrid from '../artpieces/ArtPiecesGrid';
 import ConditionalCircularProgress from '../common/ConditionalCircularProgress';
-
-import type { ArtPieceType, ArtistType } from '../../types/types';
-type Props = {
-  artPieces: ArtPieceType[],
-  artist: ?ArtistType,
-  currentProductId: string,
-};
 
 const styles = {
   divider: {
@@ -18,7 +10,7 @@ const styles = {
   },
 };
 
-export default function RelatedArtPieces(props: Props) {
+export default function RelatedArtPieces(props) {
   const { artPieces, artist, currentProductId } = props;
   const relatedArtPieces = artPieces.filter(
     artpiece => artpiece.id !== currentProductId

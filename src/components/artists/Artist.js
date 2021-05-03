@@ -1,4 +1,3 @@
-// @flow
 import Divider from '@material-ui/core/Divider';
 import React, { Component } from 'react';
 import ReactGA from 'react-ga';
@@ -13,21 +12,8 @@ import ArtPiecesGrid from '../artpieces/ArtPiecesGrid';
 import ArtistPicture from './ArtistPicture';
 import { checkPartnership } from './partnership';
 
-import type { ArtistType, ArtPieceType } from '../../types/types';
-
-type Props = {
-  params: { artistId: string },
-};
-type State = {
-  isLoading: boolean,
-  lightboxIsOpen: boolean,
-  artistId: string,
-  artist: ArtistType | null,
-  artpieces: ArtPieceType[],
-};
-
-class Artist extends Component<Props, State> {
-  constructor(props: Props) {
+class Artist extends Component {
+  constructor(props) {
     super(props);
     this.state = {
       isLoading: true,

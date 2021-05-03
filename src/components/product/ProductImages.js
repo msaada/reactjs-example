@@ -1,23 +1,9 @@
-// @flow
 import React, { Component } from 'react';
 import Lightbox from 'react-images';
 import { Image } from 'react-bootstrap';
 
 import ConditionalCircularProgress from '../common/ConditionalCircularProgress';
-
-import type { ArtPieceType } from '../../types/types';
-type Props = {
-  product: ?ArtPieceType,
-  lightboxIsOpen: boolean,
-  currentImage: number,
-  gotoPrevious: () => void,
-  gotoNext: () => void,
-  closeLightbox: () => void,
-  openLightbox: () => void,
-};
-type State = {};
-
-export default class ProductImages extends Component<Props, State> {
+export default class ProductImages extends Component {
   styles() {
     return {
       image: {
@@ -33,7 +19,7 @@ export default class ProductImages extends Component<Props, State> {
     };
   }
 
-  convertToLightBoxImages(imagesLinks: string[]): { src: string }[] {
+  convertToLightBoxImages(imagesLinks) {
     return imagesLinks.map(picture => {
       return { src: picture };
     });
@@ -58,7 +44,7 @@ export default class ProductImages extends Component<Props, State> {
             src={product.imagesLinks[0]}
             onClick={openLightbox}
           />
-          <Lightbox
+          {/* <Lightbox
             images={images}
             isOpen={lightboxIsOpen}
             onClickNext={gotoNext}
@@ -69,7 +55,7 @@ export default class ProductImages extends Component<Props, State> {
             closeButtonTitle={'Fermer'}
             backdropClosesModal={true}
             currentImage={currentImage}
-          />
+          /> */}
         </div>
       );
     }

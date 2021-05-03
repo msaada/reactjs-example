@@ -1,5 +1,3 @@
-// @flow
-
 import Divider from '@material-ui/core/Divider';
 import React, { Component } from 'react';
 import '../../css/App.css';
@@ -12,28 +10,8 @@ import Header from '../common/Header';
 import MyAlert from '../common/MyAlert';
 import { SignInForm } from './SignInForm';
 
-import type { UserType, FirebaseUser } from '../../types/types';
-
-type Props = {};
-type State = {
-  extraInfos: {
-    id: string,
-    user: ?FirebaseUser,
-    name: string,
-    email: string,
-    password: string,
-    address: string,
-    postalCode: string,
-    city: string,
-    phoneNumber: string,
-    clientCode: string,
-  },
-  alertVisible: boolean,
-  alertMessage: string,
-};
-
-class SignIn extends Component<Props, State> {
-  state: State = {
+class SignIn extends Component {
+  state = {
     extraInfos: {
       id: '',
       user: null,
@@ -52,7 +30,7 @@ class SignIn extends Component<Props, State> {
 
   componentDidMount = () => {};
 
-  change = (e: SyntheticInputEvent<>) => {
+  change = (e) => {
     if (e.target instanceof HTMLInputElement) {
       this.setState({
         extraInfos: {
@@ -63,7 +41,7 @@ class SignIn extends Component<Props, State> {
     }
   };
 
-  signIn = async (userInfos: UserType) => {
+  signIn = async (userInfos) => {
     if (auth) {
       await auth
         .createUserWithEmailAndPassword(
@@ -75,7 +53,7 @@ class SignIn extends Component<Props, State> {
           // Handle Errors here.
           const errorCode = error.code;
 
-          let frenchErrorMessage: string;
+          let frenchErrorMessage;
 
           if (errorCode === 'auth/email-already-in-use') {
             frenchErrorMessage =
@@ -87,7 +65,7 @@ class SignIn extends Component<Props, State> {
           }
           this.handleAlertShow(frenchErrorMessage);
         });
-      await auth.onAuthStateChanged(async (user: FirebaseUser) => {
+      await auth.onAuthStateChanged(async (user) => {
         addUserExtraInfosToFirebase(user.uid, this.state.extraInfos);
       });
     }
@@ -97,7 +75,7 @@ class SignIn extends Component<Props, State> {
     this.setState({ alertVisible: false });
   };
 
-  handleAlertShow = (errorMessage: string) => {
+  handleAlertShow = (errorMessage) => {
     this.setState({ alertVisible: true, alertMessage: errorMessage });
   };
 

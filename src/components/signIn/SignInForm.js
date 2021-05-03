@@ -1,31 +1,8 @@
-//@flow
 import Button from '@material-ui/core/Button';
 import React, { Component } from 'react';
 import { FieldGroup } from '../common/FieldGroup';
 
-import type { UserType } from '../../types/types';
-
-type Props = {
-  name: string,
-  nameChange: (e: SyntheticInputEvent<>) => void,
-  email: string,
-  emailChange: (e: SyntheticInputEvent<>) => void,
-  password: string,
-  passwordChange: (e: SyntheticInputEvent<>) => void,
-  address: string,
-  addressChange: (e: SyntheticInputEvent<>) => void,
-  postalCode: string,
-  postalCodeChange: (e: SyntheticInputEvent<>) => void,
-  city: string,
-  cityChange: (e: SyntheticInputEvent<>) => void,
-  phoneNumber: string,
-  phoneNumberChange: (e: SyntheticInputEvent<>) => void,
-  clientCode: string,
-  clientCodeChange: (e: SyntheticInputEvent<>) => void,
-  signIn: (userInfos: UserType) => Promise<void>,
-};
-type State = {};
-export class SignInForm extends Component<Props, State> {
+export class SignInForm extends Component {
   render() {
     return (
       <form>

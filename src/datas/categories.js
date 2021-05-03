@@ -1,13 +1,4 @@
-//@flow
-
-type Categories = {
-  [string]: {
-    id: string,
-    url: string,
-  },
-};
-
-export const categories: Categories = {
+export const categories = {
   sculpture: {
     id: '-KwfxjWE2pynkWGi_9JH',
     url: 'sculpture',

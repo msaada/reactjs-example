@@ -1,12 +1,10 @@
-//@flow
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import React from 'react';
 import { Image } from 'react-bootstrap';
 import '../../css/App.css';
-import type { ArtistType } from '../../types/types';
 
-export const ArtistHomeGrid = (artist: ArtistType, key: number) => {
+export const ArtistHomeGrid = (artist, key) => {
   const style = {
     root: {
       height: '80%',

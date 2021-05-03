@@ -1,13 +1,8 @@
-// @flow
 import React from 'react';
 import { Image } from 'react-bootstrap';
 import './Artist.css';
-import type { ArtistType } from '../../types/types';
 
-type Props = {
-  artist: ?ArtistType,
-};
-export default (props: Props) => {
+export default (props) => {
   const { artist } = props;
   if (artist) {
     return (

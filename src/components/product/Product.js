@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import '../../css/App.css';
 import {
@@ -18,26 +17,7 @@ import ProductImages from './ProductImages';
 import ArtistDescription from './ArtistDescription';
 import BuyProduct from './BuyProduct';
 
-import type { ArtPieceType, ArtistType, FirebaseUser } from '../../types/types';
-
-type Props = {
-  params: {
-    productId: string,
-  },
-};
-
-type State = {
-  isLoading: boolean,
-  product: ?ArtPieceType,
-  productId: string,
-  artist: ?ArtistType,
-  artpieces: ArtPieceType[],
-  currentImage: number,
-  lightboxIsOpen: boolean,
-  user: ?FirebaseUser,
-};
-
-class Product extends Component<Props, State> {
+class Product extends Component {
   state = {
     isLoading: true,
     product: null,
@@ -48,7 +28,7 @@ class Product extends Component<Props, State> {
     lightboxIsOpen: false,
     user: null,
   };
-  componentWillReceiveProps(nextProps: Props) {
+  componentWillReceiveProps(nextProps) {
     (async () => {
       if (nextProps.params.productId !== this.props.params.productId) {
         console.info('Update the current product displayed');
@@ -62,13 +42,13 @@ class Product extends Component<Props, State> {
 
   getInfosFromFirebase = async () => {
     if (auth) {
-      await auth.onAuthStateChanged((user: FirebaseUser) => {
+      await auth.onAuthStateChanged((user) => {
         this.setState({ user: user });
       });
     }
-
+    const product = await getArtPiece(this.props.params.productId);
     this.setState({
-      product: await getArtPiece(this.props.params.productId),
+      product,
     });
     // Avoid reloading info about artist we we already have them
     if (this.state.product && !this.state.artist) {
@@ -89,13 +69,11 @@ class Product extends Component<Props, State> {
     });
   };
 
-  componentDidMount() {
-    (async () => {
+  async componentDidMount() {
       await this.getInfosFromFirebase();
-    })();
   }
 
-  triggerLightBox = (index: number) => {
+  triggerLightBox = (index) => {
     this.setState({
       lightboxIsOpen: true,
       currentImage: index,

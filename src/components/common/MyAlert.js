@@ -1,15 +1,8 @@
-// @flow
-
 import React from 'react';
 import { Alert, Button } from 'react-bootstrap';
 
-type Props = {
-  visible: boolean,
-  alertDissmiss: () => void,
-  message: string,
-};
 
-export default function MyAlert(props: Props) {
+export default function MyAlert(props) {
   if (props.visible) {
     return (
       <Alert bsStyle="danger" onDismiss={props.alertDissmiss}>

@@ -1,4 +1,3 @@
-// @flow
 import Divider from '@material-ui/core/Divider';
 import React, { Component } from 'react';
 import ReactGA from 'react-ga';
@@ -8,21 +7,15 @@ import Footer from '../common/Footer';
 import Header from '../common/Header';
 import ConditionalCircularProgress from '../common/ConditionalCircularProgress';
 import ArtistsGrid from './ArtistsGrid';
-import type { ArtistType } from '../../types/types';
-
-type Props = {};
-type State = {
-  artists: ArtistType[],
-};
-class Artists extends Component<Props, State> {
-  state: State = {
+class Artists extends Component {
+  state = {
     artists: [],
   };
 
   componentDidMount() {
     ReactGA.pageview(window.location.pathname + window.location.search);
 
-    const callbackArtists = (dataArtists: ArtistType[]) => {
+    const callbackArtists = (dataArtists) => {
       this.setState({
         artists: dataArtists,
       });

@@ -1,38 +1,27 @@
-//@flow
 import React, { Component } from 'react';
-import { ListGroup, ListGroupItem, Panel, PanelGroup } from 'react-bootstrap';
+import { ListGroup, ListGroupItem, Card, CardGroup } from 'react-bootstrap';
 
-import type { FirebaseCallbackType } from '../../../types/types';
-
-type Props = {
-  callbacks: FirebaseCallbackType[],
-};
-type State = {
-  activeKey: string,
-  status: boolean,
-};
-
-export default class CallbacksAdminList extends Component<Props, State> {
+export default class CallbacksAdminList extends Component {
   state = {
     activeKey: '0',
     status: false,
   };
 
-  handleSelect = (activeKey: string) => {
+  handleSelect = (activeKey) => {
     this.setState({ activeKey });
   };
 
   render() {
     return (
-      <PanelGroup
-        id={'callback-panel-group'}
+      <CardGroup
+        id={'callback-Card-group'}
         activeKey={this.state.activeKey}
         onSelect={this.handleSelect}
         accordion
       >
         {this.props.callbacks.map(
-          (callback: FirebaseCallbackType, pos: number) => (
-            <Panel
+          (callback, pos) => (
+            <Card
               id={callback.id}
               header={callback.name}
               eventKey={String(pos)}
@@ -50,10 +39,10 @@ export default class CallbacksAdminList extends Component<Props, State> {
                   {'Numéro de téléphone: ' + callback.phoneNumber}
                 </ListGroupItem>
               </ListGroup>
-            </Panel>
+            </Card>
           )
         )}
-      </PanelGroup>
+      </CardGroup>
     );
   }
 }

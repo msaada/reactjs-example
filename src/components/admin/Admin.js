@@ -1,4 +1,3 @@
-// @flow
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -13,35 +12,26 @@ import ArtPiecesSection from './artPieces/ArtPiecesSection';
 import ArtTypesSection from './artTypes/ArtTypesSection';
 import ArtistsSection from './artists/ArtistsSection';
 
-import type { ArtistType, ArtPieceType, ArtTypeType } from '../../types/types';
 
-type State = {
-  artists: ArtistType[],
-  artPieces: ArtPieceType[],
-  artTypes: ArtTypeType[],
-};
-
-type Props = {};
-
-class Admin extends Component<Props, State> {
+class Admin extends Component {
   state = {
     artists: [],
     artPieces: [],
     artTypes: [],
   };
 
-  updateArtPiece = (artpiece: ArtPieceType) => {
+  updateArtPiece = (artpiece) => {
     this.setState({
       artPieces: [...this.state.artPieces, artpiece],
     });
   };
 
-  updateArtist = (artist: ArtistType) => {
+  updateArtist = (artist) => {
     this.setState({
       artists: [...this.state.artists, artist],
     });
   };
-  updateArtType = (artType: ArtTypeType) => {
+  updateArtType = (artType) => {
     this.setState({
       artTypes: [...this.state.artTypes, artType],
     });

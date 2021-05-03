@@ -1,4 +1,3 @@
-// @flow
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -20,24 +19,7 @@ import ConditionalCircularProgress from '../common/ConditionalCircularProgress';
 import Footer from '../common/Footer';
 import Header from '../common/Header';
 
-import type {
-  CartType,
-  ArtPieceType,
-  OrderType,
-  FirebaseUser,
-} from '../../types/types';
-
-type Props = {};
-
-type State = {
-  checked: number[],
-  artpieces: ArtPieceType[],
-  user: ?FirebaseUser,
-  ordering: boolean,
-  loadingCart: boolean,
-};
-
-class Cart extends Component<Props, State> {
+class Cart extends Component {
   state = {
     checked: [],
     artpieces: [],
@@ -52,7 +34,7 @@ class Cart extends Component<Props, State> {
         await auth.onAuthStateChanged(async user => {
           this.setState({ user: user });
           if (user) {
-            const currentCart: ?CartType = await getCart(user.uid);
+            const currentCart = await getCart(user.uid);
             if (currentCart && currentCart.active && currentCart.itemCount) {
               this.setState({
                 artpieces: currentCart.items,
@@ -69,7 +51,7 @@ class Cart extends Component<Props, State> {
     })();
   }
 
-  handleToggle = (value: number) => () => {
+  handleToggle = (value) => () => {
     const { checked } = this.state;
     const currentIndex = checked.indexOf(value);
     const newChecked = [...checked];
@@ -106,9 +88,9 @@ class Cart extends Component<Props, State> {
   updateCart = async () => {
     if (this.state.user && this.state.artpieces) {
       // Avoid flow screaming
-      const user: FirebaseUser = this.state.user;
-      const currentCart: ?CartType = await getCart(this.state.user.uid);
-      const newCart: CartType = {
+      const user = this.state.user;
+      const currentCart = await getCart(this.state.user.uid);
+      const newCart = {
         ...currentCart,
         id: user.uid,
         itemCount: this.state.artpieces.length,
@@ -123,9 +105,9 @@ class Cart extends Component<Props, State> {
   closeCart = async () => {
     if (this.state.user) {
       // Avoid flow screaming
-      const user: FirebaseUser = this.state.user;
-      const currentCart: ?CartType = await getCart(this.state.user.uid);
-      const newCart: CartType = {
+      const user = this.state.user;
+      const currentCart = await getCart(this.state.user.uid);
+      const newCart = {
         ...currentCart,
         active: false,
         id: user.uid,
@@ -137,7 +119,7 @@ class Cart extends Component<Props, State> {
   };
 
   deleteCartItem = () => {
-    this.state.checked.forEach((index: number) => {
+    this.state.checked.forEach((index) => {
       if (this.state.artpieces.length) this.state.artpieces.splice(index, 1);
       this.setState({
         checked: [],
@@ -148,7 +130,7 @@ class Cart extends Component<Props, State> {
 
   computeTotal = () => {
     return this.state.artpieces.reduce(
-      (total: number, artPiece: ArtPieceType) =>
+      (total, artPiece) =>
         (total += artPiece.sellPriceTaxIncluded),
       0
     );
@@ -157,11 +139,11 @@ class Cart extends Component<Props, State> {
   performOrder = async () => {
     if (this.state.user && this.state.artpieces.length) {
       // Avoid flow screaming
-      const user: FirebaseUser = this.state.user;
+      const user = this.state.user;
       this.setState({
         ordering: true,
       });
-      const order: OrderType = {
+      const order = {
         userId: user.uid,
         artpieces: this.state.artpieces,
         userEmail: user.email,
@@ -189,7 +171,7 @@ class Cart extends Component<Props, State> {
           <ConditionalCircularProgress predicate={this.state.loadingCart} />
 
           <List>
-            {this.state.artpieces.map((value: ArtPieceType, index: number) => (
+            {this.state.artpieces.map((value, index) => (
               <ListItem
                 key={index}
                 dense

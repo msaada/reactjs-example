@@ -1,13 +1,5 @@
-// @flow
 import React from 'react';
 import Divider from '@material-ui/core/Divider';
-
-import type { ArtPieceType } from '../../types/types';
-
-type Props = {
-  product: ?ArtPieceType,
-  artistName: string,
-};
 
 const styles = {
   divider: {
@@ -19,7 +11,7 @@ const styles = {
   },
 };
 
-export default function ProductTitle(props: Props) {
+export default function ProductTitle(props) {
   const { product, artistName } = props;
   if (product) {
     return (

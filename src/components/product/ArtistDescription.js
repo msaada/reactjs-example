@@ -1,17 +1,11 @@
-// @flow
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
-import { Image, Panel } from 'react-bootstrap';
+import { Image, Card } from 'react-bootstrap';
 
 import ConditionalCircularProgress from '../common/ConditionalCircularProgress';
-import type { ArtistType } from '../../types/types';
 
-type Props = {
-  artist: ?ArtistType,
-};
-
-const formatDescription = (description: string): string => {
+const formatDescription = (description) => {
   return `${description.slice(0, Math.min(description.length, 1000))}...`;
 };
 
@@ -64,7 +58,7 @@ const styles = {
   },
 };
 
-export default function ArtistDescription(props: Props) {
+export default function ArtistDescription(props) {
   const { artist } = props;
   if (artist) {
     return (
@@ -74,12 +68,12 @@ export default function ArtistDescription(props: Props) {
         <ConditionalCircularProgress predicate={artist === null} />
         <div style={styles.artistArea.root}>
           <div style={styles.artistArea.logoLayout}>
-            <Panel style={styles.paper}>
+            <Card style={styles.paper}>
               <Image
                 src={artist.logo.length ? artist.logo : artist.picture}
                 style={styles.artistArea.logo}
               />
-            </Panel>
+            </Card>
           </div>
           <div style={styles.artistArea.descriptionLayout.root}>
             <p style={styles.artistArea.descriptionLayout.text}>

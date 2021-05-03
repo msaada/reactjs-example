@@ -1,4 +1,3 @@
-// @flow
 import React, { Component } from 'react';
 import Button from '@material-ui/core/Button';
 
@@ -7,21 +6,8 @@ import AlertDialogReserved from './AlertDialogReserved';
 import AlertDialogSlide from './AlertDialogAddedToCart';
 import { addCartToFirebase, getCart } from '../../javascript/firebaseUtils';
 
-import type { ArtPieceType, CartType, FirebaseUser } from '../../types/types';
-
-type Props = {
-  product: ?ArtPieceType,
-  user: ?FirebaseUser,
-};
-
-type State = {
-  addedToCart: boolean,
-  noUserDialog: boolean,
-  reservedDialog: boolean,
-};
-
-export default class BuyProduct extends Component<Props, State> {
-  state: State = {
+export default class BuyProduct extends Component {
+  state = {
     addedToCart: false,
     noUserDialog: false,
     reservedDialog: false,
@@ -75,7 +61,7 @@ export default class BuyProduct extends Component<Props, State> {
       },
     };
   }
-  addToCart = (product: ArtPieceType) => (user: ?FirebaseUser) => async () => {
+  addToCart = (product) => (user) => async () => {
     if (product.reserved) {
       this.setState({
         reservedDialog: true,
@@ -85,8 +71,8 @@ export default class BuyProduct extends Component<Props, State> {
         noUserDialog: true,
       });
     } else {
-      const currentCart: ?CartType = await getCart(user.uid);
-      let newCart: CartType;
+      const currentCart = await getCart(user.uid);
+      let newCart;
       if (currentCart && currentCart.active && currentCart.itemCount) {
         newCart = {
           ...currentCart,

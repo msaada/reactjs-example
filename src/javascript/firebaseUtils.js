@@ -1,5 +1,3 @@
-//@flow
-
 import firebase from 'firebase/app';
 import { Transaction } from 'firebase/firestore';
 import artPieceModel from '../models/artPiece';
@@ -9,19 +7,6 @@ import callbackModel from '../models/callback';
 import cartModel from '../models/cart';
 import orderModel from '../models/order';
 import userModel from '../models/user';
-
-import type {
-  ArtistType,
-  ArtPieceType,
-  ArtTypeType,
-  CartType,
-  OrderType,
-  FirebaseOrderType,
-  UserType,
-  FirebaseUser,
-  FirebaseCallbackType,
-  CallbackType,
-} from '../types/types';
 
 export let app = null;
 export let database = null;
@@ -37,14 +22,17 @@ export const init = () => {
     storageBucket: 'ohmyart-ee13a.appspot.com',
     messagingSenderId: '564094140683.4',
   };
-  app = firebase.initializeApp(config, appName);
-  database = app.database();
+  if (!firebase.apps.length) {
+    app = firebase.initializeApp(config, appName);
+  } else {
+    app = firebase.app(appName);
+  }
+  database = firebase.database(app);
   auth = app.auth();
   storage = app.storage();
 };
 
-type AddArtTypeToFirebase = (element: ArtTypeType) => Promise<null>;
-export const addArtTypeToFirebase: AddArtTypeToFirebase = async element => {
+export const addArtTypeToFirebase = async element => {
   const root = '/arttypes';
   if (database) {
     const key = database.ref(root).push().key;
@@ -64,10 +52,7 @@ export const addArtTypeToFirebase: AddArtTypeToFirebase = async element => {
   }
   return null;
 };
-type AddArtPieceToFirebase = (
-  element: ArtPieceType
-) => Promise<{ message: string } | null>;
-export const addArtPieceToFirebase: AddArtPieceToFirebase = async element => {
+export const addArtPieceToFirebase = async element => {
   const root = '/artpieces';
   console.log(database);
   if (database) {
@@ -97,8 +82,7 @@ export const addArtPieceToFirebase: AddArtPieceToFirebase = async element => {
   }
 };
 
-type AddCartToFirebase = (element: CartType) => null;
-export const addCartToFirebase: AddCartToFirebase = element => {
+export const addCartToFirebase = element => {
   const root = '/cart';
   let key = database ? database.ref(root).push().key : null;
   const model = key
@@ -109,8 +93,7 @@ export const addCartToFirebase: AddCartToFirebase = element => {
     : null;
 };
 
-type AddArtistToFirebase = (element: ArtistType) => Promise<null>;
-export const addArtistToFirebase: AddArtistToFirebase = async element => {
+export const addArtistToFirebase = async element => {
   const root = '/artists';
   if (database) {
     const key = database.ref(root).push().key;
@@ -132,9 +115,7 @@ export const addArtistToFirebase: AddArtistToFirebase = async element => {
     return null;
   }
 };
-
-type UploadPictureToFirebase = (file: File) => Promise<?string>;
-export const uploadPictureToFirebase: UploadPictureToFirebase = async file => {
+export const uploadPictureToFirebase = async file => {
   const metadata = {
     contentType: 'image/jpeg',
   };
@@ -165,9 +146,7 @@ export const uploadPictureToFirebase: UploadPictureToFirebase = async file => {
     }
   }
 };
-
-type AddOrderToFirebase = (element: OrderType) => Promise<null>;
-export const addOrderToFirebase: AddOrderToFirebase = async element => {
+export const addOrderToFirebase = async element => {
   const root = '/orders';
   let key = database ? database.ref(root).push().key : null;
   let model = key
@@ -179,11 +158,7 @@ export const addOrderToFirebase: AddOrderToFirebase = async element => {
     : null;
 };
 
-type AddUserExtraInfosToFirebase = (
-  key: string,
-  element: UserType
-) => Promise<null>;
-export const addUserExtraInfosToFirebase: AddUserExtraInfosToFirebase = async (
+export const addUserExtraInfosToFirebase = async (
   key,
   element
 ) => {
@@ -194,11 +169,7 @@ export const addUserExtraInfosToFirebase: AddUserExtraInfosToFirebase = async (
     : null;
 };
 
-type AddCallbackToFirebase = (
-  root: string,
-  element: CallbackType
-) => Promise<null>;
-export const addCallbackToFirebase: AddCallbackToFirebase = async (
+export const addCallbackToFirebase = async (
   root,
   element
 ) => {
@@ -210,10 +181,10 @@ export const addCallbackToFirebase: AddCallbackToFirebase = async (
     ? await database.ref(root + '/' + key).set(model)
     : null;
 };
-type GetArtPieces = (callback: (ArtPieceType[]) => void) => void;
-export const getArtPieces: GetArtPieces = callback => {
+
+export const getArtPieces = callback => {
   const artPiecesRef = database ? database.ref('/artpieces') : null;
-  const artPieces: ArtPieceType[] = [];
+  const artPieces = [];
   if (artPiecesRef) {
     artPiecesRef.on('value', snap => {
       snap.forEach(child => {
@@ -224,10 +195,9 @@ export const getArtPieces: GetArtPieces = callback => {
   }
 };
 
-type GetUsersExtraInfos = (callback: (UserType[]) => void) => void;
-export const getUsersExtraInfos: GetUsersExtraInfos = callback => {
-  const userDatasRef = database ? database.ref('/userDatas') : null;
-  const usersInfos: UserType[] = [];
+export const getUsersExtraInfos = callback => {
+const userDatasRef = database ? database.ref('/userDatas') : null;
+  const usersInfos = [];
   if (userDatasRef) {
     userDatasRef.on('value', snap => {
       snap.forEach(child => {
@@ -238,8 +208,7 @@ export const getUsersExtraInfos: GetUsersExtraInfos = callback => {
   }
 };
 
-type GetArtPiece = (artpieceId: string) => Promise<null | ArtPieceType>;
-export const getArtPiece: GetArtPiece = async artpieceId => {
+export const getArtPiece = async artpieceId => {
   const artPiecesRef = database
     ? database.ref(`artpieces/${artpieceId}`)
     : null;
@@ -250,8 +219,7 @@ export const getArtPiece: GetArtPiece = async artpieceId => {
   return null;
 };
 
-type GetArtist = (artistId: string) => Promise<ArtistType | null>;
-export const getArtist: GetArtist = async artistId => {
+export const getArtist = async artistId => {
   const artistRef = database ? database.ref(`artists/${artistId}`) : null;
   if (artistRef) {
     const artistSnapshot = await artistRef.once('value');
@@ -260,28 +228,26 @@ export const getArtist: GetArtist = async artistId => {
   return null;
 };
 
-type GetArtPieceFromArtist = (artistId: string) => Promise<ArtPieceType[]>;
-export const getArtPieceFromArtist: GetArtPieceFromArtist = async artistId => {
+export const getArtPieceFromArtist = async artistId => {
   const artpieceRef = database ? database.ref('/artpieces') : null;
-  let res: ArtPieceType[] = [];
+  let artPieces = [];
   if (artpieceRef) {
     const artistSnapshot = await artpieceRef.once('value');
     artistSnapshot.forEach(function(child) {
-      if (child.val().artistId === artistId) res.push(child.val());
+      if (child.val().artistId === artistId) artPieces.push(child.val());
     });
   }
-  return res;
+  return artPieces;
 };
 
-type GetArtPieceFromArtType = (arttypeId: string) => Promise<ArtPieceType[]>;
-export const getArtPieceFromArtType: GetArtPieceFromArtType = async arttypeId => {
+export const getArtPieceFromArtType = async arttypeId => {
   const artpieceRef = database ? database.ref('/artpieces') : null;
-  let res: ArtPieceType[] = [];
+  let res = [];
   if (artpieceRef) {
     const artistSnapshot = await artpieceRef.once('value');
     artistSnapshot.forEach(function(child) {
       if (child.val().typeOfArtPieces === arttypeId) {
-        const artPiece: ArtPieceType = child.val();
+        const artPiece = child.val();
         res.push(artPiece);
       }
     });
@@ -289,12 +255,7 @@ export const getArtPieceFromArtType: GetArtPieceFromArtType = async arttypeId =>
   return res;
 };
 
-type ListenToCartChange = (
-  userId: string,
-  cartId: ?string,
-  callback: (cart: ?CartType) => void
-) => void;
-export const listenToCartChange: ListenToCartChange = (
+export const listenToCartChange = (
   userId,
   cartId,
   callback
@@ -314,15 +275,14 @@ export const listenToCartChange: ListenToCartChange = (
   }
 };
 
-type GetCart = (userId: string) => Promise<?CartType>;
-export const getCart: GetCart = async userId => {
+export const getCart = async userId => {
   const cartRef = database
     ? database.ref(`/cart/`).orderByChild('timestamp')
     : null;
 
   if (cartRef) {
     const cartSnapshot = await cartRef.once('value');
-    const res: CartType[] = [];
+    const res = [];
     cartSnapshot.forEach(function(child) {
       Object.keys(child.val()).forEach(key => {
         if (child.val()[key].id === userId) res.push(child.val()[key]);
@@ -333,10 +293,9 @@ export const getCart: GetCart = async userId => {
   }
 };
 
-type GetArtists = (callback: (ArtistType[]) => void) => void;
-export const getArtists: GetArtists = callback => {
+export const getArtists = callback => {
   const artistRef = database ? database.ref('/artists') : null;
-  const artists: ArtistType[] = [];
+  const artists = [];
   if (artistRef) {
     artistRef.on('value', snap => {
       snap.forEach(child => {
@@ -347,10 +306,9 @@ export const getArtists: GetArtists = callback => {
   }
 };
 
-type GetArtTypes = (callback: (ArtTypeType[]) => void) => void;
-export const getArtTypes: GetArtTypes = callback => {
+export const getArtTypes = callback => {
   const arttypeRef = database ? database.ref('/arttypes') : null;
-  const arttypes: ArtTypeType[] = [];
+  const arttypes = [];
   if (arttypeRef) {
     arttypeRef.on('value', snap => {
       snap.forEach(child => {
@@ -361,8 +319,7 @@ export const getArtTypes: GetArtTypes = callback => {
   }
 };
 
-type GetLastArtist = (callback: (ArtistType) => void) => void;
-export const getLastArtist: GetLastArtist = callback => {
+export const getLastArtist = callback => {
   const artistRef = database ? database.ref('/artists') : null;
   if (artistRef) {
     artistRef.on('child_added', snap => {
@@ -372,8 +329,8 @@ export const getLastArtist: GetLastArtist = callback => {
     console.log('database not initiated');
   }
 };
-type GetLastOrder = (callback: (FirebaseOrderType) => void) => void;
-export const getLastOrder: GetLastOrder = callback => {
+
+export const getLastOrder = callback => {
   const ordersRef = database ? database.ref('/orders') : null;
   if (ordersRef) {
     ordersRef.on('child_added', snap => {
@@ -384,8 +341,7 @@ export const getLastOrder: GetLastOrder = callback => {
   }
 };
 
-type GetLastCallback = (callback: (FirebaseCallbackType) => void) => void;
-export const getLastCallback: GetLastCallback = callback => {
+export const getLastCallback = callback => {
   const callbackRef = database ? database.ref('/callbacks') : null;
   if (callbackRef) {
     callbackRef.on('child_added', snap => {
@@ -396,8 +352,7 @@ export const getLastCallback: GetLastCallback = callback => {
   }
 };
 
-type GetLastArtPiece = (callback: (ArtPieceType) => void) => void;
-export const getLastArtPiece: GetLastArtPiece = callback => {
+export const getLastArtPiece = callback => {
   const artPieceRef = database ? database.ref('/artpieces') : null;
   if (artPieceRef) {
     artPieceRef.on('child_added', snap => {
@@ -408,8 +363,7 @@ export const getLastArtPiece: GetLastArtPiece = callback => {
   }
 };
 
-type GetLastArtType = (callback: (ArtTypeType) => void) => void;
-export const getLastArtType: GetLastArtType = callback => {
+export const getLastArtType = callback => {
   const artTypeRef = database ? database.ref('/arttypes') : null;
   if (artTypeRef) {
     artTypeRef.on('child_added', snap => {
@@ -420,11 +374,7 @@ export const getLastArtType: GetLastArtType = callback => {
   }
 };
 
-type GetUserExtraInfos = (
-  key: string,
-  callback: (info: any) => void
-) => Promise<void>;
-export const getUserExtraInfos: GetUserExtraInfos = async (key, callback) => {
+export const getUserExtraInfos = async (key, callback) => {
   if (database) {
     const ref = database.ref('/userDatas/' + key);
 
@@ -434,23 +384,20 @@ export const getUserExtraInfos: GetUserExtraInfos = async (key, callback) => {
   }
 };
 
-type GetCurrentUser = () => ?FirebaseUser;
-export const getCurrentUser: GetCurrentUser = () => {
+export const getCurrentUser = () => {
   if (auth) {
     return auth.currentUser;
   }
   return null;
 };
 
-type LogOut = () => Promise<void>;
-export const logOut: LogOut = async () => {
+export const logOut = async () => {
   if (auth) {
     await auth.signOut();
   }
 };
 
-type UpdateArtist = (artist: ArtistType) => null;
-export const updateArtist: UpdateArtist = artist => {
+export const updateArtist = artist => {
   const { id, ...updatedValues } = artist;
   const artistRef = database ? database.ref(`artists/${id}`) : null;
   if (artistRef) {
@@ -464,8 +411,7 @@ export const updateArtist: UpdateArtist = artist => {
   return null;
 };
 
-type UpdateArtPieceToFirebase = (artpiece: ArtPieceType) => null;
-export const updateArtPieceToFirebase: UpdateArtPieceToFirebase = artpiece => {
+export const updateArtPieceToFirebase = artpiece => {
   const { id, ...updatedValues } = artpiece;
   const artpieceRef = database ? database.ref(`artpieces/${id}`) : null;
   if (artpieceRef) {
@@ -479,8 +425,7 @@ export const updateArtPieceToFirebase: UpdateArtPieceToFirebase = artpiece => {
   return null;
 };
 
-type UpdateArtTypeInFirebase = (arttype: ArtTypeType) => Transaction | null;
-export const updateArtTypeInFirebase: UpdateArtTypeInFirebase = arttype => {
+export const updateArtTypeInFirebase = arttype => {
   const { id, ...updatedValues } = arttype;
   const arttypeRef = database ? database.ref(`arttypes/${id}`) : null;
   if (arttypeRef) {

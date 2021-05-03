@@ -1,4 +1,3 @@
-// @flow
 import Divider from '@material-ui/core/Divider';
 import GridList from '@material-ui/core/GridList';
 import React, { Component } from 'react';
@@ -9,15 +8,8 @@ import Header from '../common/Header';
 import ConditionalCircularProgress from '../common/ConditionalCircularProgress';
 import { CategoryTyle } from './CategoryTyle';
 
-import type { ArtTypeType } from '../../types/types';
-
-type Props = {};
-
-type State = {
-  arttypes: ArtTypeType[],
-};
-class Categories extends Component<Props, State> {
-  state: State = {
+class Categories extends Component {
+  state = {
     arttypes: [],
   };
 
@@ -87,7 +79,7 @@ class Categories extends Component<Props, State> {
             predicate={this.state.arttypes.length === 0}
           />
           <GridList cellHeight={300} style={this.styles().gridList} cols={3}>
-            {this.state.arttypes.map((arttype: ArtTypeType, index: number) => {
+            {this.state.arttypes.map((arttype, index) => {
               return CategoryTyle(index, arttype);
             })}
           </GridList>

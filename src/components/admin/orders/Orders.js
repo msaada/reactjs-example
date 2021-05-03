@@ -1,5 +1,3 @@
-// @flow
-
 import AppBar from '@material-ui/core/AppBar';
 import Paper from '@material-ui/core/Paper';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -12,26 +10,19 @@ import {
 } from '../../../javascript/firebaseUtils';
 import ConditionalCircularProgress from '../../common/ConditionalCircularProgress';
 import { OrdersList } from './OrdersList';
-import type { FirebaseOrderType, UserType } from '../../../types/types';
 
-type Props = {};
-type State = {
-  orders: FirebaseOrderType[],
-  usersExtras: UserType[],
-};
-
-class Orders extends Component<Props, State> {
-  state: State = {
+class Orders extends Component {
+  state = {
     orders: [],
     usersExtras: [],
   };
 
-  updateOrders = (order: FirebaseOrderType) => {
+  updateOrders = (order) => {
     this.setState({
       orders: [...this.state.orders, order],
     });
   };
-  updateUserInfos = (userInfos: UserType[]) => {
+  updateUserInfos = (userInfos) => {
     console.log(userInfos);
     this.setState({
       usersExtras: userInfos,

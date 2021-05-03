@@ -1,4 +1,3 @@
-// @flow
 import React from 'react';
 import { categories } from '../datas/categories';
 import Category from './categories/Category';

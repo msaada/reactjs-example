@@ -1,5 +1,3 @@
-// @flow
-
 import AppBar from '@material-ui/core/AppBar';
 import Paper from '@material-ui/core/Paper';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -9,19 +7,13 @@ import '../../../css/App.css';
 import { getLastCallback } from '../../../javascript/firebaseUtils';
 import ConditionalCircularProgress from '../../common/ConditionalCircularProgress';
 import CallbacksAdminList from './CallbacksAdminList';
-import type { FirebaseCallbackType } from '../../../types/types';
 
-type Props = {};
-type State = {
-  callbacks: FirebaseCallbackType[],
-};
-
-export default class Callbacks extends Component<Props, State> {
+export default class Callbacks extends Component {
   state = {
     callbacks: [],
   };
 
-  updateCallbacks = (callback: FirebaseCallbackType) => {
+  updateCallbacks = (callback) => {
     this.setState({
       callbacks: [...this.state.callbacks, callback],
     });

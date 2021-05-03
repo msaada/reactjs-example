@@ -1,5 +1,3 @@
-//@flow
-
 import Button from '@material-ui/core/Button';
 import React, { Component } from 'react';
 import {
@@ -10,21 +8,7 @@ import ConditionalCircularProgress from '../../common/ConditionalCircularProgres
 import { FieldGroup } from '../../common/FieldGroup';
 import MyAlert from '../../common/MyAlert';
 
-import type { ArtTypeType } from '../../../types/types';
-
-type Props = {
-  defaultArtType: ?ArtTypeType,
-};
-
-type State = {
-  artType: ArtTypeType,
-  alertVisible: boolean,
-  alertMessage: string,
-  saving: boolean,
-  fieldsStatus: { [string]: boolean },
-};
-
-export default class ArtTypeForm extends Component<Props, State> {
+export default class ArtTypeForm extends Component {
   state = {
     artType: {
       id: '',
@@ -45,7 +29,7 @@ export default class ArtTypeForm extends Component<Props, State> {
       });
     }
   }
-  change(e: SyntheticInputEvent<>) {
+  change(e) {
     if (e.target instanceof HTMLInputElement) {
       this.setState({
         artType: { ...this.state.artType, [e.target.id]: e.target.value },
@@ -53,11 +37,11 @@ export default class ArtTypeForm extends Component<Props, State> {
     }
   }
 
-  checkFields(arttype: ArtTypeType) {
+  checkFields(arttype) {
     return arttype.name;
   }
 
-  async onSubmit(e: SyntheticInputEvent<>) {
+  async onSubmit(e) {
     e.preventDefault();
     this.setState({
       saving: true,
@@ -100,7 +84,7 @@ export default class ArtTypeForm extends Component<Props, State> {
 
   getWrongFields = () => {
     const fieldsStatus = this.state.fieldsStatus;
-    let wrongFields: string[] = [];
+    let wrongFields = [];
     for (let property in fieldsStatus) {
       if (fieldsStatus.hasOwnProperty(property)) {
         if (!fieldsStatus[property]) {
@@ -111,11 +95,11 @@ export default class ArtTypeForm extends Component<Props, State> {
     return wrongFields;
   };
 
-  handleAlertShow = (errorMessage: string) => {
+  handleAlertShow = (errorMessage) => {
     this.setState({ alertVisible: true, alertMessage: errorMessage });
   };
 
-  validateFormField = (predicate: boolean, fieldLabel: string) => {
+  validateFormField = (predicate, fieldLabel) => {
     // this.setState((prevState, props) => {
     //   return {
     //     fieldsStatus: {
@@ -141,7 +125,7 @@ export default class ArtTypeForm extends Component<Props, State> {
             label="Nom"
             type="text"
             value={this.state.artType.name}
-            onChange={(e: SyntheticInputEvent<>) => this.change(e)}
+            onChange={(e) => this.change(e)}
             validationState={this.validateFormField(
               this.state.artType.name !== '',
               'Nom'

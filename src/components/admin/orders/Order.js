@@ -1,27 +1,18 @@
-// @flow
 import React from 'react';
-import { ListGroup, ListGroupItem, Panel } from 'react-bootstrap';
+import { ListGroup, ListGroupItem, Card } from 'react-bootstrap';
 
 import OrderUserInformation from './OrderUserInformation';
 import OrderStatus from './OrderStatus';
 import OrderAskingDate from './OrderAskingDate';
 import OrderArtPieces from './OrderArtPieces';
 
-import type { FirebaseOrderType, UserType } from '../../../types/types';
-
-type Props = {
-  order: FirebaseOrderType,
-  usersExtras: UserType[],
-  position: number,
-};
-
-export default function Order(props: Props) {
+export default function Order(props) {
   const { order, usersExtras, position } = props;
   const { userEmail, status, timestamp, userId, total, artpieces } = order;
   return (
-    <Panel key={position}>
-      <Panel.Heading>{userEmail}</Panel.Heading>
-      <Panel.Body>
+    <Card key={position}>
+      <Card.Heading>{userEmail}</Card.Heading>
+      <Card.Body>
         <ListGroup>
           <OrderStatus status={status} />
           <OrderAskingDate timestamp={timestamp} />
@@ -29,7 +20,7 @@ export default function Order(props: Props) {
           <OrderArtPieces artpieces={artpieces} />
           <ListGroupItem header="TOTAL">{total}</ListGroupItem>
         </ListGroup>
-      </Panel.Body>
-    </Panel>
+      </Card.Body>
+    </Card>
   );
 }

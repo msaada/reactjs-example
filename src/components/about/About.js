@@ -1,4 +1,3 @@
-// @flow
 import Divider from '@material-ui/core/Divider';
 import React from 'react';
 import '../../css/App.css';
@@ -16,8 +15,7 @@ const styles = {
     justifyContent: 'center',
   },
 };
-type Props = {};
-export default (props: Props) => {
+export default (props) => {
   return (
     <div>
       <Header />

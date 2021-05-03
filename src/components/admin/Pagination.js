@@ -1,16 +1,8 @@
-// @flow
 import React from 'react';
 import { Pagination } from 'react-bootstrap';
 import './Admin.css';
 
-type Props = {
-  items: any[],
-  itemsPerPage: number,
-  activePage: number,
-  onSelect: (index: number) => (event: SyntheticInputEvent<>) => void,
-};
-
-export default (props: Props) => {
+export default (props) => {
   let renderedItems = [];
   let nbPages = props.items.length / props.itemsPerPage;
   for (let page = 1; page <= nbPages; page++) {

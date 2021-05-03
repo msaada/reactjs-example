@@ -1,14 +1,7 @@
-// @flow
 import React from 'react';
 import { ListGroupItem } from 'react-bootstrap';
 
-import type { UserType } from '../../../types/types';
-type Props = {
-  userId: string,
-  usersExtras: UserType[],
-};
-
-export default function OrderUserInformation(props: Props) {
+export default function OrderUserInformation(props) {
   const userExtra = props.usersExtras.find(user => user.id === props.userId);
 
   return (

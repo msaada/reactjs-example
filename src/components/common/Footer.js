@@ -1,13 +1,10 @@
-//@flow
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import React, { Component } from 'react';
 import { Image } from 'react-bootstrap';
 import logo from '../../assets/Art-Gallery-Logo.jpg';
 
-type Props = {};
-type State = {};
-class Footer extends Component<Props, State> {
+class Footer extends Component {
   styles() {
     return {
       root: {
@@ -23,7 +20,7 @@ class Footer extends Component<Props, State> {
       },
       logo: {
         height: '50%',
-        width: 'auto',
+        maxWidth: '10em',
       },
       padding: {
         height: '2em',
@@ -56,7 +53,7 @@ class Footer extends Component<Props, State> {
             </Button>
             <Button
               style={this.styles().button}
-              href="http://www.megadental.fr/pdf/cgv-10-11.pdf"
+              href="https://www.megadental.fr/conditions-generales-de-vente-pour-les-professionnels-hors-professionnels-du-dentaire"
             >
               Conditions Générales de Ventes
             </Button>

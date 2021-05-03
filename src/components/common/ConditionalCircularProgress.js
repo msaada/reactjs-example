@@ -1,12 +1,8 @@
-//@flow
 import CircularProgress from '@material-ui/core/CircularProgress';
 import React from 'react';
 import './ConditionalCircularProgress.css';
 
-type Props = {
-  predicate: boolean,
-};
-export default (props: Props) => {
+export default (props) => {
   if (props.predicate) {
     return (
       <div className="conditionalProgress">

@@ -1,12 +1,11 @@
-// @flow
 import Divider from '@material-ui/core/Divider';
 import React from 'react';
 import { Image } from 'react-bootstrap';
 import '../../css/App.css';
 import Footer from '../common/Footer';
 import Header from '../common/Header';
+import bailArt from '../../assets/bailArt.png';
 
-type Props = {};
 
 const styles = {
   root: {
@@ -35,14 +34,14 @@ const styles = {
   },
 };
 
-export default (props: Props) => {
+export default (props) => {
   return (
     <div>
       <Header />
       <div className="body">
         <div style={styles.artistPhotoArea}>
           <Image
-            src={require('../../assets/bailArt.png')}
+            src={bailArt}
             style={styles.image}
           />
         </div>

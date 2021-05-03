@@ -1,8 +1,6 @@
-//@flow
-
 import Button from '@material-ui/core/Button';
 import React, { Component } from 'react';
-import { Checkbox } from 'react-bootstrap';
+import { FormCheck } from 'react-bootstrap';
 import {
   addArtistToFirebase,
   updateArtist,
@@ -12,23 +10,7 @@ import ConditionalCircularProgress from '../../common/ConditionalCircularProgres
 import { FieldGroup } from '../../common/FieldGroup';
 import MyAlert from '../../common/MyAlert';
 
-import type { ArtistType } from '../../../types/types';
-
-type Props = {
-  defaultArtist: ?ArtistType,
-};
-
-type State = {
-  artist: ArtistType,
-  logoFile: ?File,
-  pictureFile: ?File,
-  alertVisible: boolean,
-  alertMessage: string,
-  saving: boolean,
-  fieldsStatus: { [string]: boolean },
-};
-
-export default class ArtistForm extends Component<Props, State> {
+export default class ArtistForm extends Component {
   state = {
     artist: {
       id: '',
@@ -55,7 +37,7 @@ export default class ArtistForm extends Component<Props, State> {
     }
   }
 
-  change(e: SyntheticInputEvent<>) {
+  change(e) {
     if (e.target instanceof HTMLInputElement) {
       this.setState({
         artist: { ...this.state.artist, [e.target.id]: e.target.value },
@@ -65,7 +47,7 @@ export default class ArtistForm extends Component<Props, State> {
 
   getWrongFields = () => {
     const fieldsStatus = this.state.fieldsStatus;
-    let wrongFields: string[] = [];
+    let wrongFields = [];
     for (let property in fieldsStatus) {
       if (fieldsStatus.hasOwnProperty(property)) {
         if (!fieldsStatus[property]) {
@@ -76,7 +58,7 @@ export default class ArtistForm extends Component<Props, State> {
     return wrongFields;
   };
 
-  onSubmit = async (e: SyntheticInputEvent<>) => {
+  onSubmit = async (e) => {
     e.preventDefault();
     this.setState({
       saving: true,
@@ -163,11 +145,11 @@ export default class ArtistForm extends Component<Props, State> {
     });
   };
 
-  handleAlertShow = (errorMessage: string) => {
+  handleAlertShow = (errorMessage) => {
     this.setState({ alertVisible: true, alertMessage: errorMessage });
   };
 
-  validateFormField = (predicate: boolean, fieldLabel: string) => {
+  validateFormField = (predicate, fieldLabel) => {
     this.state.fieldsStatus[fieldLabel] = predicate;
     if (predicate) {
       return 'success';
@@ -176,7 +158,7 @@ export default class ArtistForm extends Component<Props, State> {
     }
   };
 
-  onImageChange = (event: SyntheticInputEvent<>, logo: boolean) => {
+  onImageChange = (event, logo) => {
     if (event.target.files && event.target.files[0]) {
       if (logo) {
         this.setState({
@@ -203,7 +185,7 @@ export default class ArtistForm extends Component<Props, State> {
               this.state.artist.name !== '',
               "Nom de l'artiste"
             )}
-            onChange={(e: SyntheticInputEvent<>) => this.change(e)}
+            onChange={(e) => this.change(e)}
           />
 
           <FieldGroup
@@ -215,7 +197,7 @@ export default class ArtistForm extends Component<Props, State> {
                 this.state.pictureFile !== null,
               'Photo'
             )}
-            onChange={(e: SyntheticInputEvent<>) =>
+            onChange={(e) =>
               this.onImageChange(e, false)
             }
           />
@@ -228,7 +210,7 @@ export default class ArtistForm extends Component<Props, State> {
               this.state.artist.logo !== '' || this.state.logoFile !== null,
               'Logo'
             )}
-            onChange={(e: SyntheticInputEvent<>) => this.onImageChange(e, true)}
+            onChange={(e) => this.onImageChange(e, true)}
           />
 
           <FieldGroup
@@ -240,10 +222,10 @@ export default class ArtistForm extends Component<Props, State> {
               this.state.artist.description !== '',
               "Biographie de l'artiste"
             )}
-            onChange={(e: SyntheticInputEvent<>) => this.change(e)}
+            onChange={(e) => this.change(e)}
           />
 
-          <Checkbox
+          <FormCheck
             id="featured"
             checked={this.state.artist.featured}
             onChange={e =>
@@ -256,7 +238,7 @@ export default class ArtistForm extends Component<Props, State> {
             }
           >
             Artiste dans la rubrique "Artiste du moment"
-          </Checkbox>
+          </FormCheck>
 
           <MyAlert
             visible={this.state.alertVisible}
@@ -266,7 +248,7 @@ export default class ArtistForm extends Component<Props, State> {
 
           <Button
             variant="raised"
-            onClick={(e: SyntheticInputEvent<>) => this.onSubmit(e)}
+            onClick={(e) => this.onSubmit(e)}
           >
             Sauvegarder
           </Button>
