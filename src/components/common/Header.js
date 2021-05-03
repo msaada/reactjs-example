@@ -68,8 +68,14 @@ class Header extends Component {
         height: '3.5em',
       },
       mega: {
-        height: '2rem',
+        height: '4rem',
         width: 'auto',
+      },
+      megadentalLogoScale: {
+        flex: '1',
+      },
+      navbuttonsScale: {
+        flex: '2',
       },
       nav_buttons: {
         display: 'flex',
@@ -77,9 +83,9 @@ class Header extends Component {
         paddingTop: '0.5em',
       },
       logo: {
-        height: '50%',
-        maxWidth: '15em',
-
+        height: 'auto',
+        width: '80%',
+        minWidth:'15em',
         marginBottom: '1em',
         float: 'left',
       },
@@ -149,7 +155,7 @@ class Header extends Component {
           <Divider style={{ backgroundColor: 'black', marginBottom: '3em' }} />
         </div>
         <div style={this.styles().root}>
-          <a href={'/'}>
+          <a href={'/'} style={this.styles().megadentalLogoScale}>
             <Image
               src={logo}
               style={this.styles().logo}
@@ -163,7 +169,7 @@ class Header extends Component {
               alt="Mega Dental concept store Art Gallery"
             />
           </Button> */}
-          <div>
+          <div style={this.styles().navbuttonsScale}>
             <div style={this.styles().padding} />
             <Divider />
             <div style={this.styles().nav_buttons}>

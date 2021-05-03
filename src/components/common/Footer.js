@@ -19,7 +19,9 @@ class Footer extends Component {
         justifyContent: 'flex-end',
       },
       logo: {
-        height: '50%',
+        height: 'auto',
+        width: '30%',
+        minWidth:'15em',
         maxWidth: '10em',
       },
       padding: {
